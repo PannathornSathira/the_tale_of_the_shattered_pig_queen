@@ -1,0 +1,35 @@
+{
+    "spriteSheetURL": "./graphics/breakout.png",
+    "size":[32,16],
+    "sprites":[
+        {
+            "name":"p_blue_1",
+            "x":0,
+            "y":64,
+            "scalefactor":3,
+            "colorKey":-1
+        },
+        {
+            "name":"p_green_1",
+            "x":0,
+            "y":96,
+            "scalefactor":3,
+            "colorKey":-1
+        },
+        {
+            "name":"p_red_1",
+            "x":0,
+            "y":128,
+            "scalefactor":3,
+            "colorKey":-1
+        },
+        {
+            "name":"p_purple_1",
+            "x":0,
+            "y":160,
+            "scalefactor":3,
+            "colorKey":-1
+        }        ]
+}
+
+
