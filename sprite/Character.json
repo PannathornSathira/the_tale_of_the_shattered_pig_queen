@@ -1,0 +1,65 @@
+{
+    "spriteSheetURL": "./graphics/character.png",
+    "type":"animation",
+    "size":[16,16],
+    "sprites":[
+        {
+            "name":"character_walk_right",
+            "images":[
+                {
+                    "x":0,
+                    "y":16,
+                    "scale":3
+                },
+                {
+                    "x":16,
+                    "y":16,
+                    "scale":3
+                },
+                {
+                    "x":32,
+                    "y":16,
+                    "scale":3
+                }
+            ],
+	       "idle_image":
+			{
+				"x":0,
+				"y":16,
+				"scale":3
+		     },
+            "interval_time":0.15,
+            "colorKey": null
+        },
+        {
+            "name":"character_front",
+            "images":[
+                {
+                    "x":0,
+                    "y":0,
+                    "scale":3
+                },
+                {
+                    "x":16,
+                    "y":0,
+                    "scale":3
+                },
+                {
+                    "x":32,
+                    "y":0,
+                    "scale":3
+                }
+            ],
+	       "idle_image":
+			{
+				"x":0,
+				"y":0,
+				"scale":3
+		     },
+
+            "interval_time":0.15,
+            "colorKey": null
+        }
+]
+}
+
