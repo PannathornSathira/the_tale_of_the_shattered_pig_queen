@@ -1,7 +1,6 @@
 import pygame
 from src.resources import *
 from src.Paddle import Paddle
-from src.Ball import Ball
 from src.LevelMaker import *
 
 
