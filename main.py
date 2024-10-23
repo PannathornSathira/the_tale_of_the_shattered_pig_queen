@@ -23,8 +23,8 @@ class GameMain:
                 pygame.quit()
                 sys.exit()
                 
-        self.player.update(dt, events)
-            
+        #self.player.update(dt, events)
+        self.player.update(dt, events, self.level.platforms)    
         # No camera scroll update
         # self.camera_x_scroll = self.character_x - (WIDTH/2) + CHARACTER_WIDTH/2
 

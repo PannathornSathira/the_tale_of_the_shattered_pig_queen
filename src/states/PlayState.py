@@ -2,7 +2,7 @@ import random, pygame, sys
 from src.states.BaseState import BaseState
 from src.constants import *
 from src.Dependency import *
-import src.CommonRender as CommonRender
+#import src.CommonRender as CommonRender
 
 class PlayState(BaseState):
     def __init__(self):
@@ -11,7 +11,7 @@ class PlayState(BaseState):
 
     def Enter(self, params):
         pass
-
+    
 
     def update(self,  dt, events):
         pass
