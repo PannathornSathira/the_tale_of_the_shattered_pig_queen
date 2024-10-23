@@ -2,7 +2,7 @@ from src.constants import *
 from src.Util import SpriteManager
 import pygame
 import time
-
+from src.Bullet import Bullet
 class Player:
     def __init__(self):
         self.character_x = WIDTH / 2 - (CHARACTER_WIDTH) / 2
@@ -17,7 +17,8 @@ class Player:
         self.jump_force = -800  # Force applied when jumping
         self.gravity = 1500  # Gravity that pulls the player down
         self.ground_y = self.character_y  # Starting ground level
-        #self.store_veloy = 0
+        
+        self.bullets = []
 
     def update(self, dt, events, platforms):
         pressedKeys = pygame.key.get_pressed()
@@ -53,7 +54,13 @@ class Player:
             self.direction = "left"
             self.animation = self.sprite_collection["character_walk_right"].animation
             self.character_x -= CHARACTER_MOVE_SPEED * dt  # Move right while jumping
+        if pressedKeys[pygame.K_RETURN]:
+            self.shoot()
+        for bullet in self.bullets:
+            bullet.update(dt)
 
+        # Remove inactive bullets
+        self.bullets = [bullet for bullet in self.bullets if bullet.active]    
         # Apply gravity
         if not self.on_ground:
             self.velocity_y += self.gravity * dt
@@ -96,8 +103,22 @@ class Player:
                     return True, platform_rect.top
             
             return False, platform_rect.top
+    
+    def shoot(self):
+        # Create a bullet at the player's position, moving in the current direction
+        bullet_x = self.character_x + CHARACTER_WIDTH // 2  # Adjust bullet starting position
+        bullet_y = self.character_y + CHARACTER_HEIGHT // 2
+        bullet_direction = self.direction
+        if bullet_direction == 'front':
+            bullet_direction= 'right'
+        # Add the new bullet to the list of active bullets
+        bullet = Bullet(bullet_x, bullet_y, bullet_direction)
+        self.bullets.append(bullet)
     def render(self, screen):
         char_img = self.animation.image
         if self.direction == "left":
             char_img = pygame.transform.flip(char_img, True, False)
         screen.blit(char_img, (self.character_x, self.character_y))
+        
+        for bullet in self.bullets:
+            bullet.render(screen)
