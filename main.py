@@ -13,7 +13,7 @@ class GameMain:
         self.max_frame_rate = MAX_FRAME_RATE
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.player = Player()
-        self.level = Level()
+        self.level = Level(area=3)
         self.level.CreateMap()
         # self.sprite_collection = SpriteManager().spriteCollection
 
@@ -24,12 +24,13 @@ class GameMain:
                 sys.exit()
                 
         #self.player.update(dt, events)
-        self.player.update(dt, events, self.level.platforms)    
+        self.player.update(dt, events, self.level.platforms)  
+        self.level.update(dt, events)  
         # No camera scroll update
         # self.camera_x_scroll = self.character_x - (WIDTH/2) + CHARACTER_WIDTH/2
 
     def render(self):
-        self.screen.fill((0, 0, 200))
+        self.screen.fill((255, 255, 255))
         
         self.level.render(self.screen)
         self.player.render(self.screen)
