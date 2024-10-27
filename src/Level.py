@@ -1,55 +1,71 @@
-import random, pygame, math
+import random
+import pygame
 from src.Util import GenerateTiles
 from src.constants import *
+from src.platforms.BasePlatform import BasePlatform
+from src.platforms.SpecialPlatform import SpecialPlatform
 
-#patterns
-NONE = 1
-SINGLE_PYRAMID = 2
-MULTI_PYRAMID = 3
 
-SOLID = 1            # all colors the same in this row
-ALTERNATE = 2        # alternative colors
-SKIP = 3             # skip every other brick
-NONE = 4             # no block this row
 class Level:
-    def __init__(self):
+    def __init__(self, area=0):
         self.tilemaps = GenerateTiles('./graphics/tiles.png', TILE_SIZE, TILE_SIZE, colorkey=-1, scale=3)
         self.tiles = []
-        self.platforms = []
-        self.map_width = WIDTH // (TILE_SIZE*3) + 1
-        self.map_height = HEIGHT // (TILE_SIZE*3) + 1
+        self.platforms = [[None for _ in range(8)] for _ in range(3)]  # 3x8 matrix for platforms
+        self.map_width = WIDTH // (TILE_SIZE * 3) + 1
+        self.map_height = HEIGHT // (TILE_SIZE * 3) + 1
+        if area == 0:
+            self.area = random.randint(1,5)
+        else:
+            self.area = area
+            
+    def update(self, dt, events):
+        for platform_row in self.platforms:
+            for platform in platform_row:
+                if platform:
+                    platform.update(dt)
 
     def CreateMap(self):
         for y in range(self.map_height):
             self.tiles.append([])
             for x in range(self.map_width):
-                if y < 4:
+                if y < 5:
                     self.tiles[y].append(SKY)
-                elif y == 4:
-                    self.tiles[y].append(GRASS)
                 elif y == 5:
+                    self.tiles[y].append(GRASS)
+                elif y == 6:
                     self.tiles[y].append(GROUND_BOUNDARY)
                 else:
                     self.tiles[y].append(GROUND)
         self.GeneratePlatforms()
-    def GeneratePlatforms(self):
-        platform_color = (0, 0, 0)  
-        min_height = 2
-        max_height = 4
-        platform_count = 5
-        platform_width = 1.5 * TILE_SIZE * 3  # Width of the platform in pixels
-        platform_height = TILE_SIZE * 0.5  # Height of the platform in pixels
 
-        for _ in range(platform_count):
-            platform_x = random.randint(2 * TILE_SIZE * 3, (self.map_width - 2) * TILE_SIZE * 3)
-            platform_y = random.randint(min_height * TILE_SIZE * 3, max_height * TILE_SIZE * 3)
-            platform_rect = pygame.Rect(platform_x, platform_y, platform_width, platform_height)
-            self.platforms.append((platform_rect, platform_color)) 
-                   
+    def GeneratePlatforms(self):
+        platform_length = WIDTH // (NUM_COL + 2)  # Platform length in pixels
+        row_y_positions = [1 * TILE_SIZE * 4 + 50, 2 * TILE_SIZE * 4 + 50, 3 * TILE_SIZE * 4 + 50]  # Y-positions for each row
+        platform_counts = [2, 4, 6]  # Number of platforms per row
+
+        for row in range(NUM_ROW):  # Loop through each row
+            row_y = row_y_positions[row]  
+            cols = random.sample(range(NUM_COL), platform_counts[row])
+            for col in cols:
+                platform_x = (col + 1) * platform_length
+                platform_type = random.choice(["normal", "special"])
+                if platform_type == "normal":
+                    platform = BasePlatform(platform_x, row_y, self.area)         
+                else:
+                    platform = SpecialPlatform(platform_x, row_y, self.area)
+                # Store the platform in the matrix
+                self.platforms[row][col] = platform
+
+
     def render(self, screen):
         for y in range(self.map_height):
             for x in range(self.map_width):
                 id = self.tiles[y][x]
                 screen.blit(self.tilemaps[id], (x * TILE_SIZE * 3, y * TILE_SIZE * 3))
-            for platform_rect, platform_color in self.platforms:
-                pygame.draw.rect(screen, platform_color, platform_rect)
+
+        # Draw platforms
+        for row in range(NUM_ROW):
+            for col in range(NUM_COL):
+                platform = self.platforms[row][col]
+                if platform:
+                    platform.render(screen)
