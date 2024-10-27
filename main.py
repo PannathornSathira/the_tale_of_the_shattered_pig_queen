@@ -3,6 +3,7 @@ from src.Util import *
 from src.constants import *
 from src.Player import Player
 from src.Level import Level
+from src.bosses.BaseBoss import BaseBoss
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
@@ -15,6 +16,7 @@ class GameMain:
         self.player = Player()
         self.level = Level(area=3)
         self.level.CreateMap()
+        self.boss = BaseBoss(x=1100, y=100)
         # self.sprite_collection = SpriteManager().spriteCollection
 
     def update(self, dt, events):
@@ -26,6 +28,7 @@ class GameMain:
         #self.player.update(dt, events)
         self.player.update(dt, events, self.level.platforms)  
         self.level.update(dt, events)  
+        self.boss.update(dt, self.player)
         # No camera scroll update
         # self.camera_x_scroll = self.character_x - (WIDTH/2) + CHARACTER_WIDTH/2
 
@@ -34,6 +37,7 @@ class GameMain:
         
         self.level.render(self.screen)
         self.player.render(self.screen)
+        self.boss.render(self.screen)
         
 
     def PlayGame(self):
