@@ -18,11 +18,16 @@ class Player:
         self.gravity = GRAVITY  # Gravity that pulls the player down
         self.ground_y = self.character_y  # Starting ground level
         
+        self.rect = pygame.Rect(self.character_x + CHARACTER_WIDTH, self.character_y, CHARACTER_WIDTH, CHARACTER_HEIGHT * 2.5)
+        
         self.movement_speed = CHARACTER_MOVE_SPEED
         
         self.bullets = []
 
     def update(self, dt, events, platforms):
+        self.rect.x = self.character_x
+        self.rect.y = self.character_y
+        
         pressedKeys = pygame.key.get_pressed()
         if pressedKeys[pygame.K_LEFT]:
             self.direction = "left"
@@ -94,11 +99,10 @@ class Player:
         
         
     def check_platform_collision(self, platforms):
-            player_rect = pygame.Rect(self.character_x + CHARACTER_WIDTH, self.character_y, CHARACTER_WIDTH, CHARACTER_HEIGHT * 2.5)
             for platform_row in platforms:
                 for platform in platform_row:
                     if platform is not None:
-                        if player_rect.colliderect(platform.rect) and self.velocity_y > 0:
+                        if self.rect.colliderect(platform.rect) and self.velocity_y > 0:
                             return True, platform
             
             return False, None
