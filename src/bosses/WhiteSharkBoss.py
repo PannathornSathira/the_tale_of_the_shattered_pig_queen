@@ -1,0 +1,347 @@
+import pygame
+import math
+import random
+from src.constants import *
+from src.bosses.BaseBoss import BaseBoss
+from src.bosses.BossBullet import BossBullet
+from src.bosses.BeamAttack import BeamAttack
+
+
+class WhiteSharkBoss(BaseBoss):
+    def __init__(self, x, y, health=300):
+        super().__init__(x, y, health)
+
+        # Customizing the appearance
+        self.image.fill((200, 200, 200))  # Set color
+        self.visible = True
+
+        # Deepwater Assault Attack prop
+        self.assault_count = 0  # Track the number of assaults performed
+        self.next_assault_time = 0.5  # Delay before each new assault
+        self.reappearance_duration = 0.3  # Time taken for the boss to reappear
+        self.charge_duration = 2
+        self.start_charge = True
+
+        # Torpedo Attack prop
+        self.torpedo_expo_speed = 20
+        self.torpedo_explode_chance = 1.5
+        self.torpedo_explode_radius = 500
+        self.explosion = None
+        self.explosion_timer = 0
+        self.explosion_duration = 1
+
+        # Churning Tides Attack prop
+        self.churning_tides_pull_force = 30000
+        self.churning_tides_duration = 5
+        self.churning_tides_vortex = None
+        self.vortex_radius = 50
+
+        # Rain Attack prop
+        self.rain_duration = 5
+        self.rain_bullet_gap_cooldown = 0.08
+        self.rain_bullet_gap_time = 0
+        self.rain_num_at_once = 2
+
+    def update(self, dt, player):
+        # Update position and check if the boss should attack
+        super().update(dt, player)
+        if self.explosion is not None:
+            self.explosion_timer += dt
+            if self.explosion_timer >= self.explosion_duration:
+                self.explosion_timer = 0
+                self.explosion = None
+
+    def select_attack(self, player):
+
+        attack_choice = random.choice(["deepwater_assault"])
+
+        if attack_choice == "deepwater_assault":
+            self.current_attack = self.deepwater_assault
+        elif attack_choice == "torpedo":
+            self.current_attack = self.torpedo
+        elif attack_choice == "churning_tides":
+            self.current_attack = self.churning_tides
+        elif attack_choice == "rain":
+            self.current_attack = self.rain
+
+    def deepwater_assault(self, dt, player):
+        """
+        Deepwater Assault: The White Shark disappears and performs three consecutive attacks,
+        randomly choosing to come from the left, right, or below the player.
+        """
+        # Disappear at the start of the attack
+        if self.attack_elapsed_time == 0:
+            self.visible = False  # Hide the boss
+
+            # Choose random directions for each of the three assaults
+            self.assault_directions = [
+                random.choice(["left", "right", "below"]) for _ in range(3)
+            ]
+
+        # Handle each assault
+        if self.assault_count < 3:
+            # Reappear and charge after the delay
+            if self.attack_elapsed_time >= self.next_assault_time:
+                # Fully visible now, prepare to charge
+                self.visible = True
+                self.image.set_alpha(255)  # Set full visibility
+                direction = self.assault_directions[self.assault_count]
+
+                # Determine the starting position based on the chosen direction
+                if self.start_charge:
+                    self.start_charge = False
+                    if direction == "left":
+                        self.x = -self.width
+                        self.y = (
+                            player.character_y + player.height / 2 - self.height / 2
+                        )
+                        angle = -90
+                    elif direction == "right":
+                        self.x = WIDTH
+                        self.y = (
+                            player.character_y + player.height / 2 - self.height / 2
+                        )
+                        angle = 90
+                    elif direction == "below":
+                        self.x = player.character_x + player.width / 2 - self.width / 2
+                        self.y = HEIGHT
+                        angle = 0
+
+                    # Rotate the image to match the attack direction
+                    self.image = pygame.transform.rotate(self.image, angle)
+                    self.rect = self.image.get_rect(
+                        center=(self.x + self.width // 2, self.y + self.height // 2)
+                    )
+
+                # Calculate the progress of the charge
+                t = (
+                    self.attack_elapsed_time - self.next_assault_time
+                ) / self.charge_duration
+
+                # Interpolate the position based on the tweened time
+                if direction in ["left", "right"]:
+                    start_pos = 0 - self.width if direction == "right" else WIDTH
+                    end_pos = (
+                        WIDTH + self.width if direction == "right" else 0 - self.width
+                    )
+                    self.x = start_pos + t * (end_pos - start_pos)
+                elif direction == "below":
+                    start_pos = HEIGHT
+                    end_pos = 0 - self.height
+                    self.y = start_pos + t * (end_pos - start_pos)
+
+                # End this assault if the charge duration is complete
+                if (
+                    self.attack_elapsed_time - self.next_assault_time
+                    >= self.charge_duration
+                ):
+                    # Update for the next assault
+                    self.assault_count += 1
+                    self.next_assault_time += (
+                        self.charge_duration + 0.5
+                    )  # Additional delay before the next attack
+                    self.visible = False  # Hide the boss again
+                    self.start_charge = True
+                    if direction == "left":
+                        angle = 90
+                    elif direction == "right":
+                        angle = -90
+                    elif direction == "below":
+                        angle = 0
+
+                    # Rotate the image back
+                    self.image = pygame.transform.rotate(self.image, angle)
+                    self.rect = self.image.get_rect(
+                        center=(self.x + self.width // 2, self.y + self.height // 2)
+                    )
+
+        # End the entire attack sequence after three assaults
+        if self.assault_count >= 3:
+            self.x = 1100
+            self.y = 100
+            self.visible = True  # Make sure the boss is visible at the end
+            self.assault_count = 0  # Track the number of assaults performed
+            self.next_assault_time = 0.5  # Delay before each new assault
+            self.image.set_alpha(255)
+            self.end_attack()
+
+    def torpedo(self, dt, player):
+        """
+        The shark launches large, torpedo-like bullets that move slowly at first,
+        then suddenly accelerate. After traveling a short distance, the torpedoes explode
+        """
+
+        if self.attack_elapsed_time == 0:
+            torpedo = BeamAttack(
+                self.x - self.width / 2, self.y + self.height / 2, "left", 100, 50
+            )
+            torpedo.speed = 0
+            self.bullets.append(torpedo)
+
+        # Update torpedo's speed using an exponential function
+        t = self.attack_elapsed_time
+        if len(self.bullets) > 0:
+            current_torpedo = self.bullets[0]
+            current_torpedo.speed = self.exponential_speed(t)
+
+            # Calculate how far the torpedo has traveled as a fraction of the screen width
+            distance_traveled = abs(WIDTH - current_torpedo.x)
+            travel_fraction = distance_traveled / WIDTH
+
+            # Check if the torpedo has traveled more than half the screen width
+            if travel_fraction > 0.5:
+                # Increase the chance to explode as it travels further
+                explode_chance = (
+                    self.torpedo_explode_chance ** (travel_fraction * 10) / 100
+                )
+                print(explode_chance)
+
+                # Attempt to explode with the given chance
+                if random.random() < explode_chance:
+                    self.explode_torpedo(current_torpedo)
+                    self.end_attack()
+                    return  # Exit the function after explosion
+
+        # End the attack if the torpedo moves off-screen or no bullets remain
+        if current_torpedo.x < 0 or len(self.bullets) == 0:
+            self.end_attack()
+
+    def explode_torpedo(self, torpedo):
+        """
+        Handle the explosion of a torpedo by creating a circular blast.
+        """
+        # Create explosion effect with a defined radius
+        explosion_radius = self.torpedo_explode_radius
+        explosion_center = (
+            int(torpedo.x + torpedo.width // 2),
+            int(torpedo.y + torpedo.height // 2),
+        )
+
+        # Add explosion visual effect
+        self.explosion = (explosion_center, explosion_radius)
+
+        # Optionally, apply damage to the player if within the explosion radius
+        # Check player's distance from the explosion and apply damage if close enough
+        # player_distance = math.sqrt((explosion_center[0] - self.player.character_x)**2 + (explosion_center[1] - self.player.character_y)**2)
+        # if player_distance <= explosion_radius:
+        #     self.player.take_damage(50)  # Example damage value
+
+        # Remove the torpedo from the bullets list
+        self.bullets.remove(torpedo)
+
+    def churning_tides(self, dt, player):
+        """
+        Churning Tides: The White Shark creates vortexes of water that pull the player toward
+        certain areas of the screen. The player's speed is adjusted based on the distance from the vortex.
+        """
+        # Initialize vortex at the start of the attack
+        if self.attack_elapsed_time == 0:
+            # Define the vortex center randomly on the screen
+            vortex_x = random.randint(WIDTH // 4, 3 * WIDTH // 4)
+            vortex_y = random.randint(HEIGHT // 4, 3 * HEIGHT // 4)
+            self.churning_tides_vortex = (vortex_x, vortex_y)
+
+        # If the vortex is active, apply a pulling force to the player
+        if self.churning_tides_vortex is not None:
+            vortex_x, vortex_y = self.churning_tides_vortex
+            # Calculate distance between the player and the vortex center
+            distance_x = vortex_x - (player.character_x + player.width / 2)
+            distance_y = vortex_y - (player.character_y + player.height / 2)
+            distance = math.sqrt(distance_x**2 + distance_y**2)
+
+            # Pull force decreases with distance, simulating a vortex effect
+            pull_strength = abs(
+                self.churning_tides_pull_force / (distance + 1)
+            )  # Avoid division by zero
+
+            # Determine player's direction relative to the vortex
+            if distance > self.vortex_radius:
+                # Player is outside the vortex radius, apply pulling effect based on direction
+                if (
+                    distance_x > 0 and player.direction == "left"
+                ):  # Player is left of vortex
+                    player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
+                elif (
+                    distance_x > 0 and player.direction == "right"
+                ):  # Player moving towards vortex
+                    player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
+                elif (
+                    distance_x > 0 and player.direction == "front"
+                ):  # Player is pulled inwards
+                    player.character_x += pull_strength * dt
+                elif (
+                    distance_x < 0 and player.direction == "left"
+                ):  # Player moving towards vortex
+                    player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
+                elif (
+                    distance_x < 0 and player.direction == "right"
+                ):  # Player is right of vortex
+                    player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
+                elif (
+                    distance_x < 0 and player.direction == "front"
+                ):  # Player is pulled inwards
+                    player.character_x -= pull_strength * dt
+            else:
+                # Player is within the vortex radius, slow down or keep them in place
+                player.movement_speed = CHARACTER_MOVE_SPEED / 2
+
+            # Ensure movement speed stays within a reasonable range
+            player.movement_speed = max(
+                0, min(player.movement_speed, CHARACTER_MOVE_SPEED * 2)
+            )
+
+            # Debugging information to verify behavior
+            print(
+                f"Player speed: {player.movement_speed}, Position: ({player.character_x}, {player.character_y})"
+            )
+
+        # End the attack if the duration is over
+        if self.attack_elapsed_time >= self.churning_tides_duration:
+            self.churning_tides_vortex = None  # Clear the vortex
+            player.revert_to_default()
+            self.end_attack()
+
+    def rain(self, dt, player):
+        bullet_direction = "down"
+
+        self.rain_bullet_gap_time += dt
+        if self.rain_bullet_gap_time >= self.rain_bullet_gap_cooldown:
+            self.rain_bullet_gap_time = 0
+            for _ in range(self.rain_num_at_once):
+                bullet = BossBullet(
+                    random.randint(0, WIDTH), 0, bullet_direction
+                )  # Create a bullet
+                self.bullets.append(bullet)  # Add bullet to the list
+
+        # End the bullet attack if the duration is over
+        if self.attack_elapsed_time >= self.rain_duration:
+            self.end_attack()
+
+    def exponential_speed(self, t):
+        return self.torpedo_expo_speed**t
+
+    def render(self, screen):
+        """Render the boss and possibly some visual effects for its attacks."""
+        if self.visible:
+            super().render(screen)
+        # Render bullets
+        for bullet in self.bullets:
+            bullet.render(screen)
+
+        # Render explosions
+        if self.explosion is not None:
+            explosion_center, explosion_radius = self.explosion
+            pygame.draw.circle(
+                screen, (255, 100, 0), explosion_center, explosion_radius, 2
+            )  # Orange circle
+
+        # Render the vortex
+        if self.churning_tides_vortex is not None:
+            vortex_x, vortex_y = self.churning_tides_vortex
+            pygame.draw.circle(
+                screen,
+                (0, 0, 255),
+                (int(vortex_x), int(vortex_y)),
+                self.vortex_radius,
+                3,
+            )  # Draw a blue circle for the vortex

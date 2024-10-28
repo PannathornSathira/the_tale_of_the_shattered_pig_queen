@@ -1,44 +1,73 @@
 import pygame
 from src.constants import *
 
+
 class BaseBoss:
-    def __init__(self, x, y, speed=2, health=100):
+    def __init__(self, x, y, health=100):
         self.x = x
         self.y = y
-        self.speed = speed
         self.health = health
         self.width = 200  # Width of the boss
         self.height = 400  # Height of the boss
-        self.image = pygame.Surface((self.width, self.height))  # Placeholder for boss image
+        self.image = pygame.Surface(
+            (self.width, self.height)
+        )  # Placeholder for boss image
         self.image.fill((255, 0, 0))  # Color for visualization (red)
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.float_direction = 1  # 1 for down, -1 for up
         self.float_speed = 50  # Speed of vertical floating movement
-        self.attack_timer = 0  # Timer for attacks
-        self.attack_delay = 1000  # Delay between attacks in milliseconds
+
+        # Attack properties
+        self.attack_cooldown = 5  # Time between attacks
+        self.attack_delay_timer = 0
+        self.attack_elapsed_time = 0
+        self.current_attack = None  # Track the current attack pattern
+        self.bullets = []  # List to hold active bullets
 
     def update(self, dt, player):
-        # Update position
-        self.rect.x += self.speed * dt  # Move right at constant speed
 
-        # Floating effect
-        self.y += self.float_direction * self.float_speed * dt
-        if self.y > HEIGHT - self.height - (5 * TILE_SIZE) or self.y < 0:  # Bounce between top and bottom
-            self.float_direction *= -1
-
+        self.rect.x = self.x
         self.rect.y = self.y
-        
-        # Check for attack
-        self.attack_timer += dt * 1000  # Convert dt to milliseconds
-        if self.attack_timer >= self.attack_delay:
-            self.attack(player)
-            self.attack_timer = 0  # Reset timer after attack
 
-    def attack(self, player):
+        # Update bullets
+        for bullet in self.bullets:
+            bullet.update(dt)
+
+            # Remove inactive bullets
+            if not bullet.active:
+                self.bullets.remove(bullet)
+
+        # Remove inactive bullets
+        self.bullets = [bullet for bullet in self.bullets if bullet.active]
+
+        if self.current_attack is None:
+            # Attack if cooldown has elapsed
+            self.attack_delay_timer += dt
+            if self.attack_delay_timer >= self.attack_cooldown:
+                self.select_attack(player)
+                self.attack_elapsed_time = 0
+
+        else:
+            self.current_attack(dt, player)
+            self.attack_elapsed_time += dt
+
+        self.contact_hit(player)
+
+    def select_attack(self, player):
+        pass
+
+    # End the attack if the duration is over
+    def end_attack(self):
+        self.current_attack = None
+        self.attack_delay_timer = 0
+        self.attack_elapsed_time = 0
+
+    def contact_hit(self, player):
         """Implement an attack pattern against the player."""
         # Placeholder attack logic: Check if the player is within a certain range
         if self.rect.colliderect(player.rect):  # Check for collision with player
-            player.take_damage(10)  # Assume the player has a `take_damage` method
+            # player.take_damage(10)  # Assume the player has a `take_damage` method
+            pass
 
     def take_damage(self, amount):
         """Reduce health when taking damage."""
