@@ -4,13 +4,13 @@ import pygame
 import time
 from src.Bullet import Bullet
 class Player:
-    def __init__(self):
+    def __init__(self, health=100):
         self.character_x = WIDTH / 2 - (CHARACTER_WIDTH) / 2
         self.character_y = (6 * TILE_SIZE - CHARACTER_HEIGHT) * 3
         self.direction = "front"  # left right front
         self.sprite_collection = SpriteManager().spriteCollection
         self.animation = self.sprite_collection["character_front"].animation
-        
+        self.health = health
         self.velocity_y = 0  # Vertical speed (used for jumping/falling)
         self.is_jumping = False  # Track if the player is in the air
         self.on_ground = True
@@ -21,10 +21,10 @@ class Player:
         self.rect = pygame.Rect(self.character_x + CHARACTER_WIDTH, self.character_y, CHARACTER_WIDTH, CHARACTER_HEIGHT * 2.5)
         
         self.movement_speed = CHARACTER_MOVE_SPEED
-        
+        self.alive = True
         self.bullets = []
 
-    def update(self, dt, events, platforms):
+    def update(self, dt, events, platforms, boss):
         self.rect.x = self.character_x
         self.rect.y = self.character_y
         
@@ -63,9 +63,15 @@ class Player:
             self.character_x -= self.movement_speed * dt  # Move right while jumping
         if pressedKeys[pygame.K_RETURN]:
             self.shoot()
+            
         for bullet in self.bullets:
             bullet.update(dt)
-
+            if bullet.active and boss.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
+                bullet.active = False  # Deactivate bullet
+                boss.take_damage(1)  # Inflict damage to the boss
+            
+        
+        
         # Remove inactive bullets
         self.bullets = [bullet for bullet in self.bullets if bullet.active]    
         # Apply gravity
@@ -94,8 +100,14 @@ class Player:
             self.character_y = platform.rect.top - CHARACTER_HEIGHT * 2.5
             self.on_ground = True
             self.is_jumping = False
-            self.velocity_y = 0 
+            self.velocity_y = 0
+        
+        for boss_bullet in boss.bullets:
+            if boss_bullet.active and self.rect.colliderect(pygame.Rect(boss_bullet.x, boss_bullet.y, boss_bullet.width, boss_bullet.height)):
+                boss_bullet.active = False
+                self.take_damage(10) 
         self.animation.update(dt)
+        
         
         
     def check_platform_collision(self, platforms):
@@ -106,9 +118,17 @@ class Player:
                             return True, platform
             
             return False, None
+    
         
     def revert_to_default(self):
         self.movement_speed = CHARACTER_MOVE_SPEED
+    
+    def take_damage(self, damage):
+        self.health -= damage
+        print("Player is hit!!!!")
+        if self.health <= 0:
+            self.alive = False
+    
     
     def shoot(self):
         # Create a bullet at the player's position, moving in the current direction
@@ -125,7 +145,9 @@ class Player:
         char_img = self.animation.image
         if self.direction == "left":
             char_img = pygame.transform.flip(char_img, True, False)
-        screen.blit(char_img, (self.character_x, self.character_y))
+        if self.alive:
+            screen.blit(char_img, (self.character_x, self.character_y))
         
         for bullet in self.bullets:
             bullet.render(screen)
+        
