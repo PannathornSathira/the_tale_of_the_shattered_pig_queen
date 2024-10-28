@@ -7,6 +7,8 @@ class Player:
     def __init__(self):
         self.character_x = WIDTH / 2 - (CHARACTER_WIDTH) / 2
         self.character_y = (6 * TILE_SIZE - CHARACTER_HEIGHT) * 3
+        self.width = CHARACTER_WIDTH
+        self.height = CHARACTER_HEIGHT
         self.direction = "front"  # left right front
         self.sprite_collection = SpriteManager().spriteCollection
         self.animation = self.sprite_collection["character_front"].animation

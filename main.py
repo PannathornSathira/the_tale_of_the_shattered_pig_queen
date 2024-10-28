@@ -4,6 +4,8 @@ from src.constants import *
 from src.Player import Player
 from src.Level import Level
 from src.bosses.BaseBoss import BaseBoss
+from src.bosses.BlueDragonBoss import BlueDragonBoss
+from src.bosses.WhiteSharkBoss import WhiteSharkBoss
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
@@ -16,7 +18,8 @@ class GameMain:
         self.player = Player()
         self.level = Level(area=3)
         self.level.CreateMap()
-        self.boss = BaseBoss(x=1100, y=100)
+        # self.boss = BlueDragonBoss(x=1100, y=100)
+        self.boss = WhiteSharkBoss(x=1100, y=100)
         # self.sprite_collection = SpriteManager().spriteCollection
 
     def update(self, dt, events):
