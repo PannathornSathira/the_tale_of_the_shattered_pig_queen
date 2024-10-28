@@ -25,7 +25,7 @@ class WhiteSharkBoss(BaseBoss):
         # Torpedo Attack prop
         self.torpedo_expo_speed = 20
         self.torpedo_explode_chance = 1.5
-        self.torpedo_explode_radius = 500
+        self.torpedo_explode_radius = 250
         self.explosion = None
         self.explosion_timer = 0
         self.explosion_duration = 1
@@ -53,7 +53,7 @@ class WhiteSharkBoss(BaseBoss):
 
     def select_attack(self, player):
 
-        attack_choice = random.choice(["deepwater_assault"])
+        attack_choice = random.choice(["deepwater_assault", "torpedo", "churning_tides", "rain"])
 
         if attack_choice == "deepwater_assault":
             self.current_attack = self.deepwater_assault
@@ -194,7 +194,6 @@ class WhiteSharkBoss(BaseBoss):
                 explode_chance = (
                     self.torpedo_explode_chance ** (travel_fraction * 10) / 100
                 )
-                print(explode_chance)
 
                 # Attempt to explode with the given chance
                 if random.random() < explode_chance:
@@ -288,11 +287,6 @@ class WhiteSharkBoss(BaseBoss):
             # Ensure movement speed stays within a reasonable range
             player.movement_speed = max(
                 0, min(player.movement_speed, CHARACTER_MOVE_SPEED * 2)
-            )
-
-            # Debugging information to verify behavior
-            print(
-                f"Player speed: {player.movement_speed}, Position: ({player.character_x}, {player.character_y})"
             )
 
         # End the attack if the duration is over
