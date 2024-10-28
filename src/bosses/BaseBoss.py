@@ -3,12 +3,12 @@ from src.constants import *
 
 
 class BaseBoss:
-    def __init__(self, x, y, health=100):
+    def __init__(self, x, y, width=200, height=400, health=100):
         self.x = x
         self.y = y
         self.health = health
-        self.width = 200  # Width of the boss
-        self.height = 400  # Height of the boss
+        self.width = width  # Width of the boss
+        self.height = height  # Height of the boss
         self.image = pygame.Surface(
             (self.width, self.height)
         )  # Placeholder for boss image
