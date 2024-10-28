@@ -19,7 +19,7 @@ class BlackWidowBoss(BaseBoss):
         self.jump_end_x = self.x
         self.jump_end_y = self.y
         self.jump_height = 500
-        
+
         # Cobweb attack properties
         self.web = None
         self.web_width = 50
@@ -30,7 +30,7 @@ class BlackWidowBoss(BaseBoss):
         self.web_slow_duration = 3
         self.web_slow_timer = 0
         self.web_is_slow = False
-        
+
         # Poison attack properties
         self.poison_duration = 3  # Duration in seconds
         self.poison_tick_rate = 0.5  # Damage every 0.5 seconds
@@ -41,12 +41,12 @@ class BlackWidowBoss(BaseBoss):
 
         # Summoning properties
         self.spiderlings = []  # List to track summoned spiderlings
-        
+
     def contact_hit(self, player):
         if self.rect.colliderect(player.rect):  # Check for collision with player
             # player.take_damage(10)  # Assume the player has a `take_damage` method
             self.apply_poison(player)
-        
+
     def apply_poison(self, player):
         """Apply poison effect to the player."""
         if not self.is_poisoned:
@@ -54,7 +54,7 @@ class BlackWidowBoss(BaseBoss):
             self.is_poisoned = True
             self.poison_timer = 0
             self.poison_tick_timer = 0
-            
+
     def update_poison_effect(self, dt, player):
         """Manage poison damage over time if the player is poisoned."""
         if self.is_poisoned:
@@ -74,10 +74,10 @@ class BlackWidowBoss(BaseBoss):
     def update(self, dt, player):
         # Update position and check if the boss should attack
         super().update(dt, player)
-        
+
         # Update poison effect
         self.update_poison_effect(dt, player)
-                
+
         # Slow by web logic
         if self.web_is_slow:
             player.movement_speed = CHARACTER_MOVE_SPEED / 2
@@ -85,7 +85,7 @@ class BlackWidowBoss(BaseBoss):
             if self.web_slow_timer >= self.web_slow_duration:
                 player.movement_speed = CHARACTER_MOVE_SPEED
                 self.web_is_slow = False
-        
+
         # Update spiderlings
         for spiderling in self.spiderlings:
             spiderling.update(dt, player)
@@ -94,7 +94,7 @@ class BlackWidowBoss(BaseBoss):
                 self.spiderlings.remove(spiderling)
 
     def select_attack(self, player):
-        attack_choice = random.choice(["summon"])
+        attack_choice = random.choice(["jump", "cobweb", "summon"])
         if attack_choice == "jump":
             self.current_attack = self.jump
         elif attack_choice == "cobweb":
@@ -109,35 +109,51 @@ class BlackWidowBoss(BaseBoss):
             self.jump_start_y = self.y
             self.jump_end_x = player.character_x + player.width / 2 - self.width / 2
             self.jump_end_y = player.character_y + (3 * player.height) - self.height
-            self.jump_peak_y = self.jump_start_y - self.jump_height  # Peak height for parabolic motion
+            self.jump_peak_y = (
+                self.jump_start_y - self.jump_height
+            )  # Peak height for parabolic motion
 
         t = self.attack_elapsed_time / self.jump_duration
         if t <= 1.0:
             self.x = self.jump_start_x + t * (self.jump_end_x - self.jump_start_x)
-            self.y = (1 - t) * (1 - t) * self.jump_start_y + 2 * (1 - t) * t * self.jump_peak_y + t * t * self.jump_end_y
+            self.y = (
+                (1 - t) * (1 - t) * self.jump_start_y
+                + 2 * (1 - t) * t * self.jump_peak_y
+                + t * t * self.jump_end_y
+            )
         else:
             self.end_attack()
             self.x, self.y = self.jump_end_x, self.jump_end_y
-            
+
     def cobweb(self, dt, player):
         if self.attack_elapsed_time == 0:
-            self.web = pygame.Rect(self.x - self.width / 2, self.y + self.height / 2, self.web_width, self.web_height)
+            self.web = pygame.Rect(
+                self.x - self.width / 2,
+                self.y + self.height / 2,
+                self.web_width,
+                self.web_height,
+            )
             self.web_start_x = self.x
             self.web_start_y = self.y
             self.web_end_x = player.character_x + player.width / 2 - self.web_width / 2
             self.web_end_y = player.character_y + (3 * player.height) - self.web_height
-            
+
         t = self.attack_elapsed_time / self.web_projectile_duration
         self.web.x = self.web_start_x + t * (self.web_end_x - self.web_start_x)
         self.web.y = self.web_start_y + t * (self.web_end_y - self.web_start_y)
-        
+
         if self.web.colliderect(player.rect):
             self.web_is_slow = True
             self.web = None
             self.apply_poison(player)
             self.end_attack()
-        
-        elif self.web.x + self.web_width < 0 or self.web.x > WIDTH or self.web.y + self.web_height < 0 or self.web.y > HEIGHT:
+
+        elif (
+            self.web.x + self.web_width < 0
+            or self.web.x > WIDTH
+            or self.web.y + self.web_height < 0
+            or self.web.y > HEIGHT
+        ):
             self.web = None
             self.end_attack()
 
@@ -156,7 +172,7 @@ class BlackWidowBoss(BaseBoss):
         super().render(screen)
         for bullet in self.bullets:
             bullet.render(screen)
-            
+
         if self.web is not None:
             screen.blit(self.web_image, (self.web.x, self.web.y))
 
@@ -182,7 +198,7 @@ class Spiderling:
         target_y = player.character_y + player.height / 2 - self.size / 2
         dx = target_x - self.x
         dy = target_y - self.y
-        distance = math.sqrt(dx ** 2 + dy ** 2)
+        distance = math.sqrt(dx**2 + dy**2)
 
         # Normalize direction and move towards the player
         if distance > 0:
