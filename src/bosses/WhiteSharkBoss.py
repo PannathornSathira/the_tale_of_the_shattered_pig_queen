@@ -9,7 +9,7 @@ from src.bosses.BeamAttack import BeamAttack
 
 class WhiteSharkBoss(BaseBoss):
     def __init__(self, x, y, health=300):
-        super().__init__(x, y, health)
+        super().__init__(x, y, health=health)
 
         # Customizing the appearance
         self.image.fill((200, 200, 200))  # Set color
@@ -23,17 +23,21 @@ class WhiteSharkBoss(BaseBoss):
         self.start_charge = True
 
         # Torpedo Attack prop
+        self.torpedos = []
         self.torpedo_expo_speed = 20
         self.torpedo_explode_chance = 1.5
         self.torpedo_explode_radius = 250
         self.explosion = None
         self.explosion_timer = 0
         self.explosion_duration = 1
+        self.torpedo_attack_duration = 1
 
         # Churning Tides Attack prop
         self.churning_tides_pull_force = 30000
-        self.churning_tides_duration = 5
-        self.churning_tides_vortex = None
+        self.churning_tides_duration = 2
+        self.vortex = None
+        self.vortex_duration = 5
+        self.vortex_timer = 0
         self.vortex_radius = 50
 
         # Rain Attack prop
@@ -50,10 +54,18 @@ class WhiteSharkBoss(BaseBoss):
             if self.explosion_timer >= self.explosion_duration:
                 self.explosion_timer = 0
                 self.explosion = None
+                
+        for torpedo in self.torpedos:
+            self.update_torpedo(torpedo, dt)
+            
+        if self.vortex is not None:
+            self.update_vortex(dt, player)
 
     def select_attack(self, player):
 
-        attack_choice = random.choice(["deepwater_assault", "torpedo", "churning_tides", "rain"])
+        # attack_choice = random.choice(["deepwater_assault", "torpedo", "churning_tides", "rain"])
+        attack_choice = random.choice(["churning_tides"])
+
 
         if attack_choice == "deepwater_assault":
             self.current_attack = self.deepwater_assault
@@ -176,34 +188,45 @@ class WhiteSharkBoss(BaseBoss):
                 self.x - self.width / 2, self.y + self.height / 2, "left", 100, 50
             )
             torpedo.speed = 0
-            self.bullets.append(torpedo)
-
-        # Update torpedo's speed using an exponential function
-        t = self.attack_elapsed_time
-        if len(self.bullets) > 0:
-            current_torpedo = self.bullets[0]
-            current_torpedo.speed = self.exponential_speed(t)
-
-            # Calculate how far the torpedo has traveled as a fraction of the screen width
-            distance_traveled = abs(WIDTH - current_torpedo.x)
-            travel_fraction = distance_traveled / WIDTH
-
-            # Check if the torpedo has traveled more than half the screen width
-            if travel_fraction > 0.5:
-                # Increase the chance to explode as it travels further
-                explode_chance = (
-                    self.torpedo_explode_chance ** (travel_fraction * 10) / 100
-                )
-
-                # Attempt to explode with the given chance
-                if random.random() < explode_chance:
-                    self.explode_torpedo(current_torpedo)
-                    self.end_attack()
-                    return  # Exit the function after explosion
+            self.torpedos.append((torpedo, 0))
 
         # End the attack if the torpedo moves off-screen or no bullets remain
-        if current_torpedo.x < 0 or len(self.bullets) == 0:
+        if self.attack_elapsed_time >= self.torpedo_attack_duration:
             self.end_attack()
+            
+    def update_torpedo(self, torpedo_pair, dt):
+        # Update torpedo's speed using an exponential function
+        torpedo, time_exist = torpedo_pair
+        torpedo.update(dt)
+        time_exist += dt
+        t = time_exist
+        
+        torpedo.speed = self.exponential_speed(t)
+
+        # Calculate how far the torpedo has traveled as a fraction of the screen width
+        distance_traveled = abs(WIDTH - torpedo.x)
+        travel_fraction = distance_traveled / WIDTH
+
+        # Check if the torpedo has traveled more than half the screen width
+        if travel_fraction > 0.5:
+            # Increase the chance to explode as it travels further
+            explode_chance = (
+                self.torpedo_explode_chance ** (travel_fraction * 10) / 100
+            )
+
+            # Attempt to explode with the given chance
+            if random.random() < explode_chance:
+                self.explode_torpedo(torpedo)
+                return  # Exit the function after explosion
+        
+        # Remove the torpedo if it moves off-screen
+        if torpedo.x < 0:
+            self.torpedos = [t for t in self.torpedos if t[0] != torpedo]
+        else:
+            # Reassign the updated torpedo tuple to the list to keep the updated time_exist
+            for i, (torp, _) in enumerate(self.torpedos):
+                if torp == torpedo:
+                    self.torpedos[i] = (torpedo, time_exist)
 
     def explode_torpedo(self, torpedo):
         """
@@ -226,7 +249,7 @@ class WhiteSharkBoss(BaseBoss):
         #     self.player.take_damage(50)  # Example damage value
 
         # Remove the torpedo from the bullets list
-        self.bullets.remove(torpedo)
+        self.torpedos = [t for t in self.torpedos if t[0] != torpedo]
 
     def churning_tides(self, dt, player):
         """
@@ -238,62 +261,66 @@ class WhiteSharkBoss(BaseBoss):
             # Define the vortex center randomly on the screen
             vortex_x = random.randint(WIDTH // 4, 3 * WIDTH // 4)
             vortex_y = random.randint(HEIGHT // 4, 3 * HEIGHT // 4)
-            self.churning_tides_vortex = (vortex_x, vortex_y)
+            
+            if self.vortex is None:
+                self.vortex = (vortex_x, vortex_y)
 
-        # If the vortex is active, apply a pulling force to the player
-        if self.churning_tides_vortex is not None:
-            vortex_x, vortex_y = self.churning_tides_vortex
-            # Calculate distance between the player and the vortex center
-            distance_x = vortex_x - (player.character_x + player.width / 2)
-            distance_y = vortex_y - (player.character_y + player.height / 2)
-            distance = math.sqrt(distance_x**2 + distance_y**2)
-
-            # Pull force decreases with distance, simulating a vortex effect
-            pull_strength = abs(
-                self.churning_tides_pull_force / (distance + 1)
-            )  # Avoid division by zero
-
-            # Determine player's direction relative to the vortex
-            if distance > self.vortex_radius:
-                # Player is outside the vortex radius, apply pulling effect based on direction
-                if (
-                    distance_x > 0 and player.direction == "left"
-                ):  # Player is left of vortex
-                    player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
-                elif (
-                    distance_x > 0 and player.direction == "right"
-                ):  # Player moving towards vortex
-                    player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
-                elif (
-                    distance_x > 0 and player.direction == "front"
-                ):  # Player is pulled inwards
-                    player.character_x += pull_strength * dt
-                elif (
-                    distance_x < 0 and player.direction == "left"
-                ):  # Player moving towards vortex
-                    player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
-                elif (
-                    distance_x < 0 and player.direction == "right"
-                ):  # Player is right of vortex
-                    player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
-                elif (
-                    distance_x < 0 and player.direction == "front"
-                ):  # Player is pulled inwards
-                    player.character_x -= pull_strength * dt
-            else:
-                # Player is within the vortex radius, slow down or keep them in place
-                player.movement_speed = CHARACTER_MOVE_SPEED / 2
-
-            # Ensure movement speed stays within a reasonable range
-            player.movement_speed = max(
-                0, min(player.movement_speed, CHARACTER_MOVE_SPEED * 2)
-            )
-
-        # End the attack if the duration is over
         if self.attack_elapsed_time >= self.churning_tides_duration:
-            self.churning_tides_vortex = None  # Clear the vortex
-            player.revert_to_default()
             self.end_attack()
+            
+    def update_vortex(self, dt, player):
+        self.vortex_timer += dt
+        vortex_x, vortex_y = self.vortex
+        # Calculate distance between the player and the vortex center
+        distance_x = vortex_x - (player.character_x + player.width / 2)
+        distance_y = vortex_y - (player.character_y + player.height / 2)
+        distance = math.sqrt(distance_x**2 + distance_y**2)
+
+        # Pull force decreases with distance, simulating a vortex effect
+        pull_strength = abs(
+            self.churning_tides_pull_force / (distance + 1)
+        )  # Avoid division by zero
+
+        # Determine player's direction relative to the vortex
+        if distance > self.vortex_radius:
+            # Player is outside the vortex radius, apply pulling effect based on direction
+            if (
+                distance_x > 0 and player.direction == "left"
+            ):  # Player is left of vortex
+                player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
+            elif (
+                distance_x > 0 and player.direction == "right"
+            ):  # Player moving towards vortex
+                player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
+            elif (
+                distance_x > 0 and player.direction == "front"
+            ):  # Player is pulled inwards
+                player.character_x += pull_strength * dt
+            elif (
+                distance_x < 0 and player.direction == "left"
+            ):  # Player moving towards vortex
+                player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
+            elif (
+                distance_x < 0 and player.direction == "right"
+            ):  # Player is right of vortex
+                player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
+            elif (
+                distance_x < 0 and player.direction == "front"
+            ):  # Player is pulled inwards
+                player.character_x -= pull_strength * dt
+        else:
+            # Player is within the vortex radius, slow down or keep them in place
+            player.movement_speed = CHARACTER_MOVE_SPEED / 2
+
+        # Ensure movement speed stays within a reasonable range
+        player.movement_speed = max(
+            0, min(player.movement_speed, CHARACTER_MOVE_SPEED * 2)
+        )
+        
+        if self.vortex_timer >= self.vortex_duration:
+            player.revert_to_default()
+            self.vortex_timer = 0
+            self.vortex = None
 
     def rain(self, dt, player):
         bullet_direction = "down"
@@ -321,6 +348,10 @@ class WhiteSharkBoss(BaseBoss):
         # Render bullets
         for bullet in self.bullets:
             bullet.render(screen)
+            
+        for torpedo in self.torpedos:
+            torpedo_bullet, _ = torpedo
+            torpedo_bullet.render(screen)
 
         # Render explosions
         if self.explosion is not None:
@@ -330,8 +361,8 @@ class WhiteSharkBoss(BaseBoss):
             )  # Orange circle
 
         # Render the vortex
-        if self.churning_tides_vortex is not None:
-            vortex_x, vortex_y = self.churning_tides_vortex
+        if self.vortex is not None:
+            vortex_x, vortex_y = self.vortex
             pygame.draw.circle(
                 screen,
                 (0, 0, 255),
@@ -339,3 +370,5 @@ class WhiteSharkBoss(BaseBoss):
                 self.vortex_radius,
                 3,
             )  # Draw a blue circle for the vortex
+            
+

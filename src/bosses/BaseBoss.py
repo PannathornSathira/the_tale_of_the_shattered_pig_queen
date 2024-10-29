@@ -43,7 +43,7 @@ class BaseBoss:
             if bullet.active and player.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
                 if not isinstance(bullet, BeamAttack):
                     bullet.active = False
-                player.take_damage(10) 
+                player.take_damage(bullet.damage) 
 
             # Remove inactive bullets
             if not bullet.active:
