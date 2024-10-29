@@ -17,11 +17,11 @@ class GameMain:
         self.max_frame_rate = MAX_FRAME_RATE
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.player = Player()
-        self.level = Level(area=3)
+        self.level = Level(area=5)
         self.level.CreateMap()
         # self.boss = BlueDragonBoss(x=1100, y=100)
-        # self.boss = WhiteSharkBoss(x=1100, y=100)
-        self.boss = BlackWidowBoss(x=1100, y=100)
+        self.boss = WhiteSharkBoss(x=1100, y=100)
+        # self.boss = BlackWidowBoss(x=1100, y=100)
 
         # self.sprite_collection = SpriteManager().spriteCollection
 
