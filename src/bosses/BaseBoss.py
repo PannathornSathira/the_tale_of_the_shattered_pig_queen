@@ -2,6 +2,7 @@ import pygame
 from src.constants import *
 
 
+from src.BossBullet import BossBullet
 class BaseBoss:
     def __init__(self, x, y, width=200, height=400, health=100):
         self.x = x
@@ -23,7 +24,15 @@ class BaseBoss:
         self.attack_elapsed_time = 0
         self.current_attack = None  # Track the current attack pattern
         self.bullets = []  # List to hold active bullets
+        
+        self.alive = True
 
+    def take_damage(self, amount):
+        """Reduce health when taking damage."""
+        self.health -= amount
+        if self.health <= 0:
+            self.die()
+        
     def update(self, dt, player):
 
         self.rect.x = self.x
@@ -52,6 +61,10 @@ class BaseBoss:
             self.attack_elapsed_time += dt
 
         self.contact_hit(player)
+                # for boss_bullet in boss.bullets:
+        #     if boss_bullet.active and self.rect.colliderect(pygame.Rect(boss_bullet.x, boss_bullet.y, boss_bullet.width, boss_bullet.height)):
+        #         boss_bullet.active = False
+        #         self.take_damage(10) 
 
     def select_attack(self, player):
         pass
@@ -67,7 +80,7 @@ class BaseBoss:
         # Placeholder attack logic: Check if the player is within a certain range
         if self.rect.colliderect(player.rect):  # Check for collision with player
             # player.take_damage(10)  # Assume the player has a `take_damage` method
-            pass
+            player.take_damage(10)
 
     def take_damage(self, amount):
         """Reduce health when taking damage."""
@@ -78,7 +91,15 @@ class BaseBoss:
     def die(self):
         """Handle boss death."""
         print("Boss defeated!")  # Placeholder for boss defeat logic
+        self.alive = False
 
     def render(self, screen):
         """Draw the boss on the screen."""
-        screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.alive:
+            screen.blit(self.image, (self.rect.x, self.rect.y))
+        
+        for bullet in self.bullets:
+            bullet.render(screen)
+        
+        
+
