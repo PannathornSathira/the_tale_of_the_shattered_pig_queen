@@ -25,61 +25,71 @@ class Player:
         self.movement_speed = CHARACTER_MOVE_SPEED
         self.alive = True
         self.bullets = []
+        
+        self.stun_duration = 0  # Track how long the player is stunned
+        self.is_stunned = False  # Flag to check if the player is stunned
 
     def update(self, dt, events, platforms, boss):
+        # Update stun timer if player is stunned
+        if self.is_stunned:
+            self.stun_duration -= dt
+            if self.stun_duration <= 0:
+                self.is_stunned = False  # Remove stun once duration ends
+                self.velocity_y = 0
+        
         self.rect.x = self.character_x
         self.rect.y = self.character_y
         
         pressedKeys = pygame.key.get_pressed()
-        if pressedKeys[pygame.K_LEFT]:
-            self.direction = "left"
-            self.animation = self.sprite_collection["character_walk_right"].animation
-            self.character_x -= self.movement_speed * dt
-        elif pressedKeys[pygame.K_RIGHT]:
-            self.direction = "right"
-            self.animation = self.sprite_collection["character_walk_right"].animation
-            self.character_x += self.movement_speed * dt
-        elif pressedKeys[pygame.K_SPACE] and self.on_ground:
-            self.is_jumping = True
-            self.velocity_y = self.jump_force
-            self.on_ground = False
-            self.animation = self.sprite_collection["character_walk_right"].animation
-        else:
-            self.direction = "front"
-            self.animation = self.sprite_collection["character_front"].animation
+        if not self.is_stunned:
+            if pressedKeys[pygame.K_LEFT]:
+                self.direction = "left"
+                self.animation = self.sprite_collection["character_walk_right"].animation
+                self.character_x -= self.movement_speed * dt
+            elif pressedKeys[pygame.K_RIGHT]:
+                self.direction = "right"
+                self.animation = self.sprite_collection["character_walk_right"].animation
+                self.character_x += self.movement_speed * dt
+            elif pressedKeys[pygame.K_SPACE] and self.on_ground:
+                self.is_jumping = True
+                self.velocity_y = self.jump_force
+                self.on_ground = False
+                self.animation = self.sprite_collection["character_walk_right"].animation
+            else:
+                self.direction = "front"
+                self.animation = self.sprite_collection["character_front"].animation
+                
+            if pressedKeys[pygame.K_SPACE] and pressedKeys[pygame.K_RIGHT] and self.on_ground:
+                self.is_jumping = True
+                self.velocity_y = self.jump_force  # Apply the jump force
+                self.on_ground = False
+                self.direction = "right"
+                self.animation = self.sprite_collection["character_walk_right"].animation
+                self.character_x += self.movement_speed * dt  # Move right while jumping
             
-        if pressedKeys[pygame.K_SPACE] and pressedKeys[pygame.K_RIGHT] and self.on_ground:
-            self.is_jumping = True
-            self.velocity_y = self.jump_force  # Apply the jump force
-            self.on_ground = False
-            self.direction = "right"
-            self.animation = self.sprite_collection["character_walk_right"].animation
-            self.character_x += self.movement_speed * dt  # Move right while jumping
-        
-        if pressedKeys[pygame.K_SPACE] and pressedKeys[pygame.K_LEFT] and self.on_ground:
-            self.is_jumping = True
-            self.velocity_y = self.jump_force  # Apply the jump force
-            self.on_ground = False
-            self.direction = "left"
-            self.animation = self.sprite_collection["character_walk_right"].animation
-            self.character_x -= self.movement_speed * dt  # Move right while jumping
-        if pressedKeys[pygame.K_RETURN]:
-            self.shoot()
+            if pressedKeys[pygame.K_SPACE] and pressedKeys[pygame.K_LEFT] and self.on_ground:
+                self.is_jumping = True
+                self.velocity_y = self.jump_force  # Apply the jump force
+                self.on_ground = False
+                self.direction = "left"
+                self.animation = self.sprite_collection["character_walk_right"].animation
+                self.character_x -= self.movement_speed * dt  # Move right while jumping
+            if pressedKeys[pygame.K_RETURN]:
+                self.shoot()
             
         for bullet in self.bullets:
             bullet.update(dt)
             if bullet.active and boss.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
                 bullet.active = False  # Deactivate bullet
-                boss.take_damage(1)  # Inflict damage to the boss
-            
-        
+                boss.take_damage(1)  # Inflict damage to the boss 
         
         # Remove inactive bullets
-        self.bullets = [bullet for bullet in self.bullets if bullet.active]    
+        self.bullets = [bullet for bullet in self.bullets if bullet.active]   
+        
         # Apply gravity
         if not self.on_ground:
-            self.velocity_y += self.gravity * dt
-            self.character_y += self.velocity_y * dt
+            self.velocity_y += self.gravity * dt  # Apply gravity to vertical speed
+            self.character_y += self.velocity_y * dt  # Update vertical position 
         
         if self.character_y >= self.ground_y:
             self.character_y = self.ground_y
@@ -106,6 +116,10 @@ class Player:
     
         self.animation.update(dt)
         
+    def stun(self, duration):
+        """Stuns the player for a given duration."""
+        self.is_stunned = True
+        self.stun_duration = duration
         
         
     def check_platform_collision(self, platforms):
@@ -123,7 +137,6 @@ class Player:
     
     def take_damage(self, damage):
         self.health -= damage
-        print("Player is hit!!!!")
         if self.health <= 0:
             self.alive = False
     

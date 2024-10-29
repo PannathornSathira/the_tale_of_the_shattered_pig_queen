@@ -6,9 +6,9 @@ from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
-class BlueDragonBoss(BaseBoss):
+class KrakenBoss(BaseBoss):
     def __init__(self, x, y, health=300):
-        super().__init__(x, y, health)
+        super().__init__(x, y, health=health)
 
         # Customizing the appearance for the Blue Dragon
         self.image.fill((0, 0, 255))  # Set color to blue
@@ -25,6 +25,8 @@ class BlueDragonBoss(BaseBoss):
         self.bullet_gap_time = 0
         self.bullet_layer_num = 4
         self.bullet_angle = 125
+        self.barrage_starting_angle = 0
+        self.barrage_starting_angle_random_shift_max = 90
         
         #Thunder strike attack prop
         self.beam_count = 5
@@ -100,6 +102,8 @@ class BlueDragonBoss(BaseBoss):
 
     def tempest_barrage(self, dt, player):
         """Shoot bullets towards the player."""
+        if self.attack_elapsed_time == 0:
+            self.barrage_starting_angle = random.randint(-self.barrage_starting_angle_random_shift_max, self.barrage_starting_angle_random_shift_max)
         bullet_direction = "left" if self.position == "right" else "right"
         bullet_x = self.x + (self.width // 2)  # Center the bullet on the boss
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
@@ -107,7 +111,7 @@ class BlueDragonBoss(BaseBoss):
         if self.bullet_gap_time >= self.bullet_gap_cooldown:
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
-                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, -self.bullet_angle + (self.bullet_angle*i))  # Create a bullet
+                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i))  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
         
         # End the bullet attack if the duration is over

@@ -41,7 +41,7 @@ class Level:
     def GeneratePlatforms(self):
         platform_length = WIDTH // (NUM_COL)  # Platform length in pixels
         row_y_positions = [1 * TILE_SIZE * 4 + 50, 2 * TILE_SIZE * 4 + 50, 3 * TILE_SIZE * 4 + 50]  # Y-positions for each row
-        platform_counts = [2, 4, 6]  # Number of platforms per row
+        platform_counts = [random.randint(2,8) for _ in range(NUM_ROW)]  # Number of platforms per row
 
         for row in range(NUM_ROW):  # Loop through each row
             row_y = row_y_positions[row]

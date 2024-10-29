@@ -14,6 +14,8 @@ class Bullet:
             self.height = BULLET_LENGTH
         self.active = True  # If the bullet is still on the screen
         self.color = (128, 0, 128)
+        
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def update(self, dt):
         # Move the bullet in the correct direction
@@ -26,9 +28,13 @@ class Bullet:
         elif self.direction == "down":
             self.y += self.speed * dt
         
-        if self.x < 0 or self.x > WIDTH or self.y < 0 or self.y > HEIGHT:
+        # If the bullet moves off-screen, deactivate it
+        if self.x + self.width < 0 or self.x > WIDTH or self.y + self.height < 0 or self.y > HEIGHT:
             self.active = False
+            
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def render(self, screen):
         # Draw the bullet (just a simple rectangle for now)
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(screen, self.color, self.rect)

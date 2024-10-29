@@ -8,6 +8,7 @@ class BossBullet(Bullet):
         super().__init__(x, y, direction)
         self.speed_y = dy
         self.color = (255, 0, 0)
+        self.damage = 10
 
     def update(self, dt):
         super().update(dt)
