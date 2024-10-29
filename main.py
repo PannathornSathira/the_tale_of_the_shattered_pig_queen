@@ -17,12 +17,13 @@ class GameMain:
         self.max_frame_rate = MAX_FRAME_RATE
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.player = Player()
-        self.level = Level(area=5)
+        self.level = Level(area=3)
         self.level.CreateMap()
-        # self.boss = BlueDragonBoss(x=1100, y=100)
-        self.boss = WhiteSharkBoss(x=1100, y=100)
+        self.boss = BlueDragonBoss(x=1100, y=100)
+        # self.boss = WhiteSharkBoss(x=1100, y=100)
         # self.boss = BlackWidowBoss(x=1100, y=100)
 
+        self.font = pygame.font.Font(None, 36)
         # self.sprite_collection = SpriteManager().spriteCollection
 
     def update(self, dt, events):
@@ -32,9 +33,11 @@ class GameMain:
                 sys.exit()
                 
         #self.player.update(dt, events)
-        self.player.update(dt, events, self.level.platforms)  
-        self.level.update(dt, events)  
-        self.boss.update(dt, self.player)
+        if self.player.alive:
+            self.player.update(dt, events, self.level.platforms, self.boss)  
+        self.level.update(dt, events)
+        if self.boss.alive:
+            self.boss.update(dt, self.player) 
         # No camera scroll update
         # self.camera_x_scroll = self.character_x - (WIDTH/2) + CHARACTER_WIDTH/2
 
@@ -44,8 +47,16 @@ class GameMain:
         self.level.render(self.screen)
         self.player.render(self.screen)
         self.boss.render(self.screen)
+        if self.player.alive:
+            self.render_text(f"Player Health: {self.player.health}", 20, 20)
+        if self.boss.alive:
+            self.render_text(f"Boss Health: {self.boss.health}", 20, 60)
+    def render_text(self, text, x, y):
+        """Render text at a given position."""
+        text_surface = self.font.render(text, True, (0, 0, 0))  # Render text in black color
+        self.screen.blit(text_surface, (x, y))
         
-
+        
     def PlayGame(self):
         clock = pygame.time.Clock()
 
