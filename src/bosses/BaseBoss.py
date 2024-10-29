@@ -1,8 +1,6 @@
 import pygame
 from src.constants import *
-
-
-from src.BossBullet import BossBullet
+from src.bosses.BeamAttack import BeamAttack
 class BaseBoss:
     def __init__(self, x, y, width=200, height=400, health=100):
         self.x = x
@@ -41,13 +39,15 @@ class BaseBoss:
         # Update bullets
         for bullet in self.bullets:
             bullet.update(dt)
+            
+            if bullet.active and player.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
+                if not isinstance(bullet, BeamAttack):
+                    bullet.active = False
+                player.take_damage(10) 
 
             # Remove inactive bullets
             if not bullet.active:
                 self.bullets.remove(bullet)
-
-        # Remove inactive bullets
-        self.bullets = [bullet for bullet in self.bullets if bullet.active]
 
         if self.current_attack is None:
             # Attack if cooldown has elapsed

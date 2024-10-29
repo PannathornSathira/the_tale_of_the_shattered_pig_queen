@@ -103,11 +103,7 @@ class Player:
             self.on_ground = True
             self.is_jumping = False
             self.velocity_y = 0
-        
-        for boss_bullet in boss.bullets:
-            if boss_bullet.active and self.rect.colliderect(pygame.Rect(boss_bullet.x, boss_bullet.y, boss_bullet.width, boss_bullet.height)):
-                boss_bullet.active = False
-                self.take_damage(10) 
+    
         self.animation.update(dt)
         
         
