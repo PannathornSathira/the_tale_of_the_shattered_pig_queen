@@ -92,6 +92,8 @@ class BlackWidowBoss(BaseBoss):
             if spiderling.hit_player:
                 player.take_damage(spiderling.damage)
                 self.spiderlings.remove(spiderling)
+            elif not spiderling.alive:
+                self.spiderlings.remove(spiderling)
 
     def select_attack(self, player):
         attack_choice = random.choice(["jump", "cobweb", "summon"])
@@ -183,7 +185,7 @@ class BlackWidowBoss(BaseBoss):
 
 
 class Spiderling:
-    def __init__(self, x, y, speed=75, damage=5):
+    def __init__(self, x, y, speed=75, damage=5, health=5):
         self.x = x
         self.y = y
         self.speed = speed
@@ -192,6 +194,9 @@ class Spiderling:
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill((50, 50, 50))  # Spiderling color
         self.hit_player = False
+        self.alive = True
+        self.health = health
+        self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 
     def update(self, dt, player):
         # Calculate direction towards the player
@@ -205,10 +210,34 @@ class Spiderling:
         if distance > 0:
             self.x += (dx / distance) * self.speed * dt
             self.y += (dy / distance) * self.speed * dt
-
+            
+        for bullet in player.bullets:
+            if bullet.active and self.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
+                bullet.active = False
+                self.take_damage(bullet.damage)
+                
         # Check if spiderling hits the player
         if pygame.Rect(self.x, self.y, self.size, self.size).colliderect(player.rect):
             self.hit_player = True
+            self.alive = False
+            
+        for bullet in player.bullets:
+            if bullet.active and self.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
+                bullet.active = False  # Deactivate bullet
+                self.take_damage(bullet.damage)  # Inflict damage to the boss 
+                
+        self.rect.x = self.x
+        self.rect.y = self.y
+            
+    def take_damage(self, amount):
+        """Reduce health when taking damage."""
+        self.health -= amount
+        if self.health <= 0:
+            self.die()
+            
+    def die(self):
+        """Handle boss death."""
+        self.alive = False
 
     def render(self, screen):
         screen.blit(self.image, (self.x, self.y))

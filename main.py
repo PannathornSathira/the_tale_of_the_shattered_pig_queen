@@ -1,22 +1,18 @@
 import pygame, sys
 from src.Util import *
 from src.constants import *
+from src.states.MapSelectState import MapSelectState
+from src.states.BaseState import BaseState
+from src.states.PlayState import PlayState
+from src.states.ShopState import ShopState
+from src.states.PauseState import PauseState
 from src.Player import Player
 from src.Level import Level
-from src.bosses.BaseBoss import BaseBoss
-from src.bosses.KrakenBoss import KrakenBoss
-from src.bosses.WhiteSharkBoss import WhiteSharkBoss
-from src.bosses.BlackWidowBoss import BlackWidowBoss
-from src.bosses.MedusaBoss import MedusaBoss
-from src.bosses.BlueDragonBoss import BlueDragonBoss
-from src.bosses.TornadoFiendBoss import TornadoFiendBoss
-from src.bosses.KingMummyBoss import KingMummyBoss
-from src.bosses.SandWormBoss import SandWormBoss
 from src.bosses.WraithBoss import WraithBoss
+from src.resources import *
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
-
 
 class GameMain:
     def __init__(self):
@@ -25,52 +21,51 @@ class GameMain:
         self.player = Player()
         self.level = Level(area=3)
         self.level.CreateMap()
-        # self.boss = KrakenBoss(x=1100, y=100)
-        # self.boss = WhiteSharkBoss(x=1100, y=100)
-        # self.boss = BlackWidowBoss(x=1100, y=100)
-        # self.boss = MedusaBoss(x=1100, y=100)
-        # self.boss = BlueDragonBoss(x=1100, y=100)
-        # self.boss = TornadoFiendBoss(x=1100, y=100)
-        # self.boss = KingMummyBoss(x=1100, y=100)
-        # self.boss = SandWormBoss(x=1100, y=100)
         self.boss = WraithBoss(x=1100, y=100)
-
-
-
+        
         self.font = pygame.font.Font(None, 36)
-        # self.sprite_collection = SpriteManager().spriteCollection
+
+        g_state_manager.SetScreen(self.screen)
+        
+        # Define all states and set in StateMachine
+        states = {
+            "MAIN_MENU": BaseState(self.screen, self.font),
+            "PLAY": PlayState(self.screen, self.font),
+            "WORLD_MAP": MapSelectState(self.screen, self.font),
+            "SHOP": ShopState(self.screen, self.font),
+            "PAUSE": PauseState(self.screen, self.font),
+        }
+        g_state_manager.SetStates(states)
+        
+        # Start in Main Menu
+        g_state_manager.Change("MAIN_MENU", {})
 
     def update(self, dt, events):
+        # Handle global events (e.g., quit)
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-                
-        #self.player.update(dt, events)
+        
+        # Update current state
+        g_state_manager.update(dt, events)
+        
         if self.player.alive:
             self.player.update(dt, events, self.level.platforms, self.boss)  
         self.level.update(dt, events)
+        
         if self.boss.alive:
             self.boss.update(dt, self.player, self.level.platforms) 
-        # No camera scroll update
-        # self.camera_x_scroll = self.character_x - (WIDTH/2) + CHARACTER_WIDTH/2
 
     def render(self):
         self.screen.fill((255, 255, 255))
         
-        self.level.render(self.screen)
-        self.player.render(self.screen)
-        self.boss.render(self.screen)
-        if self.player.alive:
-            self.render_text(f"Player Health: {self.player.health}", 20, 20)
-        if self.boss.alive:
-            self.render_text(f"Boss Health: {self.boss.health}", 20, 60)
-    def render_text(self, text, x, y):
-        """Render text at a given position."""
-        text_surface = self.font.render(text, True, (0, 0, 0))  # Render text in black color
-        self.screen.blit(text_surface, (x, y))
+        # Render current state
+        g_state_manager.render()
         
-        
+        # Update display
+        pygame.display.update()
+
     def PlayGame(self):
         clock = pygame.time.Clock()
 
@@ -86,10 +81,6 @@ class GameMain:
 
             # Render
             self.render()
-
-            # Screen update
-            pygame.display.update()
-
 
 if __name__ == '__main__':
     main = GameMain()

@@ -25,12 +25,6 @@ class BaseBoss:
         
         self.invulnerable = False
         self.alive = True
-
-    def take_damage(self, amount):
-        """Reduce health when taking damage."""
-        self.health -= amount
-        if self.health <= 0:
-            self.die()
         
     def update(self, dt, player, platforms):
 

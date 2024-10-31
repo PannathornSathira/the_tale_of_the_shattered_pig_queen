@@ -1,12 +1,12 @@
 import random, pygame, sys
 from src.states.BaseState import BaseState
 from src.constants import *
-from src.resources import *
+#from src.resources import *
 from src.Dependency import *
 
 
-import src.CommonRender as CommonRender
-from src.Ball import Ball
+#import src.CommonRender as CommonRender
+#from src.Ball import Ball
 
 class ServeState(BaseState):
     def __init__(self):

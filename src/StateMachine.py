@@ -1,5 +1,3 @@
-from src.states.BaseState import BaseState
-
 class StateMachine:
     def __init__(self):
         self.current = None

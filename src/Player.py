@@ -19,7 +19,13 @@ class Player:
         self.jump_force = JUMP_FORCE  # Force applied when jumping
         self.gravity = GRAVITY  # Gravity that pulls the player down
         self.ground_y = self.character_y  # Starting ground level
-        
+        #timer for turning transparency (flash)
+        self.flash_timer = 0
+        #invincible
+        self.invulnerable = False
+        self.invulnerable_duration = 0
+        self.invulnerable_timer = 0
+
         self.rect = pygame.Rect(self.character_x + CHARACTER_WIDTH, self.character_y, CHARACTER_WIDTH, CHARACTER_HEIGHT * 2.5)
         
         self.movement_speed = CHARACTER_MOVE_SPEED
@@ -50,7 +56,7 @@ class Player:
                 self.direction = "right"
                 self.animation = self.sprite_collection["character_walk_right"].animation
                 self.character_x += self.movement_speed * dt
-            elif pressedKeys[pygame.K_SPACE] and self.on_ground:
+            elif pressedKeys[pygame.K_z] and self.on_ground:
                 self.is_jumping = True
                 self.velocity_y = self.jump_force
                 self.on_ground = False
@@ -59,7 +65,7 @@ class Player:
                 self.direction = "front"
                 self.animation = self.sprite_collection["character_front"].animation
                 
-            if pressedKeys[pygame.K_SPACE] and pressedKeys[pygame.K_RIGHT] and self.on_ground:
+            if pressedKeys[pygame.K_z] and pressedKeys[pygame.K_RIGHT] and self.on_ground:
                 self.is_jumping = True
                 self.velocity_y = self.jump_force  # Apply the jump force
                 self.on_ground = False
@@ -67,15 +73,19 @@ class Player:
                 self.animation = self.sprite_collection["character_walk_right"].animation
                 self.character_x += self.movement_speed * dt  # Move right while jumping
             
-            if pressedKeys[pygame.K_SPACE] and pressedKeys[pygame.K_LEFT] and self.on_ground:
+            if pressedKeys[pygame.K_z] and pressedKeys[pygame.K_LEFT] and self.on_ground:
                 self.is_jumping = True
                 self.velocity_y = self.jump_force  # Apply the jump force
                 self.on_ground = False
                 self.direction = "left"
                 self.animation = self.sprite_collection["character_walk_right"].animation
                 self.character_x -= self.movement_speed * dt  # Move right while jumping
-            if pressedKeys[pygame.K_RETURN]:
+            if pressedKeys[pygame.K_x]:
                 self.shoot()
+            if pressedKeys[pygame.K_DOWN] and self.on_ground:
+                self.on_ground = False
+                self.character_y += 55
+                self.velocity_y = self.gravity * dt
             
         for bullet in self.bullets:
             bullet.update(dt)
@@ -113,7 +123,17 @@ class Player:
             self.on_ground = True
             self.is_jumping = False
             self.velocity_y = 0
-    
+
+        if self.invulnerable:
+            self.flash_timer = self.flash_timer+dt
+            self.invulnerable_timer = self.invulnerable_timer+dt
+
+            if self.invulnerable_timer > self.invulnerable_duration:
+                self.invulnerable = False
+                self.invulnerable_timer = 0
+                self.invulnerable_duration=0
+                self.flash_timer=0
+        
         self.animation.update(dt)
         
     def stun(self, duration):
@@ -136,10 +156,15 @@ class Player:
         self.movement_speed = CHARACTER_MOVE_SPEED
     
     def take_damage(self, damage):
-        self.health -= damage
-        if self.health <= 0:
-            self.alive = False
+        if not self.invulnerable:  # Only take damage if not invulnerable
+            self.health -= damage
+            if self.health <= 0:
+                self.alive = False
+            self.SetInvulnerable(1.5) 
     
+    def SetInvulnerable(self, duration):
+        self.invulnerable = True
+        self.invulnerable_duration = duration
     
     def shoot(self):
         # Create a bullet at the player's position, moving in the current direction
@@ -157,8 +182,8 @@ class Player:
         if self.direction == "left":
             char_img = pygame.transform.flip(char_img, True, False)
         if self.alive:
-            screen.blit(char_img, (self.character_x, self.character_y))
+             if int(self.flash_timer * 10) % 2 == 0:
+                    screen.blit(char_img, (self.character_x, self.character_y))
         
         for bullet in self.bullets:
             bullet.render(screen)
-        

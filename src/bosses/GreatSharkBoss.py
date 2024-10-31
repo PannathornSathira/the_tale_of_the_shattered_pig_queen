@@ -7,7 +7,7 @@ from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 
-class WhiteSharkBoss(BaseBoss):
+class GreatSharkBoss(BaseBoss):
     def __init__(self, x, y, health=300):
         super().__init__(x, y, health=health)
 

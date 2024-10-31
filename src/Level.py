@@ -71,8 +71,6 @@ class Level:
                 # Store the platform in the matrix
                 self.platforms[row][col] = platform
 
-
-
     def render(self, screen):
         for y in range(self.map_height):
             for x in range(self.map_width):
