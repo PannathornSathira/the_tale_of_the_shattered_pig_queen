@@ -71,9 +71,9 @@ class BlackWidowBoss(BaseBoss):
             if self.poison_timer >= self.poison_duration:
                 self.is_poisoned = False
 
-    def update(self, dt, player):
+    def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
-        super().update(dt, player)
+        super().update(dt, player, platforms)
 
         # Update poison effect
         self.update_poison_effect(dt, player)
@@ -90,11 +90,13 @@ class BlackWidowBoss(BaseBoss):
         for spiderling in self.spiderlings:
             spiderling.update(dt, player)
             if spiderling.hit_player:
-                # player.take_damage(spiderling.damage)
+                player.take_damage(spiderling.damage)
                 self.spiderlings.remove(spiderling)
 
     def select_attack(self, player):
         attack_choice = random.choice(["jump", "cobweb", "summon"])
+        # attack_choice = random.choice(["summon"])
+
         if attack_choice == "jump":
             self.current_attack = self.jump
         elif attack_choice == "cobweb":
@@ -161,12 +163,11 @@ class BlackWidowBoss(BaseBoss):
         """
         Summon spiderlings: Spiderlings appear randomly around the boss and try to attack the player.
         """
-        if self.attack_elapsed_time == 0:
-            spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
-            spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-            spiderling = Spiderling(spawn_x, spawn_y)
-            self.spiderlings.append(spiderling)
-            self.end_attack()
+        spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
+        spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
+        spiderling = Spiderling(spawn_x, spawn_y)
+        self.spiderlings.append(spiderling)
+        self.end_attack()
 
     def render(self, screen):
         super().render(screen)

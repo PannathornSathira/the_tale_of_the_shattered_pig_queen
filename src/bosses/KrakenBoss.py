@@ -11,7 +11,7 @@ class KrakenBoss(BaseBoss):
         super().__init__(x, y, health=health)
 
         # Customizing the appearance for the Blue Dragon
-        self.image.fill((0, 0, 255))  # Set color to blue
+        self.image.fill((200, 200, 255))  # Set color to blue
 
         self.position = "right"
         
@@ -36,13 +36,15 @@ class KrakenBoss(BaseBoss):
         self.beam_delay = 0.25
         self.beams = []
 
-    def update(self, dt, player):
+    def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
-        super().update(dt, player)
+        super().update(dt, player, platforms)
 
     def select_attack(self, player):
         
         attack_choice = random.choice(["charge", "tempest_barrage", "lightning_wave_beam", "thunder_strike_cluster"])
+        # attack_choice = random.choice(["thunder_strike_cluster"])
+
 
         if attack_choice == "charge":
             self.current_attack = self.charge
@@ -129,12 +131,12 @@ class KrakenBoss(BaseBoss):
             self.end_attack()
             
     def thunder_strike_cluster(self, dt, player):
-        beam_direction = "up"
+        beam_direction = "down"
 
         if self.attack_elapsed_time == 0:
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), HEIGHT, beam_direction, self.beam_width, self.beam_height))
+                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height))
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
@@ -155,6 +157,3 @@ class KrakenBoss(BaseBoss):
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
         super().render(screen)
-        # Render bullets
-        for bullet in self.bullets:
-            bullet.render(screen)

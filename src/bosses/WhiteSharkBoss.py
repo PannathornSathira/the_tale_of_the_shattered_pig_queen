@@ -46,9 +46,9 @@ class WhiteSharkBoss(BaseBoss):
         self.rain_bullet_gap_time = 0
         self.rain_num_at_once = 2
 
-    def update(self, dt, player):
+    def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
-        super().update(dt, player)
+        super().update(dt, player, platforms)
         if self.explosion is not None:
             self.explosion_timer += dt
             if self.explosion_timer >= self.explosion_duration:
@@ -345,9 +345,6 @@ class WhiteSharkBoss(BaseBoss):
         """Render the boss and possibly some visual effects for its attacks."""
         if self.visible:
             super().render(screen)
-        # Render bullets
-        for bullet in self.bullets:
-            bullet.render(screen)
             
         for torpedo in self.torpedos:
             torpedo_bullet, _ = torpedo

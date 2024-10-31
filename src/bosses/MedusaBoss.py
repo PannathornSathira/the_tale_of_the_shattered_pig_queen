@@ -40,9 +40,9 @@ class MedusaBoss(BaseBoss):
         self.barrage_starting_angle_random_shift_max = 90
         
 
-    def update(self, dt, player):
+    def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
-        super().update(dt, player)
+        super().update(dt, player, platforms)
         
         # Check for collisions between beams and the player to apply the stun effect
         for beam in self.petrify_beams:
@@ -54,7 +54,7 @@ class MedusaBoss(BaseBoss):
 
     def select_attack(self, player):
         
-        attack_choice = random.choice(["arrow_attack"])
+        attack_choice = random.choice(["petrifying_charge","snake_strike","arrow_barrage","arrow_attack"])
 
         if attack_choice == "petrifying_charge":
             self.current_attack = self.petrifying_charge
