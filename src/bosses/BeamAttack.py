@@ -14,14 +14,14 @@ class BeamAttack(BossBullet):
         self.speed = BEAM_SPEED
         
         # Adjust beam starting postition and rotation
-        if self.direction == "right":
-          self.x -= self.width
-        elif self.direction == "left":
-          pass
-        elif self.direction == "up":
-          pass
-        elif self.direction == "down":
-          self.y -= self.height
+        # if self.direction == "right":
+        #   self.x -= self.width
+        # elif self.direction == "left":
+        #   pass
+        # elif self.direction == "up":
+        #   pass
+        # elif self.direction == "down":
+        #   self.y -= self.height
 
     def update(self, dt):
         super().update(dt)

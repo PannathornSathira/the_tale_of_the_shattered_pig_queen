@@ -23,6 +23,7 @@ class BaseBoss:
         self.current_attack = None  # Track the current attack pattern
         self.bullets = []  # List to hold active bullets
         
+        self.invulnerable = False
         self.alive = True
 
     def take_damage(self, amount):
@@ -31,7 +32,7 @@ class BaseBoss:
         if self.health <= 0:
             self.die()
         
-    def update(self, dt, player):
+    def update(self, dt, player, platforms):
 
         self.rect.x = self.x
         self.rect.y = self.y
@@ -84,9 +85,10 @@ class BaseBoss:
 
     def take_damage(self, amount):
         """Reduce health when taking damage."""
-        self.health -= amount
-        if self.health <= 0:
-            self.die()
+        if not self.invulnerable and self.alive:
+            self.health -= amount
+            if self.health <= 0:
+                self.die()
 
     def die(self):
         """Handle boss death."""

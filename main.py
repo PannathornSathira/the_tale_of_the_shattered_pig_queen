@@ -8,6 +8,11 @@ from src.bosses.KrakenBoss import KrakenBoss
 from src.bosses.WhiteSharkBoss import WhiteSharkBoss
 from src.bosses.BlackWidowBoss import BlackWidowBoss
 from src.bosses.MedusaBoss import MedusaBoss
+from src.bosses.BlueDragonBoss import BlueDragonBoss
+from src.bosses.TornadoFiendBoss import TornadoFiendBoss
+from src.bosses.KingMummyBoss import KingMummyBoss
+from src.bosses.SandWormBoss import SandWormBoss
+from src.bosses.WraithBoss import WraithBoss
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
@@ -23,7 +28,14 @@ class GameMain:
         # self.boss = KrakenBoss(x=1100, y=100)
         # self.boss = WhiteSharkBoss(x=1100, y=100)
         # self.boss = BlackWidowBoss(x=1100, y=100)
-        self.boss = MedusaBoss(x=1100, y=100)
+        # self.boss = MedusaBoss(x=1100, y=100)
+        # self.boss = BlueDragonBoss(x=1100, y=100)
+        # self.boss = TornadoFiendBoss(x=1100, y=100)
+        # self.boss = KingMummyBoss(x=1100, y=100)
+        # self.boss = SandWormBoss(x=1100, y=100)
+        self.boss = WraithBoss(x=1100, y=100)
+
+
 
         self.font = pygame.font.Font(None, 36)
         # self.sprite_collection = SpriteManager().spriteCollection
@@ -39,7 +51,7 @@ class GameMain:
             self.player.update(dt, events, self.level.platforms, self.boss)  
         self.level.update(dt, events)
         if self.boss.alive:
-            self.boss.update(dt, self.player) 
+            self.boss.update(dt, self.player, self.level.platforms) 
         # No camera scroll update
         # self.camera_x_scroll = self.character_x - (WIDTH/2) + CHARACTER_WIDTH/2
 
