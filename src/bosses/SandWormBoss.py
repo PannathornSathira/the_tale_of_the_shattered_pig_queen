@@ -36,12 +36,17 @@ class SandWormBoss(BaseBoss):
         self.original_y = self.y
         self.original_image = self.image.copy()
         
+        self.first_trigger = True
+        
 
     def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
         super().update(dt, player, platforms)
         
-        player.movement_speed = CHARACTER_MOVE_SPEED / 2
+        if self.first_trigger:
+            player.default_move_speed = CHARACTER_MOVE_SPEED / 2
+            player.movement_speed = player.default_move_speed
+            self.first_trigger = False
         
         # Update effect duration
         if self.shockwave_effect_isVisible:
@@ -50,8 +55,8 @@ class SandWormBoss(BaseBoss):
                 self.shockwave_effect_isVisible = False  # Hide effect after duration
 
     def select_attack(self, player):
-        # attack_choice = random.choice(["stomp", "frozen_pillars", "frostbite_ring", "glacial_shards"])
-        attack_choice = random.choice(["dash"])
+        attack_choice = random.choice(["sand_bullet", "shockwave", "dash"])
+        # attack_choice = random.choice(["dash"])
 
         if attack_choice == "sand_bullet":
             self.current_attack = self.sand_bullet

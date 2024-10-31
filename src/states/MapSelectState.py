@@ -72,8 +72,7 @@ class MapSelectState:
         if area == 1:
             return random.choice([KrakenBoss(self.boss_spawn_x, self.boss_spawn_y), GreatSharkBoss(self.boss_spawn_x, self.boss_spawn_y)])
         elif area == 2:
-            # return random.choice([BlackWidowBoss(self.boss_spawn_x, self.boss_spawn_y), MedusaBoss(self.boss_spawn_x, self.boss_spawn_y)])
-            return random.choice([BlackWidowBoss(self.boss_spawn_x, self.boss_spawn_y)])
+            return random.choice([BlackWidowBoss(self.boss_spawn_x, self.boss_spawn_y), MedusaBoss(self.boss_spawn_x, self.boss_spawn_y)])
         elif area == 3:
             return random.choice([BlueDragonBoss(self.boss_spawn_x, self.boss_spawn_y), TornadoFiendBoss(self.boss_spawn_x, self.boss_spawn_y)])
         elif area == 4:

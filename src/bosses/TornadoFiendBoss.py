@@ -50,8 +50,7 @@ class TornadoFiendBoss(BaseBoss):
                 self.fiendlings.remove(fiendling)
 
     def select_attack(self, player):
-        # attack_choice = random.choice(["stomp", "frozen_pillars", "frostbite_ring", "glacial_shards"])
-        attack_choice = random.choice(["tornado_frenzy"])
+        attack_choice = random.choice(["cyclone_barrage", "tornado_swarm", "tornado_judgement", "tornado_frenzy"])
 
         if attack_choice == "cyclone_barrage":
             self.current_attack = self.cyclone_barrage

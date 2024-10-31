@@ -63,9 +63,7 @@ class GreatSharkBoss(BaseBoss):
 
     def select_attack(self, player):
 
-        # attack_choice = random.choice(["deepwater_assault", "torpedo", "churning_tides", "rain"])
-        attack_choice = random.choice(["churning_tides"])
-
+        attack_choice = random.choice(["deepwater_assault", "torpedo", "churning_tides", "rain"])
 
         if attack_choice == "deepwater_assault":
             self.current_attack = self.deepwater_assault
