@@ -1,8 +1,8 @@
 from src.states.BaseState import BaseState
-from src.LevelMaker import LevelMaker
-import src.CommonRender as CommonRender
+#from src.LevelMaker import LevelMaker
+#import src.CommonRender as CommonRender
 from src.constants import *
-from src.resources import *
+#from src.resources import *
 from src.Dependency import *
 
 class VictoryState(BaseState):
