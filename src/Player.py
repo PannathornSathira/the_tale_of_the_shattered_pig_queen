@@ -3,6 +3,7 @@ from src.Util import SpriteManager
 import pygame
 import time
 from src.Bullet import Bullet
+from src.platforms.SpecialPlatform import SpecialPlatform
 class Player:
     def __init__(self, health=100):
         self.character_x = WIDTH / 2 - (CHARACTER_WIDTH) / 2
@@ -28,12 +29,16 @@ class Player:
 
         self.rect = pygame.Rect(self.character_x + CHARACTER_WIDTH, self.character_y, CHARACTER_WIDTH, CHARACTER_HEIGHT * 2.5)
         
+        self.default_move_speed = CHARACTER_MOVE_SPEED
         self.movement_speed = CHARACTER_MOVE_SPEED
         self.alive = True
         self.bullets = []
         
         self.stun_duration = 0  # Track how long the player is stunned
         self.is_stunned = False  # Flag to check if the player is stunned
+        
+        self.poison_platform_accumulated_time = 0
+        self.poison_platform_duration = 1
 
     def update(self, dt, events, platforms, boss):
         # Update stun timer if player is stunned
@@ -91,7 +96,7 @@ class Player:
             bullet.update(dt)
             if bullet.active and boss.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
                 bullet.active = False  # Deactivate bullet
-                boss.take_damage(1)  # Inflict damage to the boss 
+                boss.take_damage(bullet.damage)  # Inflict damage to the boss 
         
         # Remove inactive bullets
         self.bullets = [bullet for bullet in self.bullets if bullet.active]   
@@ -119,6 +124,13 @@ class Player:
         else:
             # Collided with a platform
             platform.trigger_effect(self)
+            if platform.area == 2 and isinstance(platform, SpecialPlatform):
+                # Poison platform logic
+                self.poison_platform_accumulated_time += dt
+                if self.poison_platform_accumulated_time >= self.poison_platform_duration:
+                    self.take_damage(5)  # Apply damage every second on poison platform
+            else:
+                self.poison_platform_accumulated_time = 0  # Reset if not on poison platform
             self.character_y = platform.rect.top - CHARACTER_HEIGHT * 2.5
             self.on_ground = True
             self.is_jumping = False
@@ -153,7 +165,7 @@ class Player:
     
         
     def revert_to_default(self):
-        self.movement_speed = CHARACTER_MOVE_SPEED
+        self.movement_speed = self.default_move_speed
     
     def take_damage(self, damage):
         if not self.invulnerable:  # Only take damage if not invulnerable
