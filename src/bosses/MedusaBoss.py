@@ -7,8 +7,8 @@ from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class MedusaBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, health=health)
+    def __init__(self, x, y, health=300, damage=10):
+        super().__init__(x, y, health=health, damage=damage)
 
         # Customizing the appearance for the Blue Dragon
         self.image.fill((0, 200, 200))  # Set color to blue
@@ -80,7 +80,7 @@ class MedusaBoss(BaseBoss):
 
             # Generate a beam at random vertical positions but spaced apart
             beam_y = random.randint(0, HEIGHT - self.petrify_beam_height)
-            beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height)
+            beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height, self.damage)
             beam.damage = 0
             self.petrify_beams.append(beam)  # Store the beam in a list
 
@@ -146,7 +146,7 @@ class MedusaBoss(BaseBoss):
         if self.bullet_gap_time >= self.bullet_gap_cooldown:
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
-                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i))  # Create a bullet
+                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
         
         # End the bullet attack if the duration is over
@@ -168,7 +168,7 @@ class MedusaBoss(BaseBoss):
         
         speed_y =  distance_y * arrow_speed / (distance_x + 1)
         
-        bullet = BossBullet(arrow_x, arrow_y, arrow_direction, speed_y)
+        bullet = BossBullet(arrow_x, arrow_y, arrow_direction, speed_y, damage=self.damage)
         bullet.speed = arrow_speed
         bullet.width = arrow_width
         bullet.rect.width = arrow_width
@@ -176,14 +176,9 @@ class MedusaBoss(BaseBoss):
         self.end_attack()
 
 
-
-
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
         super().render(screen)
-        # # Render bullets
-        # for bullet in self.bullets:
-        #     bullet.render(screen)
             
         for beam in self.petrify_beams:
             beam.render(screen)

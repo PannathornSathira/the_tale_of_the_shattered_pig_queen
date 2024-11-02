@@ -2,7 +2,7 @@ import pygame, sys
 from src.Util import *
 from src.constants import *
 from src.states.MapSelectState import MapSelectState
-from src.states.BaseState import BaseState
+from src.states.MainMenuState import MainMenuState
 from src.states.PlayState import PlayState
 from src.states.ShopState import ShopState
 from src.states.PauseState import PauseState
@@ -29,7 +29,7 @@ class GameMain:
         
         # Define all states and set in StateMachine
         states = {
-            "MAIN_MENU": BaseState(self.screen, self.font),
+            "MAIN_MENU": MainMenuState(self.screen, self.font),
             "PLAY": PlayState(self.screen, self.font),
             "WORLD_MAP": MapSelectState(self.screen, self.font),
             "SHOP": ShopState(self.screen, self.font),

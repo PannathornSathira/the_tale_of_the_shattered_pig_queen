@@ -3,12 +3,10 @@ import math
 import random
 from src.constants import *
 from src.bosses.BaseBoss import BaseBoss
-from src.bosses.BossBullet import BossBullet
-from src.bosses.BeamAttack import BeamAttack
 
 class KingMummyBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, width=50, height=80, health=health)
+    def __init__(self, x, y, health=300, damage=10):
+        super().__init__(x, y, width=50, height=80, health=health, damage=damage)
         self.image.fill((200, 200, 200))
         self.visible = True
 
@@ -140,12 +138,12 @@ class KingMummyBoss(BaseBoss):
             platform_rect = random.choice(platform_rects)
             x = random.randint(platform_rect.x, platform_rect.x + platform_rect.width - self.bandage_width)
             y = platform_rect.y
-            bandage = Bandage(x, y, self.bandage_width, self.bandage_height)
+            bandage = Bandage(x, y, self.bandage_width, self.bandage_height, damage=self.damage)
             self.bandages.append(bandage)
 
         for _ in range(num_ground_bandages):
             x = random.randint(0, WIDTH - self.bandage_width)
-            bandage = Bandage(x, ground_y, self.bandage_width, self.bandage_height)
+            bandage = Bandage(x, ground_y, self.bandage_width, self.bandage_height, damage=self.damage)
             self.bandages.append(bandage)
 
         self.end_attack()
@@ -182,14 +180,14 @@ class KingMummyBoss(BaseBoss):
             bandage.render(screen)
 
 class Bandage:
-    def __init__(self, x, y, width, height, appearance_duration=1, blink_interval=0.1):
+    def __init__(self, x, y, width, height, appearance_duration=1, blink_interval=0.1, damage=10):
         self.rect = pygame.Rect(x, y, width, height)
         self.active = False
         self.appearance_timer = appearance_duration
         self.blink_timer = 0
         self.blink_interval = blink_interval
         self.visible = False
-        self.damage = 10
+        self.damage = damage
 
     def update(self, dt):
         if not self.active:

@@ -1,5 +1,4 @@
 import random, pygame, sys
-from src.states.BaseState import BaseState
 from src.constants import *
 from src.Dependency import *
 from src.Player import Player
@@ -21,15 +20,20 @@ class PlayState:
         self.player = params["player"]
 
     def update(self,  dt, events):
+        
         if self.player.alive:
             self.player.update(dt, events, self.level.platforms, self.boss)
-            
-        self.level.update(dt, events)
+        else:
+            g_state_manager.Change("MAIN_MENU", {})
         
         if self.boss.alive:
             self.boss.update(dt, self.player, self.level.platforms)  
         else:
-            g_state_manager.Change("WORLD_MAP", {})
+            g_state_manager.Change("WORLD_MAP", {
+                "completed_level": self.level.area
+            })
+        
+        self.level.update(dt, events)
 
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -44,9 +48,9 @@ class PlayState:
         pass
 
     def render(self,screen):
+        self.boss.render(screen)
         self.level.render(screen)
         self.player.render(screen)
-        self.boss.render(screen)
         if self.player.alive:
             self.render_text(f"Player Health: {self.player.health}", 20, 20, screen)
         if self.boss.alive:

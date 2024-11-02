@@ -3,8 +3,8 @@ import random, pygame, math
 from src.bosses.BossBullet import BossBullet
 
 class BeamAttack(BossBullet):
-    def __init__(self, x, y, direction, width=BEAM_WIDTH, height=BEAM_HEIGHT):
-        super().__init__(x, y, direction)
+    def __init__(self, x, y, direction, width=BEAM_WIDTH, height=BEAM_HEIGHT, damage=10):
+        super().__init__(x, y, direction, damage=damage)
         self.width = width
         self.height = height
         self.rect.width = self.width

@@ -7,8 +7,8 @@ from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class TornadoFiendBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, height=300, health=health)
+    def __init__(self, x, y, health=300, damage=10):
+        super().__init__(x, y, height=300, health=health, damage=damage)
 
         # Customizing the appearance
         self.image.fill((230, 230, 255))  # Set color to blue
@@ -81,7 +81,7 @@ class TornadoFiendBoss(BaseBoss):
                 direction = "left"
 
             # Create bullet and add to boss's bullet list
-            bullet = BossBullet(x_position, row_y, direction)
+            bullet = BossBullet(x_position, row_y, direction, damage=self.damage)
             self.bullets.append(bullet)
             
             self.barrage_isFromLeft = not self.barrage_isFromLeft
@@ -98,7 +98,7 @@ class TornadoFiendBoss(BaseBoss):
         """
         spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
         spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-        fiendling = Fiendling(spawn_x, spawn_y)
+        fiendling = Fiendling(spawn_x, spawn_y, damage=self.damage//2)
         self.fiendlings.append(fiendling)
         self.end_attack()
         
@@ -113,7 +113,7 @@ class TornadoFiendBoss(BaseBoss):
             self.x = WIDTH / 2 - self.width / 2
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height))
+                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage))
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1

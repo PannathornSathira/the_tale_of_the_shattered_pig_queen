@@ -4,8 +4,8 @@ from src.constants import *
 
 class BossBullet(Bullet):
 
-    def __init__(self, x, y, direction, dy=0, general_speed=(0, 0)):
-        super().__init__(x, y, direction, general_speed)
+    def __init__(self, x, y, direction, dy=0, general_speed=(0, 0), damage=10):
+        super().__init__(x, y, direction, general_speed, damage=damage)
         self.speed_y = dy
         self.color = (255, 0, 0)
         self.damage = 10
