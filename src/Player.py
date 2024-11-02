@@ -34,6 +34,8 @@ class Player:
         self.movement_speed = CHARACTER_MOVE_SPEED
         self.alive = True
         self.bullets = []
+        self.firerate_cooldown = 0.2
+        self.firerate_time = 0
         
         self.stun_duration = 0  # Track how long the player is stunned
         self.is_stunned = False  # Flag to check if the player is stunned
@@ -100,8 +102,15 @@ class Player:
                     self.character_x = 0
                 else:
                     self.character_x -= self.movement_speed * dt  # Move right while jumping
+                    
             if pressedKeys[pygame.K_x]:
-                self.shoot()
+                self.firerate_time += dt
+                if self.firerate_time >= self.firerate_cooldown:
+                    self.firerate_time = 0
+                    self.shoot()
+            else:
+                self.firerate_time = 0
+                
             if pressedKeys[pygame.K_DOWN] and self.on_ground:
                 self.on_ground = False
                 self.character_y += 55

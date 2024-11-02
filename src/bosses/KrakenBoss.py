@@ -124,7 +124,11 @@ class KrakenBoss(BaseBoss):
     def lightning_wave_beam(self, dt, player):
         beam_direction = "left" if self.position == "right" else "right"
         if self.attack_elapsed_time == 0:
-            beam = BeamAttack(self.x + (self.width // 2), player.character_y + (player.height / 2) - (BEAM_HEIGHT / 2), beam_direction, damage=self.damage)
+            if beam_direction == "left":
+                start_x = 0 - BEAM_WIDTH
+            else:
+                start_x = WIDTH
+            beam = BeamAttack(start_x, player.character_y + (player.height / 2) - (BEAM_HEIGHT / 2), beam_direction, damage=self.damage)
             self.bullets.append(beam)
             
         # End the attack if the duration is over
