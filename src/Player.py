@@ -11,6 +11,7 @@ class Player:
         self.width = CHARACTER_WIDTH
         self.height = CHARACTER_HEIGHT
         self.direction = "front"  # left right front
+        self.shooting_direction = "right"
         self.sprite_collection = SpriteManager().spriteCollection
         self.animation = self.sprite_collection["character_front"].animation
         self.health = health
@@ -55,12 +56,20 @@ class Player:
         if not self.is_stunned:
             if pressedKeys[pygame.K_LEFT]:
                 self.direction = "left"
+                self.shooting_direction = "left"
                 self.animation = self.sprite_collection["character_walk_right"].animation
-                self.character_x -= self.movement_speed * dt
+                if self.character_x <= 0:
+                    self.character_x = 0
+                else:
+                    self.character_x -= self.movement_speed * dt
             elif pressedKeys[pygame.K_RIGHT]:
                 self.direction = "right"
+                self.shooting_direction = "right"
                 self.animation = self.sprite_collection["character_walk_right"].animation
-                self.character_x += self.movement_speed * dt
+                if self.character_x + self.width >= WIDTH:
+                    self.character_x = WIDTH - self.width
+                else:
+                    self.character_x += self.movement_speed * dt
             elif pressedKeys[pygame.K_z] and self.on_ground:
                 self.is_jumping = True
                 self.velocity_y = self.jump_force
@@ -76,7 +85,10 @@ class Player:
                 self.on_ground = False
                 self.direction = "right"
                 self.animation = self.sprite_collection["character_walk_right"].animation
-                self.character_x += self.movement_speed * dt  # Move right while jumping
+                if self.character_x + self.width >= WIDTH:
+                    self.character_x = WIDTH - self.width
+                else:
+                    self.character_x += self.movement_speed * dt  # Move right while jumping
             
             if pressedKeys[pygame.K_z] and pressedKeys[pygame.K_LEFT] and self.on_ground:
                 self.is_jumping = True
@@ -84,7 +96,10 @@ class Player:
                 self.on_ground = False
                 self.direction = "left"
                 self.animation = self.sprite_collection["character_walk_right"].animation
-                self.character_x -= self.movement_speed * dt  # Move right while jumping
+                if self.character_x <= 0:
+                    self.character_x = 0
+                else:
+                    self.character_x -= self.movement_speed * dt  # Move right while jumping
             if pressedKeys[pygame.K_x]:
                 self.shoot()
             if pressedKeys[pygame.K_DOWN] and self.on_ground:
@@ -172,7 +187,7 @@ class Player:
             self.health -= damage
             if self.health <= 0:
                 self.alive = False
-            self.SetInvulnerable(1.5) 
+            self.SetInvulnerable(1) 
     
     def SetInvulnerable(self, duration):
         self.invulnerable = True
@@ -182,7 +197,7 @@ class Player:
         # Create a bullet at the player's position, moving in the current direction
         bullet_x = self.character_x + CHARACTER_WIDTH // 2  # Adjust bullet starting position
         bullet_y = self.character_y + CHARACTER_HEIGHT // 2
-        bullet_direction = self.direction
+        bullet_direction = self.shooting_direction
         if bullet_direction == 'front':
             bullet_direction= 'right'
         # Add the new bullet to the list of active bullets

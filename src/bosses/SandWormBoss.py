@@ -4,11 +4,10 @@ import random
 from src.constants import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
-from src.bosses.BeamAttack import BeamAttack
 
 class SandWormBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, health=health)
+    def __init__(self, x, y, health=300, damage=10):
+        super().__init__(x, y, health=health, damage=damage)
 
         # Customizing the appearance
         self.image.fill((255, 255, 0))
@@ -17,7 +16,7 @@ class SandWormBoss(BaseBoss):
         self.sand_bullet_speed = BULLET_SPEED * 2
         
         # Shockwave prop
-        self.shockwave_damage = 10
+        self.shockwave_damage = self.damage
         self.shockwave_distance = 600
         self.shockwave_effect_duration = 0.3
         self.shockwave_effect_time = 0
@@ -105,7 +104,7 @@ class SandWormBoss(BaseBoss):
         bullet_x = self.x + (self.width // 2)  # Center the bullet on the boss
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
         for i in range(self.bullet_layer_num):
-            bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i))  # Create a bullet
+            bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
             self.bullets.append(bullet)  # Add bullet to the list
                 
         self.end_attack()

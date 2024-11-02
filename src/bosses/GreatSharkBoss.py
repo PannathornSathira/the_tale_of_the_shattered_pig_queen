@@ -8,8 +8,8 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class GreatSharkBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, health=health)
+    def __init__(self, x, y, health=300, damage=10):
+        super().__init__(x, y, health=health, damage=damage)
 
         # Customizing the appearance
         self.image.fill((200, 200, 200))  # Set color
@@ -29,12 +29,11 @@ class GreatSharkBoss(BaseBoss):
         self.torpedo_explode_radius = 250
         self.explosion = None
         self.explosion_timer = 0
-        self.explosion_duration = 1
-        self.torpedo_attack_duration = 1
+        self.explosion_duration = 0.2
+        self.torpedo_damage = self.damage
 
         # Churning Tides Attack prop
         self.churning_tides_pull_force = 30000
-        self.churning_tides_duration = 2
         self.vortex = None
         self.vortex_duration = 5
         self.vortex_timer = 0
@@ -56,7 +55,7 @@ class GreatSharkBoss(BaseBoss):
                 self.explosion = None
                 
         for torpedo in self.torpedos:
-            self.update_torpedo(torpedo, dt)
+            self.update_torpedo(torpedo, dt, player)
             
         if self.vortex is not None:
             self.update_vortex(dt, player)
@@ -181,18 +180,15 @@ class GreatSharkBoss(BaseBoss):
         then suddenly accelerate. After traveling a short distance, the torpedoes explode
         """
 
-        if self.attack_elapsed_time == 0:
-            torpedo = BeamAttack(
-                self.x - self.width / 2, self.y + self.height / 2, "left", 100, 50
-            )
-            torpedo.speed = 0
-            self.torpedos.append((torpedo, 0))
+        torpedo = BeamAttack(
+            self.x - self.width / 2, self.y + self.height / 2, "left", 100, 50, damage=self.damage
+        )
+        torpedo.speed = 0
+        self.torpedos.append((torpedo, 0))
 
-        # End the attack if the torpedo moves off-screen or no bullets remain
-        if self.attack_elapsed_time >= self.torpedo_attack_duration:
-            self.end_attack()
+        self.end_attack()
             
-    def update_torpedo(self, torpedo_pair, dt):
+    def update_torpedo(self, torpedo_pair, dt, player):
         # Update torpedo's speed using an exponential function
         torpedo, time_exist = torpedo_pair
         torpedo.update(dt)
@@ -214,8 +210,13 @@ class GreatSharkBoss(BaseBoss):
 
             # Attempt to explode with the given chance
             if random.random() < explode_chance:
-                self.explode_torpedo(torpedo)
+                self.explode_torpedo(torpedo, player)
                 return  # Exit the function after explosion
+            
+        # Torpedo explode if contact player
+        if player.rect.colliderect(torpedo.rect):
+            self.explode_torpedo(torpedo, player)
+            player.take_damage(self.torpedo_damage)
         
         # Remove the torpedo if it moves off-screen
         if torpedo.x < 0:
@@ -226,7 +227,7 @@ class GreatSharkBoss(BaseBoss):
                 if torp == torpedo:
                     self.torpedos[i] = (torpedo, time_exist)
 
-    def explode_torpedo(self, torpedo):
+    def explode_torpedo(self, torpedo, player):
         """
         Handle the explosion of a torpedo by creating a circular blast.
         """
@@ -242,9 +243,9 @@ class GreatSharkBoss(BaseBoss):
 
         # Optionally, apply damage to the player if within the explosion radius
         # Check player's distance from the explosion and apply damage if close enough
-        # player_distance = math.sqrt((explosion_center[0] - self.player.character_x)**2 + (explosion_center[1] - self.player.character_y)**2)
-        # if player_distance <= explosion_radius:
-        #     self.player.take_damage(50)  # Example damage value
+        player_distance = math.sqrt((explosion_center[0] - player.character_x)**2 + (explosion_center[1] - player.character_y)**2)
+        if player_distance <= explosion_radius:
+            player.take_damage(self.torpedo_damage)  # Example damage value
 
         # Remove the torpedo from the bullets list
         self.torpedos = [t for t in self.torpedos if t[0] != torpedo]
@@ -254,17 +255,14 @@ class GreatSharkBoss(BaseBoss):
         Churning Tides: The White Shark creates vortexes of water that pull the player toward
         certain areas of the screen. The player's speed is adjusted based on the distance from the vortex.
         """
-        # Initialize vortex at the start of the attack
-        if self.attack_elapsed_time == 0:
-            # Define the vortex center randomly on the screen
-            vortex_x = random.randint(WIDTH // 4, 3 * WIDTH // 4)
-            vortex_y = random.randint(HEIGHT // 4, 3 * HEIGHT // 4)
-            
-            if self.vortex is None:
-                self.vortex = (vortex_x, vortex_y)
+        # Define the vortex center randomly on the screen
+        vortex_x = random.randint(WIDTH // 4, 3 * WIDTH // 4)
+        vortex_y = random.randint(HEIGHT // 4, 3 * HEIGHT // 4)
+        
+        if self.vortex is None:
+            self.vortex = (vortex_x, vortex_y)
 
-        if self.attack_elapsed_time >= self.churning_tides_duration:
-            self.end_attack()
+        self.end_attack()
             
     def update_vortex(self, dt, player):
         self.vortex_timer += dt
@@ -309,6 +307,7 @@ class GreatSharkBoss(BaseBoss):
         else:
             # Player is within the vortex radius, slow down or keep them in place
             player.movement_speed = CHARACTER_MOVE_SPEED / 2
+            player.take_damage(self.damage)
 
         # Ensure movement speed stays within a reasonable range
         player.movement_speed = max(
@@ -328,7 +327,7 @@ class GreatSharkBoss(BaseBoss):
             self.rain_bullet_gap_time = 0
             for _ in range(self.rain_num_at_once):
                 bullet = BossBullet(
-                    random.randint(0, WIDTH), 0, bullet_direction
+                    random.randint(0, WIDTH), 0, bullet_direction, damage=self.damage
                 )  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
 

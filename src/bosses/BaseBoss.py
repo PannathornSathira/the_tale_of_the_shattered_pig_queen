@@ -2,10 +2,11 @@ import pygame
 from src.constants import *
 from src.bosses.BeamAttack import BeamAttack
 class BaseBoss:
-    def __init__(self, x, y, width=200, height=400, health=100):
+    def __init__(self, x, y, width=200, height=400, health=100, damage=10):
         self.x = x
         self.y = y
         self.health = health
+        self.damage = damage
         self.width = width  # Width of the boss
         self.height = height  # Height of the boss
         self.image = pygame.Surface(
@@ -75,7 +76,7 @@ class BaseBoss:
         # Placeholder attack logic: Check if the player is within a certain range
         if self.rect.colliderect(player.rect):  # Check for collision with player
             # player.take_damage(10)  # Assume the player has a `take_damage` method
-            player.take_damage(10)
+            player.take_damage(self.damage)
 
     def take_damage(self, amount):
         """Reduce health when taking damage."""

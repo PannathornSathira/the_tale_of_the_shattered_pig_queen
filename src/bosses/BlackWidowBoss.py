@@ -8,8 +8,8 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class BlackWidowBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, width=200, height=200, health=health)
+    def __init__(self, x, y, health=30, damage=10):
+        super().__init__(x, y, width=200, height=200, health=health, damage=damage)
 
         # Customizing the appearance
         self.image.fill((0, 0, 0))
@@ -34,7 +34,7 @@ class BlackWidowBoss(BaseBoss):
         # Poison attack properties
         self.poison_duration = 3  # Duration in seconds
         self.poison_tick_rate = 0.5  # Damage every 0.5 seconds
-        self.poison_damage = 2  # Damage per tick
+        self.poison_damage = self.damage // 2  # Damage per tick
         self.is_poisoned = False
         self.poison_timer = 0
         self.poison_tick_timer = 0
@@ -44,7 +44,7 @@ class BlackWidowBoss(BaseBoss):
 
     def contact_hit(self, player):
         if self.rect.colliderect(player.rect):  # Check for collision with player
-            # player.take_damage(10)  # Assume the player has a `take_damage` method
+            player.take_damage(self.damage)  # Assume the player has a `take_damage` method
             self.apply_poison(player)
 
     def apply_poison(self, player):
@@ -63,8 +63,7 @@ class BlackWidowBoss(BaseBoss):
 
             # Inflict poison damage at each tick interval
             if self.poison_tick_timer >= self.poison_tick_rate:
-                # player.health -= self.poison_damage
-                print("Take damage")
+                player.health -= self.poison_damage
                 self.poison_tick_timer = 0  # Reset tick timer
 
             # End poison effect after poison duration
@@ -167,7 +166,7 @@ class BlackWidowBoss(BaseBoss):
         """
         spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
         spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-        spiderling = Spiderling(spawn_x, spawn_y)
+        spiderling = Spiderling(spawn_x, spawn_y, damage=self.damage//2, health=self.health//10)
         self.spiderlings.append(spiderling)
         self.end_attack()
 

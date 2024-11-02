@@ -1,7 +1,7 @@
 from src.constants import *
 import random, pygame, math
 class Bullet:
-    def __init__(self, x, y, direction, general_speed=(0, 0)):
+    def __init__(self, x, y, direction, general_speed=(0, 0), damage=1):
         self.x = x
         self.y = y
         self.direction = direction  # "left" or "right"
@@ -16,7 +16,7 @@ class Bullet:
             self.height = BULLET_WIDTH
         self.active = True  # If the bullet is still on the screen
         self.color = (128, 0, 128)
-        self.damage = 1
+        self.damage = damage
         
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 

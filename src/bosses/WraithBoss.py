@@ -8,10 +8,8 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class WraithBoss(BaseBoss):
-    def __init__(self, x, y, health=300):
-        super().__init__(x, y, width=150, height=300, health=health)
-        
-        self.damage = 10
+    def __init__(self, x, y, health=300, damage=10):
+        super().__init__(x, y, width=150, height=300, health=health, damage=damage)
         
         self.player_character_x = 0
         self.player_character_y = 0
@@ -49,8 +47,8 @@ class WraithBoss(BaseBoss):
         #Illusions attack prop
         self.illusions_minibosses = []
         self.illusion_speed = 75
-        self.illusion_damage = 10
-        self.illusion_health = 10
+        self.illusion_damage = 15
+        self.illusion_health = 500
         
 
     def update(self, dt, player, platforms):
@@ -121,7 +119,7 @@ class WraithBoss(BaseBoss):
         if self.bullet_gap_time >= self.bullet_gap_cooldown:
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
-                bullet = HomingBullet(bullet_x, bullet_y)  # Create a bullet
+                bullet = HomingBullet(bullet_x, bullet_y, damage=self.damage)  # Create a bullet
                 bullet.direction = math.radians(self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i))
                 self.homing_bullets.append(bullet)  # Add bullet to the list
         
@@ -166,7 +164,7 @@ class WraithBoss(BaseBoss):
             bullet_dy = math.sin(self.haunting_wail_current_angle) * self.haunting_wail_bullet_speed
             
             # Create and position the bullet
-            bullet = BossBullet(self.x + self.width / 2, self.y + self.height / 2, "general", self.damage, (bullet_dx, bullet_dy))
+            bullet = BossBullet(self.x + self.width / 2, self.y + self.height / 2, "general", self.damage, (bullet_dx, bullet_dy), damage=self.damage)
             bullet.width = BULLET_WIDTH
             bullet.height = BULLET_WIDTH
             bullet.rect.width = BULLET_WIDTH
@@ -274,7 +272,7 @@ class HomingBullet:
         
         
 class IllusionBoss(BaseBoss):
-    def __init__(self, x, y, width, height, speed=75, damage=10, health=100):
+    def __init__(self, x, y, width, height, speed=75, damage=15, health=500):
         super().__init__(x, y, width=150, height=300, health=health)
         self.speed = speed
         self.damage = damage

@@ -3,7 +3,7 @@ from src.constants import *
 import pygame
 from src.Dependency import *
 
-class BaseState:
+class MainMenuState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
@@ -17,7 +17,9 @@ class BaseState:
     def update(self, dt, events):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                g_state_manager.Change("WORLD_MAP", {})
+                g_state_manager.Change("WORLD_MAP", {
+                    "completed_level": None
+                })
                 
     def Exit(self):
         pass
