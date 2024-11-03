@@ -194,3 +194,8 @@ class SpriteSheet(object):
         return pygame.transform.scale(
             image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
         )
+
+def render_text(text, x, y, font, screen):
+    """Render text at a given position."""
+    text_surface = font.render(text, True, (0, 0, 0))  # Render text in black color
+    screen.blit(text_surface, (x, y))
