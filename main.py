@@ -1,15 +1,4 @@
-import pygame, sys
-from src.Util import *
-from src.constants import *
-from src.states.MapSelectState import MapSelectState
-from src.states.MainMenuState import MainMenuState
-from src.states.PlayState import PlayState
-from src.states.ShopState import ShopState
-from src.states.PauseState import PauseState
-from src.Player import Player
-from src.Level import Level
-from src.bosses.WraithBoss import WraithBoss
-from src.resources import *
+from src.Dependency import *
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
@@ -50,12 +39,12 @@ class GameMain:
         # Update current state
         g_state_manager.update(dt, events)
         
-        if self.player.alive:
-            self.player.update(dt, events, self.level.platforms, self.boss)  
-        self.level.update(dt, events)
+        # if self.player.alive:
+        #     self.player.update(dt, events, self.level.platforms, self.boss)  
+        # self.level.update(dt, events)
         
-        if self.boss.alive:
-            self.boss.update(dt, self.player, self.level.platforms) 
+        # if self.boss.alive:
+        #     self.boss.update(dt, self.player, self.level.platforms) 
 
     def render(self):
         self.screen.fill((255, 255, 255))

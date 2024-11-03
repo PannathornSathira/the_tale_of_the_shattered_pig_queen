@@ -11,6 +11,7 @@ class PauseState:
         self.level = None
         self.boss = None
         self.player = None
+        self.total_coins = 0
 
     def Exit(self):
         pass
@@ -19,6 +20,7 @@ class PauseState:
         self.level = params["level"]
         self.boss = params["boss"]
         self.player = params["player"]
+        self.total_coins = params["total_coins"]
 
     def update(self, dt, events):
         # Handle player input for selecting options
@@ -33,7 +35,8 @@ class PauseState:
                         g_state_manager.Change("PLAY", {
                             "level": self.level,
                             "boss": self.boss,
-                            "player": self.player
+                            "player": self.player,
+                            "total_coins": self.total_coins
                         })
                     elif self.selected_option_index == 1:
                         g_state_manager.Change("MAIN_MENU", {})

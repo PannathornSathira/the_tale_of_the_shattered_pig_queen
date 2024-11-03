@@ -1,17 +1,4 @@
-from src.constants import *
 from src.Dependency import *
-from src.Level import Level
-from src.Player import Player
-from src.bosses.KrakenBoss import KrakenBoss
-from src.bosses.GreatSharkBoss import GreatSharkBoss
-from src.bosses.BlackWidowBoss import BlackWidowBoss
-from src.bosses.MedusaBoss import MedusaBoss
-from src.bosses.BlueDragonBoss import BlueDragonBoss
-from src.bosses.TornadoFiendBoss import TornadoFiendBoss
-from src.bosses.KingMummyBoss import KingMummyBoss
-from src.bosses.SandWormBoss import SandWormBoss
-from src.bosses.WraithBoss import WraithBoss
-import pygame, random
 
 class MapSelectState:
     def __init__(self, screen, font):
@@ -34,6 +21,8 @@ class MapSelectState:
         
         self.completed_levels = []  # Track completed levels
         self.difficulty = len(self.completed_levels) + 1
+        
+        self.total_coins = 0
 
     def Exit(self):
         pass
@@ -45,6 +34,8 @@ class MapSelectState:
         else:
             self.completed_levels = []
             self.difficulty = len(self.completed_levels) + 1
+            
+        self.get_total_coins()
 
     def update(self, dt, events):
 
@@ -66,6 +57,8 @@ class MapSelectState:
                                     "level": level,
                                     "boss": boss,
                                     "player": player,
+                                    "difficulty": self.difficulty,
+                                    "total_coins": self.total_coins
                                 })
                             elif index == 4:
                                 # Final Boss (Area 5), check if all previous levels are completed
@@ -78,6 +71,8 @@ class MapSelectState:
                                         "level": level,
                                         "boss": boss,
                                         "player": player,
+                                        "difficulty": self.difficulty,
+                                        "total_coins": self.total_coins
                                     })
                             elif index == 5:
                                 g_state_manager.Change("SHOP", {})
@@ -143,6 +138,15 @@ class MapSelectState:
             text_surface = self.font.render(area_name, True, (0, 0, 0))
             text_rect = text_surface.get_rect(center=area.center)
             screen.blit(text_surface, text_rect)
-
-        # Update the display
-        pygame.display.update()
+        
+        render_text(f"Total Coins: {self.total_coins}", 20, 20, self.font, screen)
+        
+    def get_total_coins(self):
+        try:
+            with open("saveFile.json", "r+") as file:
+                data = json.load(file)
+                self.total_coins = data["total_coins"]
+        except FileNotFoundError:
+            print("saveFile.json not found.")
+        except KeyError:
+            print("total_coins key not found in saveFile.json.")
