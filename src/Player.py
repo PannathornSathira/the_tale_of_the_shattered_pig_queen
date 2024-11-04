@@ -5,7 +5,7 @@ import time
 from src.Bullet import Bullet
 from src.platforms.SpecialPlatform import SpecialPlatform
 class Player:
-    def __init__(self, health=100):
+    def __init__(self, health=50):
         self.character_x = WIDTH / 2 - (CHARACTER_WIDTH) / 2
         self.character_y = (6 * TILE_SIZE - CHARACTER_HEIGHT) * 3
         self.width = CHARACTER_WIDTH
@@ -15,6 +15,7 @@ class Player:
         self.sprite_collection = SpriteManager().spriteCollection
         self.animation = self.sprite_collection["character_front"].animation
         self.health = health
+        self.defense = 0
         self.velocity_y = 0  # Vertical speed (used for jumping/falling)
         self.is_jumping = False  # Track if the player is in the air
         self.on_ground = True
@@ -34,7 +35,8 @@ class Player:
         self.movement_speed = CHARACTER_MOVE_SPEED
         self.alive = True
         self.bullets = []
-        self.firerate_cooldown = 0.2
+        self.bullet_damage = 1
+        self.firerate_cooldown = 0.1
         self.firerate_time = 0
         
         self.stun_duration = 0  # Track how long the player is stunned
@@ -42,6 +44,11 @@ class Player:
         
         self.poison_platform_accumulated_time = 0
         self.poison_platform_duration = 1
+        
+        
+        self.active_weapon = "pistol"  # Default weapon
+        self.shotgun_spread = 5  # Number of bullets for shotgun spread
+        self.shotgun_angle = 15
 
     def update(self, dt, events, platforms, boss):
         # Update stun timer if player is stunned
@@ -115,6 +122,11 @@ class Player:
                 self.on_ground = False
                 self.character_y += 55
                 self.velocity_y = self.gravity * dt
+            
+            if pressedKeys[pygame.K_1]:
+                self.active_weapon = "pistol"
+            elif pressedKeys[pygame.K_2]:
+                self.active_weapon = "shotgun"
             
         for bullet in self.bullets:
             bullet.update(dt)
@@ -209,9 +221,16 @@ class Player:
         bullet_direction = self.shooting_direction
         if bullet_direction == 'front':
             bullet_direction= 'right'
-        # Add the new bullet to the list of active bullets
-        bullet = Bullet(bullet_x, bullet_y, bullet_direction)
-        self.bullets.append(bullet)
+        if self.active_weapon == "pistol":
+            # Pistol fires a single bullet
+            bullet = Bullet(bullet_x, bullet_y, bullet_direction)
+            self.bullets.append(bullet)
+        elif self.active_weapon == "shotgun":
+            # Shotgun fires multiple bullets in a spread
+            for i in range(self.shotgun_spread):
+                angle_offset = (i - self.shotgun_spread // 2) * self.shotgun_angle
+                bullet = Bullet(bullet_x, bullet_y, bullet_direction, angle_offset=angle_offset, bullet_type = "shotgun")
+                self.bullets.append(bullet)
         
     def render(self, screen):
         char_img = self.animation.image

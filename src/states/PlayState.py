@@ -18,24 +18,38 @@ class PlayState:
         self.total_coins = 0
         self.boss_health = 0
         self.coin_scaling = 0
+        
+        self.damage_potion_active = False
+        self.damage_potion_timer = 0
+        
+        #self.health_potion_active = False
+        #self.health_potion_timer = 0
+        
+        self.swiftness_potion_active = False
+        self.swiftness_potion_timer = 0
 
     def Enter(self, params):
         self.level = params["level"]
         self.boss = params["boss"]
         self.player = params["player"]
         self.total_coins = params["total_coins"]
-        difficulty = params["difficulty"]
-        if difficulty == 1:
+        self.difficulty = params["difficulty"]
+        if self.difficulty == 1:
             self.coin_scaling = 10
-        elif difficulty == 2:
+        elif self.difficulty == 2:
             self.coin_scaling = 20
-        elif difficulty == 3:
+        elif self.difficulty == 3:
             self.coin_scaling = 50
-        elif difficulty == 4:
+        elif self.difficulty == 4:
             self.coin_scaling = 100
-        elif difficulty == 5:
+        elif self.difficulty == 5:
             self.coin_scaling = 200
         self.boss_health = self.boss.health
+        self.max_health = self.player.health
+        
+        self.damage_potions = params.get("damage_potions", 0)
+        self.health_potions = params.get("health_potions", 0)
+        self.swiftness_potions = params.get("swiftness_potions", 0)
 
     def update(self, dt, events):
         if self.player.alive:
@@ -54,7 +68,23 @@ class PlayState:
             g_state_manager.Change("WORLD_MAP", {
                 "completed_level": self.level.area
             })
-
+            
+        if self.damage_potion_active:
+            self.damage_potion_timer -= dt * 1000  # Decrease timer
+            if self.damage_potion_timer <= 0:
+                # Reset player damage after potion effect ends
+                self.player.bullet_damage /= 1.1
+                self.damage_potion_active = False
+                print("Damage Potion effect has ended.")
+        
+        if self.swiftness_potion_active:
+            self.swiftness_potion_timer -= dt * 1000  # Decrease timer
+            if self.swiftness_potion_timer <= 0:
+                # Reset player movement after potion effect ends
+                self.player.movement_speed /= 1.1
+                self.player.default_move_speed /= 1.1
+                self.swiftness_potion_active = False
+                print("Swiftness Potion effect has ended.")
         self.level.update(dt, events)
 
         for event in events:
@@ -64,8 +94,32 @@ class PlayState:
                         "level": self.level,
                         "boss": self.boss,
                         "player": self.player,
-                        "total_coins": self.total_coins
+                        "total_coins": self.total_coins,
+                        "difficulty": self.difficulty,
+                        "damage_potions": self.damage_potions,
+                        "health_potions": self.health_potions,
+                        "swiftness_potions": self.swiftness_potions
                     })
+                # Activate the damage potion by Press T
+                if event.key == pygame.K_t and self.damage_potions > 0 and not self.damage_potion_active:
+                   
+                    self.damage_potions -= 1
+                    self.player.bullet_damage *= 1.1  # Increase damage by 10%
+                    self.damage_potion_active = True
+                    self.damage_potion_timer = 10000  # Set the timer for 10 seconds
+                
+                # Activate the health potion by Press Y
+                if event.key == pygame.K_y and self.health_potions > 0:
+                    self.health_potions -= 1
+                    self.player.health += 1.10 * self.max_health  # Increase health by 10% of max hp
+                
+                # Activate the health potion by Press U
+                if event.key == pygame.K_u and self.swiftness_potions > 0 and not self.swiftness_potion_active:
+                    self.swiftness_potions -= 1
+                    self.player.movement_speed *= 1.1
+                    self.player.default_move_speed *= 1.1
+                    self.swiftness_potion_active = True
+                    self.swiftness_potion_timer = 10000  # Set the timer for 10 seconds
 
     def Exit(self):
         pass
@@ -80,6 +134,10 @@ class PlayState:
             render_text(f"Boss Health: {self.boss.health}", 20, 60, self.font, screen)
             
         render_text(f"Total Coins: {self.total_coins}", 20, 100, self.font, screen)
+        render_text(f"Damage Potions: {self.damage_potions}", 20, 140, self.font, screen)
+        render_text(f"Health Potions: {self.health_potions}", 320, 140, self.font, screen)
+        render_text(f"Swiftness Potions: {self.swiftness_potions}", 620, 140, self.font, screen)
+
         
         
     def CheckVictory(self):
