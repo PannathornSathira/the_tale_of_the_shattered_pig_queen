@@ -8,8 +8,8 @@ class MainMenuState:
         self.screen = screen
         self.font = font
         self.start_game = False
-        self.bg_image = pygame.image.load("./graphics/background.png")
-        self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH + 5, HEIGHT + 5))
+        self.bg_image = pygame.image.load("./graphics/main_menu_temp.png")
+        #self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH + 5, HEIGHT + 5))
         
     def Enter(self, params):
         pass
@@ -17,7 +17,10 @@ class MainMenuState:
     def update(self, dt, events):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                g_state_manager.Change("WORLD_MAP", {
+                # g_state_manager.Change("WORLD_MAP", {
+                #     "completed_level": None
+                # })
+                g_state_manager.Change("SHOP", {
                     "completed_level": None
                 })
                 
