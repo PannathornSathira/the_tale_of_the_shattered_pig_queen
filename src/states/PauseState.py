@@ -5,13 +5,14 @@ class PauseState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
-        self.options = ["Resume"]
+        self.options = ["Resume", "Back To World Map"]
         self.selected_option_index = 0
         
         self.level = None
         self.boss = None
         self.player = None
         self.total_coins = 0
+        
 
     def Exit(self):
         pass
@@ -21,6 +22,10 @@ class PauseState:
         self.boss = params["boss"]
         self.player = params["player"]
         self.total_coins = params["total_coins"]
+        self.difficulty = params["difficulty"]
+        self.damage_potions = params['damage_potions']
+        self.health_potions = params.get("health_potions")
+        self.swiftness_potions = params.get("swiftness_potions")
 
     def update(self, dt, events):
         # Handle player input for selecting options
@@ -36,10 +41,22 @@ class PauseState:
                             "level": self.level,
                             "boss": self.boss,
                             "player": self.player,
-                            "total_coins": self.total_coins
+                            "total_coins": self.total_coins,
+                            "difficulty": self.difficulty,
+                            "damage_potions": self.damage_potions,
+                            "health_potions": self.health_potions,
+                            "swiftness_potions": self.swiftness_potions
+                            
                         })
                     elif self.selected_option_index == 1:
-                        g_state_manager.Change("MAIN_MENU", {})
+                        g_state_manager.Change("WORLD_MAP", {
+                            "player": self.player,
+                            "total_coins": self.total_coins,
+                            "completed_level": None,
+                            "damage_potions": self.damage_potions,
+                            "health_potions": self.health_potions,
+                            "swiftness_potions": self.swiftness_potions
+                        })
         return None, None
 
     def render(self, screen):

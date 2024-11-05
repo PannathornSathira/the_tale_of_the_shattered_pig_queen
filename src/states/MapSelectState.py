@@ -4,13 +4,14 @@ class MapSelectState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
+        self.bg_image = pygame.image.load("./graphics/worldmap.png")
         self.map_areas = [
-            pygame.Rect(100, 100, 200, 150),  # Area 1
-            pygame.Rect(400, 100, 200, 150),  # Area 2
-            pygame.Rect(100, 300, 200, 150),  # Area 3
-            pygame.Rect(400, 300, 200, 150),  # Area 4
-            pygame.Rect(100, 500, 200, 150),  # Area 5 (Final Boss)
-            pygame.Rect(700, 300, 200, 150,)# Shop
+            pygame.Rect(850, 130, 200, 150),  # Area 1
+            pygame.Rect(400, 70, 200, 150),  # Area 2
+            pygame.Rect(280, 480, 200, 150),  # Area 3
+            pygame.Rect(630, 400, 200, 150),  # Area 4
+            pygame.Rect(970, 500, 200, 150),  # Area 5 (Final Boss)
+            pygame.Rect(100, 100, 200, 150)# Shop
         ]
         self.start_game = False
         self.go_to_shop = False
@@ -21,21 +22,32 @@ class MapSelectState:
         
         self.completed_levels = []  # Track completed levels
         self.difficulty = len(self.completed_levels) + 1
-        
+        self.player = Player()
         self.total_coins = 0
-
+        self.get_total_coins()
+        
+        self.damage_potions = 0
+        self.health_potions = 0
+        self.swiftness_potions = 0
+    
     def Exit(self):
         pass
 
     def Enter(self, params):
-        if params["completed_level"]:
-            self.completed_levels.append(params["completed_level"])
+        self.player = params.get("player", self.player)
+        self.total_coins = params.get("total_coins", self.total_coins)
+        #self.complete_level = params["completed_level"]
+        self.complete_level = params.get("completed_level")
+        self.damage_potions = params.get("damage_potions", self.damage_potions)
+        self.health_potions = params.get("health_potions", 0)
+        self.swiftness_potions = params.get("swiftness_potions", 0)
+        if self.complete_level:
+            self.completed_levels.append(self.complete_level)
             self.difficulty = len(self.completed_levels) + 1
         else:
             self.completed_levels = []
             self.difficulty = len(self.completed_levels) + 1
             
-        self.get_total_coins()
 
     def update(self, dt, events):
 
@@ -51,31 +63,45 @@ class MapSelectState:
                             if index < 4 and index + 1 not in self.completed_levels:
                                 level = Level(area=index+1)
                                 level.CreateMap()
-                                player = Player()
+                                #self.player = Player()
                                 boss = self.spawn_boss(area=index+1)
                                 g_state_manager.Change("PLAY", {
                                     "level": level,
                                     "boss": boss,
-                                    "player": player,
+                                    "player": self.player,
                                     "difficulty": self.difficulty,
-                                    "total_coins": self.total_coins
+                                    "total_coins": self.total_coins,
+                                    "damage_potions": self.damage_potions,
+                                    "health_potions": self.health_potions,
+                                    "swiftness_potions": self.swiftness_potions
                                 })
                             elif index == 4:
                                 # Final Boss (Area 5), check if all previous levels are completed
                                 if all(lvl in self.completed_levels for lvl in range(1, 5)):
                                     level = Level(area=5)
                                     level.CreateMap()
-                                    player = Player()
+                                    #self.player = Player()
                                     boss = self.spawn_boss(area=5)
                                     g_state_manager.Change("PLAY", {
                                         "level": level,
                                         "boss": boss,
-                                        "player": player,
+                                        "player": self.player,
                                         "difficulty": self.difficulty,
-                                        "total_coins": self.total_coins
+                                        "total_coins": self.total_coins,
+                                        "damage_potions": self.damage_potions,
+                                        "health_potions": self.health_potions,
+                                        "swiftness_potions": self.swiftness_potions
                                     })
                             elif index == 5:
-                                g_state_manager.Change("SHOP", {})
+                                #self.player = Player()
+                                g_state_manager.Change("SHOP", {
+                                     "player": self.player,
+                                     "total_coins": self.total_coins,
+                                     "completed_level": self.complete_level,
+                                     "damage_potions": self.damage_potions,
+                                     "health_potions": self.health_potions,
+                                     "swiftness_potions": self.swiftness_potions
+                                })
                 self.selected_area_index = index
                 break
         else:
@@ -111,8 +137,12 @@ class MapSelectState:
 
     def render(self, screen):
         # Fill the screen with a background color
-        screen.fill((173, 216, 230))  # Light blue color
-
+        # Light blue color
+        #screen.fill((173, 216, 230))
+        screen.blit(self.bg_image, (0, 0))
+        render_text(f"Damage Potions: {self.damage_potions}", 320, 20, self.font, screen)
+        render_text(f"Health Potions: {self.health_potions}", 620, 20, self.font, screen)
+        render_text(f"Swiftness Potions: {self.swiftness_potions}", 920, 20, self.font, screen)
         # Draw each map area as a rectangle
         for index, area in enumerate(self.map_areas):
             # Set color based on whether level is completed or locked
