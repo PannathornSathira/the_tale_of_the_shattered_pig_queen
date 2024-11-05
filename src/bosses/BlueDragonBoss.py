@@ -168,11 +168,11 @@ class BlueDragonBoss(BaseBoss):
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
                 bullet = BossBullet(
-                    bullet_x,
-                    bullet_y,
-                    bullet_direction,
-                    self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle * i),
-                    self.damage
+                    x=bullet_x,
+                    y=bullet_y,
+                    direction=bullet_direction,
+                    dx=self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle * i),
+                    damage=self.damage
                 )  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
 

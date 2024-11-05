@@ -48,7 +48,7 @@ class PlayState:
             self.boss.update(dt, self.player, self.level.platforms)
             if self.boss.health < self.boss_health:
                 self.total_coins += (self.boss_health - self.boss.health) * self.coin_scaling
-                self.boss_health = self.boss.health
+            self.boss_health = self.boss.health
         else:
             self.save_coins()
             g_state_manager.Change("WORLD_MAP", {
@@ -71,8 +71,8 @@ class PlayState:
         pass
 
     def render(self,screen):
-        self.boss.render(screen)
         self.level.render(screen)
+        self.boss.render(screen)
         self.player.render(screen)
         if self.player.alive:
             render_text(f"Player Health: {self.player.health}", 20, 20, self.font, screen)

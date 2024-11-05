@@ -125,6 +125,8 @@ class TornadoFiendBoss(BaseBoss):
             self.beams = []
             
         if self.attack_elapsed_time >= self.barrage_attack_duration:
+            self.x = self.original_x
+            self.y = self.original_y
             self.end_attack()
             
     def tornado_frenzy(self, dt, player):
