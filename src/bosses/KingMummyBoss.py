@@ -3,12 +3,14 @@ import math
 import random
 from src.constants import *
 from src.bosses.BaseBoss import BaseBoss
+from src.resources import *
 
 class KingMummyBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10):
         super().__init__(x, y, width=50, height=80, health=health, damage=damage)
-        self.image.fill((200, 200, 200))
+        self.animation = sprite_collection["king_mummy_boss"].animation
         self.visible = True
+        self.direction = "left"
 
         # Revive properties
         self.num_life = 2
@@ -37,7 +39,8 @@ class KingMummyBoss(BaseBoss):
         self.velocity_y = 0
         self.on_ground = False
         self.ground_y = GROUND_LEVEL_Y
-        self.jump_duration = 10
+        self.jump_cooldown = 3
+        self.jump_cooldown_timer = 0
         self.x = WIDTH / 2 - self.width / 2
         self.y = 0 - self.height
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
@@ -50,24 +53,41 @@ class KingMummyBoss(BaseBoss):
     def update(self, dt, player, platforms):
         super().update(dt, player, platforms)
         self.platforms = platforms
+        
+        self.jump_cooldown_timer += dt
+        
+        if self.current_attack:
+            self.animation.update(dt)
+        else:
+            self.animation.Idle()
 
         if self.reviving:
             self.revive(dt)
             self.current_attack = None
+            self.animation.Idle()
             
         if len(self.bandages) > 0:
             self.update_bandages(dt, player)
         
         if not self.reviving:  
             if self.on_ground and player.on_ground:
-                if player.character_y < self.y:
+                if player.character_y < self.y and self.jump_cooldown_timer >= self.jump_cooldown:
                     self.velocity_y = self.jump_force
                     self.on_ground = False
+                    self.jump_cooldown_timer = 0
+                elif player.character_y > self.y + self.height and self.jump_cooldown_timer >= self.jump_cooldown:
+                    self.on_ground = False
+                    self.y += self.height
+                    self.rect.y = self.y
+                    self.velocity_y = self.gravity * dt
+                    self.jump_cooldown_timer = 0
             
-            if player.character_x < self.x:
+            if player.character_x + player.width <= self.x:
                 self.x -= self.move_speed * dt
-            elif player.character_x > self.x:
+                self.direction = "left"
+            elif player.character_x >= self.x + self.width:
                 self.x += self.move_speed * dt
+                self.direction = "right"
 
         if not self.on_ground:
             self.velocity_y += self.gravity * dt
@@ -159,10 +179,15 @@ class KingMummyBoss(BaseBoss):
 
 
     def check_platform_collision(self, platforms):
+        temp_rect = self.rect.copy()
+        temp_rect.y = self.rect.y + (2 * self.rect.height / 3)
+        temp_rect.height = self.rect.height / 3
         for platform_row in platforms:
             for platform in platform_row:
-                if platform and self.rect.colliderect(platform.rect) and self.velocity_y >= 0:
-                    return True, platform
+                if platform is not None:
+                    if temp_rect.colliderect(platform.rect) and self.velocity_y > 0:
+                        return True, platform
+            
         return False, None
 
 
@@ -174,10 +199,15 @@ class KingMummyBoss(BaseBoss):
                 self.bandages.remove(bandage)
 
     def render(self, screen):
-        if self.visible:
-            super().render(screen)
-        for bandage in self.bandages:
-            bandage.render(screen)
+        if self.alive:
+            if self.visible:
+                char_img = self.animation.image
+                char_img = pygame.transform.scale(char_img, (self.rect.width, self.rect.height))
+                if self.direction == "right":
+                    char_img = pygame.transform.flip(char_img, True, False)
+                screen.blit(char_img, (self.x, self.y))
+            for bandage in self.bandages:
+                bandage.render(screen)
 
 class Bandage:
     def __init__(self, x, y, width, height, appearance_duration=1, blink_interval=0.1, damage=10):
@@ -201,5 +231,4 @@ class Bandage:
                 self.visible = True
 
     def render(self, screen):
-        if self.visible:
-            pygame.draw.rect(screen, (150, 75, 0), self.rect)
+        pygame.draw.rect(screen, (150, 75, 0), self.rect)

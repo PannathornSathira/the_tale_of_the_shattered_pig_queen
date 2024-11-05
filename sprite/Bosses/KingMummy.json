@@ -1,0 +1,25 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "king_mummy_boss",
+            "images": [
+                {
+                    "path": "./graphics/KingMummy/KingMummy2.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/KingMummy/KingMummy3.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.2,
+            "loop": true,
+            "idle_image": {
+                "path": "./graphics/KingMummy/KingMummy1.PNG",
+                "scale": 1
+            }
+        }
+    ]
+}

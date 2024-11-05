@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from src.constants import *
 import pygame
 from src.Dependency import *
+from src.resources import *
+from src.Util import *
 
 class MainMenuState:
     def __init__(self, screen, font):
@@ -20,9 +22,7 @@ class MainMenuState:
                 # g_state_manager.Change("WORLD_MAP", {
                 #     "completed_level": None
                 # })
-                g_state_manager.Change("SHOP", {
-                    "completed_level": None
-                })
+                g_state_manager.Change("SHOP", {})
                 
     def Exit(self):
         pass

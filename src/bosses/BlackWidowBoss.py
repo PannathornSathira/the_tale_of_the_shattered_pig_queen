@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
@@ -10,6 +11,9 @@ from src.bosses.BeamAttack import BeamAttack
 class BlackWidowBoss(BaseBoss):
     def __init__(self, x, y, health=30, damage=10):
         super().__init__(x, y, width=200, height=200, health=health, damage=damage)
+        self.animation = sprite_collection["black_widow_boss"].animation
+        self.direction = "left"
+
 
         # Customizing the appearance
         self.image.fill((0, 0, 0))
@@ -26,10 +30,12 @@ class BlackWidowBoss(BaseBoss):
         self.web_height = 50
         self.web_image = pygame.Surface((self.web_width, self.web_height))
         self.web_image.fill((155, 155, 155))
-        self.web_projectile_duration = 1
         self.web_slow_duration = 3
         self.web_slow_timer = 0
         self.web_is_slow = False
+        self.web_speed = 1.5 * BULLET_SPEED
+        self.web_speed_y = 0
+        self.web_speed_x = 0
 
         # Poison attack properties
         self.poison_duration = 3  # Duration in seconds
@@ -73,6 +79,31 @@ class BlackWidowBoss(BaseBoss):
     def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
         super().update(dt, player, platforms)
+        
+        if self.x + self.width <= player.character_x:
+            self.direction = "right"
+        elif self.x >= player.character_x + player.width:
+            self.direction = "left"
+        
+        if self.current_attack:
+            self.animation.update(dt)
+        else:
+            self.animation.Idle()
+            
+        if self.web is not None:
+            self.web.x += self.web_speed_x * dt
+            self.web.y += self.web_speed_y * dt
+            if self.web.colliderect(player.rect):
+                self.web_is_slow = True
+                self.web = None
+                self.apply_poison(player)
+            elif (
+                self.web.x + self.web_width < 0
+                or self.web.x > WIDTH
+                or self.web.y + self.web_height < 0
+                or self.web.y > HEIGHT
+            ):
+                self.web = None
 
         # Update poison effect
         self.update_poison_effect(dt, player)
@@ -96,7 +127,7 @@ class BlackWidowBoss(BaseBoss):
 
     def select_attack(self, player):
         attack_choice = random.choice(["jump", "cobweb", "summon"])
-        # attack_choice = random.choice(["summon"])
+        # attack_choice = random.choice(["cobweb"])
 
         if attack_choice == "jump":
             self.current_attack = self.jump
@@ -129,36 +160,19 @@ class BlackWidowBoss(BaseBoss):
             self.x, self.y = self.jump_end_x, self.jump_end_y
 
     def cobweb(self, dt, player):
-        if self.attack_elapsed_time == 0:
-            self.web = pygame.Rect(
-                self.x - self.width / 2,
-                self.y + self.height / 2,
-                self.web_width,
-                self.web_height,
-            )
-            self.web_start_x = self.x
-            self.web_start_y = self.y
-            self.web_end_x = player.character_x + player.width / 2 - self.web_width / 2
-            self.web_end_y = player.character_y + (3 * player.height) - self.web_height
-
-        t = self.attack_elapsed_time / self.web_projectile_duration
-        self.web.x = self.web_start_x + t * (self.web_end_x - self.web_start_x)
-        self.web.y = self.web_start_y + t * (self.web_end_y - self.web_start_y)
-
-        if self.web.colliderect(player.rect):
-            self.web_is_slow = True
-            self.web = None
-            self.apply_poison(player)
-            self.end_attack()
-
-        elif (
-            self.web.x + self.web_width < 0
-            or self.web.x > WIDTH
-            or self.web.y + self.web_height < 0
-            or self.web.y > HEIGHT
-        ):
-            self.web = None
-            self.end_attack()
+        self.web = pygame.Rect(
+            self.x,
+            self.y + self.height / 2,
+            self.web_width,
+            self.web_height,
+        )
+        distance_y = (player.character_y + player.height // 2) - (self.y + (self.height // 2))
+        distance_x = (player.character_x + player.width // 2) - (self.x + (self.width // 2))
+        
+        self.web_speed_x = distance_x * self.web_speed / (abs(distance_x) + abs(distance_y) + 1)
+        self.web_speed_y = distance_y * self.web_speed / (abs(distance_x) + abs(distance_y) + 1)
+        
+        self.end_attack()
 
     def summon(self, dt, player):
         """
@@ -171,7 +185,11 @@ class BlackWidowBoss(BaseBoss):
         self.end_attack()
 
     def render(self, screen):
-        super().render(screen)
+        img = self.animation.image
+        img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+        if self.direction == "right":
+            img = pygame.transform.flip(img, True, False)
+        screen.blit(img, (self.x, self.y))
         for bullet in self.bullets:
             bullet.render(screen)
 
@@ -190,14 +208,20 @@ class Spiderling:
         self.speed = speed
         self.damage = damage
         self.size = 30
-        self.image = pygame.Surface((self.size, self.size))
-        self.image.fill((50, 50, 50))  # Spiderling color
+        self.image = sprite_collection["black_widow_boss"].animation.idleSprite
         self.hit_player = False
         self.alive = True
         self.health = health
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
+        self.direction = "left"
 
     def update(self, dt, player):
+        
+        if self.x + self.rect.width <= player.character_x:
+            self.direction = "right"
+        else:
+            self.direction = "left"
+
         # Calculate direction towards the player
         target_x = player.character_x + player.width / 2 - self.size / 2
         target_y = player.character_y + player.height / 2 - self.size / 2
@@ -239,4 +263,9 @@ class Spiderling:
         self.alive = False
 
     def render(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+        if self.alive:
+            img = self.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            if self.direction == "right":
+                img = pygame.transform.flip(img, True, False)
+            screen.blit(img, (self.x, self.y))

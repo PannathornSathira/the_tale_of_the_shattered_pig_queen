@@ -23,6 +23,8 @@ class BaseBoss:
         self.attack_elapsed_time = 0
         self.current_attack = None  # Track the current attack pattern
         self.bullets = []  # List to hold active bullets
+        self.warning_time = 0.5
+        self.warning_time_timer = 0
         
         self.invulnerable = False
         self.alive = True
@@ -53,8 +55,10 @@ class BaseBoss:
                 self.attack_elapsed_time = 0
 
         else:
-            self.current_attack(dt, player)
-            self.attack_elapsed_time += dt
+            self.warning_time_timer += dt
+            if self.warning_time_timer >= self.warning_time:
+                self.current_attack(dt, player)
+                self.attack_elapsed_time += dt
 
         self.contact_hit(player)
                 # for boss_bullet in boss.bullets:
@@ -70,6 +74,7 @@ class BaseBoss:
         self.current_attack = None
         self.attack_delay_timer = 0
         self.attack_elapsed_time = 0
+        self.warning_time_timer = 0
 
     def contact_hit(self, player):
         """Implement an attack pattern against the player."""
@@ -83,6 +88,7 @@ class BaseBoss:
         if not self.invulnerable and self.alive:
             self.health -= amount
             if self.health <= 0:
+                self.health = 0
                 self.die()
 
     def die(self):

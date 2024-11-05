@@ -1,12 +1,18 @@
-from src.Dependency import *
+import pygame
+from src.constants import *
 
 pygame.mixer.pre_init(44100, -16, 2, 4096)
 pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+from src.Dependency import *
+from src.resources import *
+from src.Util import *
 
 class GameMain:
     def __init__(self):
         self.max_frame_rate = MAX_FRAME_RATE
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = screen
         self.player = Player()
         self.level = Level(area=3)
         self.level.CreateMap()

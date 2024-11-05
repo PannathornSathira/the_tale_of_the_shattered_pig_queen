@@ -2,13 +2,15 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class MedusaBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, health=health, damage=damage)
+        super().__init__(x, y, width=200, height=400, health=health, damage=damage)
+        self.animation = sprite_collection["medusa_boss_idle"].animation
 
         # Customizing the appearance for the Blue Dragon
         self.image.fill((0, 200, 200))  # Set color to blue
@@ -44,6 +46,11 @@ class MedusaBoss(BaseBoss):
         # Update position and check if the boss should attack
         super().update(dt, player, platforms)
         
+        if self.current_attack:
+            self.animation = sprite_collection["medusa_boss_fire"].animation
+        else:
+            self.animation = sprite_collection["medusa_boss_idle"].animation
+            
         # Check for collisions between beams and the player to apply the stun effect
         for beam in self.petrify_beams:
             beam.update(dt)
@@ -51,6 +58,8 @@ class MedusaBoss(BaseBoss):
                 player.stun(self.petrify_stun_duration)
             if not beam.active:
                 self.petrify_beams.remove(beam)
+            
+        self.animation.update(dt)
 
     def select_attack(self, player):
         
@@ -178,7 +187,12 @@ class MedusaBoss(BaseBoss):
 
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
-        super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            screen.blit(img, (self.x, self.y))
+            for bullet in self.bullets:
+                bullet.render(screen)
             
         for beam in self.petrify_beams:
             beam.render(screen)

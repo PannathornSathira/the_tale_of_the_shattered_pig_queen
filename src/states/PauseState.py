@@ -1,11 +1,13 @@
 import pygame
 from src.Dependency import *
+from src.resources import *
+from src.Util import *
 
 class PauseState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
-        self.options = ["Resume", "Back To World Map"]
+        self.options = ["Resume", "End this journey"]
         self.selected_option_index = 0
         
         self.level = None
@@ -49,14 +51,13 @@ class PauseState:
                             
                         })
                     elif self.selected_option_index == 1:
-                        g_state_manager.Change("WORLD_MAP", {
-                            "player": self.player,
+                        save_values({
                             "total_coins": self.total_coins,
-                            "completed_level": None,
                             "damage_potions": self.damage_potions,
                             "health_potions": self.health_potions,
                             "swiftness_potions": self.swiftness_potions
                         })
+                        g_state_manager.Change("SHOP", {})
         return None, None
 
     def render(self, screen):
