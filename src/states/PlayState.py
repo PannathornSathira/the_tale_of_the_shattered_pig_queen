@@ -1,12 +1,8 @@
 # import random, pygame, sys
 # from src.constants import *
 from src.Dependency import *
-# from src.Player import Player
-# from src.Level import Level
-# from src.bosses.MedusaBoss import MedusaBoss
-# import json
-# from src.Util import *
-#import src.CommonRender as CommonRender
+from src.resources import *
+from src.Util import *
 
 class PlayState:
     def __init__(self, screen, font):
@@ -15,6 +11,7 @@ class PlayState:
         self.player = Player()
         self.level = None
         self.boss = None
+        self.bg_image = None
         self.total_coins = 0
         self.boss_health = 0
         self.coin_scaling = 0
@@ -30,6 +27,16 @@ class PlayState:
 
     def Enter(self, params):
         self.level = params["level"]
+        if self.level.area == 1:
+            self.bg_image = pygame.image.load("./graphics/Backgrounds/Ocean+sand.JPG")
+        elif self.level.area == 2:
+            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+        elif self.level.area == 3:
+            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+        elif self.level.area == 4:
+            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+        elif self.level.area == 5:
+            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
         self.boss = params["boss"]
         self.player = params["player"]
         self.total_coins = params["total_coins"]
@@ -55,7 +62,12 @@ class PlayState:
         if self.player.alive:
             self.player.update(dt, events, self.level.platforms, self.boss)
         else:
-            self.save_coins()
+            save_values({
+                "total_coins": self.total_coins,
+                "damage_potions": self.damage_potions,
+                "health_potions": self.health_potions,
+                "swiftness_potions": self.swiftness_potions
+            })
             g_state_manager.Change("MAIN_MENU", {})
 
         if self.boss.alive:
@@ -64,8 +76,15 @@ class PlayState:
                 self.total_coins += (self.boss_health - self.boss.health) * self.coin_scaling
             self.boss_health = self.boss.health
         else:
-            self.save_coins()
+            save_values({
+                "total_coins": self.total_coins,
+                "damage_potions": self.damage_potions,
+                "health_potions": self.health_potions,
+                "swiftness_potions": self.swiftness_potions
+            })
+            self.player.bullets = []
             g_state_manager.Change("WORLD_MAP", {
+                "player": self.player,
                 "completed_level": self.level.area
             })
             
@@ -125,6 +144,8 @@ class PlayState:
         pass
 
     def render(self,screen):
+        screen.blit(self.bg_image, (0, 0))
+        
         self.level.render(screen)
         self.boss.render(screen)
         self.player.render(screen)
@@ -139,20 +160,5 @@ class PlayState:
         render_text(f"Swiftness Potions: {self.swiftness_potions}", 620, 140, self.font, screen)
 
         
-        
     def CheckVictory(self):
         pass
-    
-    def save_coins(self):
-        """Save coins to the player's total coins in saveFile.json."""
-        try:
-            with open("saveFile.json", "r+") as file:
-                data = json.load(file)
-                data["total_coins"] = self.total_coins
-                file.seek(0)
-                json.dump(data, file, indent=4)
-                file.truncate()
-        except FileNotFoundError:
-            print("saveFile.json not found.")
-        except KeyError:
-            print("total_coins key not found in saveFile.json.")

@@ -1,0 +1,25 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "black_widow_boss",
+            "images": [
+                {
+                    "path": "./graphics/BlackWidow/BlackWidow1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlackWidow/BlackWidow2.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.1,
+            "loop": true,
+            "idle_image": {
+                "path": "./graphics/BlackWidow/BlackWidow1.PNG",
+                "scale": 1
+            }
+        }
+    ]
+}

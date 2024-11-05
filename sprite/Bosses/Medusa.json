@@ -1,0 +1,31 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "medusa_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/Medusa/Medusa1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Medusa/Medusa2.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        }, {
+            "name": "medusa_boss_fire",
+            "images": [
+                {
+                    "path": "./graphics/Medusa/Medusa3.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": false
+        }
+    ]
+}

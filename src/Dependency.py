@@ -2,9 +2,6 @@ import json
 import pygame
 import random
 import sys
-from src.resources import *
-from src.constants import *
-from src.Util import *
 #from src.Paddle import Paddle
 #from src.LevelMaker import *
 
@@ -12,7 +9,6 @@ from src.Player import Player
 from src.Level import Level
 
 from src.StateMachine import StateMachine
-from src.constants import *
 from src.Level import Level
 from src.Player import Player
 from src.bosses.KrakenBoss import KrakenBoss

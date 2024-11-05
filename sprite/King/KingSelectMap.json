@@ -1,0 +1,17 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "king_select_map",
+            "images": [
+                {
+                    "path": "./graphics/King/King.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.1,
+            "loop": true
+        }
+    ]
+}

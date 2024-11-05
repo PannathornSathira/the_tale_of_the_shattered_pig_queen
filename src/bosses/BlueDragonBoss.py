@@ -171,7 +171,7 @@ class BlueDragonBoss(BaseBoss):
                     x=bullet_x,
                     y=bullet_y,
                     direction=bullet_direction,
-                    dx=self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle * i),
+                    dy=self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle * i),
                     damage=self.damage
                 )  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list

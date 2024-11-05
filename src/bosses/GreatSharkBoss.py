@@ -21,6 +21,8 @@ class GreatSharkBoss(BaseBoss):
         self.reappearance_duration = 0.3  # Time taken for the boss to reappear
         self.charge_duration = 2
         self.start_charge = True
+        self.original_x = self.x
+        self.original_y = self.y
 
         # Torpedo Attack prop
         self.torpedos = []
@@ -78,101 +80,79 @@ class GreatSharkBoss(BaseBoss):
         Deepwater Assault: The White Shark disappears and performs three consecutive attacks,
         randomly choosing to come from the left, right, or below the player.
         """
-        # Disappear at the start of the attack
+        # Disappear and set up initial conditions at the start of the attack
         if self.attack_elapsed_time == 0:
             self.visible = False  # Hide the boss
+            self.assault_directions = [random.choice(["left", "right", "below"]) for _ in range(3)]  # Randomize directions
 
-            # Choose random directions for each of the three assaults
-            self.assault_directions = [
-                random.choice(["left", "right", "below"]) for _ in range(3)
-            ]
-
-        # Handle each assault
+        # Proceed if there are remaining assaults
         if self.assault_count < 3:
-            # Reappear and charge after the delay
+            # Reappear and charge after the initial delay
             if self.attack_elapsed_time >= self.next_assault_time:
-                # Fully visible now, prepare to charge
                 self.visible = True
-                self.image.set_alpha(255)  # Set full visibility
+                self.image.set_alpha(255)  # Make fully visible for the assault
                 direction = self.assault_directions[self.assault_count]
 
-                # Determine the starting position based on the chosen direction
+                # Set the starting position and angle based on direction
                 if self.start_charge:
-                    self.start_charge = False
+                    self.visible = False
+                    self.start_charge = False  # Start charge only once per assault
                     if direction == "left":
                         self.x = -self.width
-                        self.y = (
-                            player.character_y + player.height / 2 - self.height / 2
-                        )
+                        self.y = player.character_y + player.height / 2 - self.height / 2
                         angle = -90
                     elif direction == "right":
                         self.x = WIDTH
-                        self.y = (
-                            player.character_y + player.height / 2 - self.height / 2
-                        )
+                        self.y = player.character_y + player.height / 2 - self.height / 2
                         angle = 90
                     elif direction == "below":
                         self.x = player.character_x + player.width / 2 - self.width / 2
                         self.y = HEIGHT
                         angle = 0
 
-                    # Rotate the image to match the attack direction
+                    # Rotate and update the boss rect to match charge direction
                     self.image = pygame.transform.rotate(self.image, angle)
-                    self.rect = self.image.get_rect(
-                        center=(self.x + self.width // 2, self.y + self.height // 2)
-                    )
+                    self.rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
 
-                # Calculate the progress of the charge
-                t = (
-                    self.attack_elapsed_time - self.next_assault_time
-                ) / self.charge_duration
+                # Calculate charge progress based on time interpolation
+                t = (self.attack_elapsed_time - self.next_assault_time) / self.charge_duration
 
-                # Interpolate the position based on the tweened time
+                # Interpolate position towards target direction
                 if direction in ["left", "right"]:
-                    start_pos = 0 - self.width if direction == "right" else WIDTH
-                    end_pos = (
-                        WIDTH + self.width if direction == "right" else 0 - self.width
-                    )
+                    start_pos = -self.width if direction == "right" else WIDTH
+                    end_pos = WIDTH + self.width if direction == "right" else -self.width
                     self.x = start_pos + t * (end_pos - start_pos)
                 elif direction == "below":
                     start_pos = HEIGHT
-                    end_pos = 0 - self.height
+                    end_pos = -self.height
                     self.y = start_pos + t * (end_pos - start_pos)
 
-                # End this assault if the charge duration is complete
-                if (
-                    self.attack_elapsed_time - self.next_assault_time
-                    >= self.charge_duration
-                ):
-                    # Update for the next assault
+                # Conclude the current assault when the charge duration is complete
+                if (self.attack_elapsed_time - self.next_assault_time) >= self.charge_duration:
                     self.assault_count += 1
-                    self.next_assault_time += (
-                        self.charge_duration + 0.5
-                    )  # Additional delay before the next attack
+                    self.next_assault_time += self.charge_duration + 0.5  # Set delay before the next assault
                     self.visible = False  # Hide the boss again
                     self.start_charge = True
-                    if direction == "left":
-                        angle = 90
-                    elif direction == "right":
-                        angle = -90
-                    elif direction == "below":
-                        angle = 0
 
-                    # Rotate the image back
+                    # Reset angle for next assault
+                    angle = 90 if direction == "left" else -90 if direction == "right" else 0
                     self.image = pygame.transform.rotate(self.image, angle)
-                    self.rect = self.image.get_rect(
-                        center=(self.x + self.width // 2, self.y + self.height // 2)
-                    )
+                    self.rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
 
-        # End the entire attack sequence after three assaults
+        # Finalize the attack sequence after three assaults
         if self.assault_count >= 3:
-            self.x = 1100
-            self.y = 100
-            self.visible = True  # Make sure the boss is visible at the end
-            self.assault_count = 0  # Track the number of assaults performed
-            self.next_assault_time = 0.5  # Delay before each new assault
+            self.reset_position()
+            self.visible = True
+            self.assault_count = 0
+            self.next_assault_time = 0.5  # Reset delay for future attacks
             self.image.set_alpha(255)
             self.end_attack()
+
+    def reset_position(self):
+        """Reset the boss to the original visible position after the assault sequence."""
+        self.x = self.original_x
+        self.y = self.original_y
+
 
     def torpedo(self, dt, player):
         """

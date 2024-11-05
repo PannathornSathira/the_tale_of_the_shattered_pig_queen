@@ -72,10 +72,10 @@ class Level:
                 self.platforms[row][col] = platform
 
     def render(self, screen):
-        for y in range(self.map_height):
-            for x in range(self.map_width):
-                id = self.tiles[y][x]
-                screen.blit(self.tilemaps[id], (x * TILE_SIZE * 3, y * TILE_SIZE * 3))
+        # for y in range(self.map_height):
+        #     for x in range(self.map_width):
+        #         id = self.tiles[y][x]
+        #         screen.blit(self.tilemaps[id], (x * TILE_SIZE * 3, y * TILE_SIZE * 3))
 
         # Draw platforms
         for row in range(NUM_ROW):

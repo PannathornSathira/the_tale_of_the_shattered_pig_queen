@@ -1,5 +1,6 @@
 import pygame
 import json
+from src.constants import *
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
@@ -91,7 +92,12 @@ class SpriteManager:
     def __init__(self):
         self.spriteCollection = self.loadSprites(
             [
-                "./sprite/Character.json"
+                "./sprite/King/KingFireGun.json",
+                "./sprite/King/KingFireShotgun.json",
+                "./sprite/King/KingSelectMap.json",
+                "./sprite/Bosses/KingMummy.json",
+                "./sprite/Bosses/BlackWidow.json",
+                "./sprite/Bosses/Medusa.json",
             ]
         )
 
@@ -100,56 +106,45 @@ class SpriteManager:
         for url in urlList:
             with open(url) as jsonData:
                 data = json.load(jsonData)
-                mySpritesheet = SpriteSheet(data["spriteSheetURL"])
                 dic = {}
 
                 if data["type"] == "animation":
                     for sprite in data["sprites"]:
                         images = []
+                        # Load individual image files for animation frames
                         for image in sprite["images"]:
-                            try:
-                                xSize = sprite['xsize']
-                                ySize = sprite['ysize']
-                            except KeyError:
-                                xSize, ySize = data['size']
-                            images.append(
-                                mySpritesheet.image_at(
-                                    image["x"],
-                                    image["y"],
-                                    image["scale"],
-                                    colorkey=-1, #sprite["colorKey"],
-                                    xTileSize=xSize,
-                                    yTileSize=ySize,
+                            if "path" in image:
+                                loaded_image = pygame.image.load(image["path"]).convert_alpha()
+                                scale = image.get("scale", 1)  # Default scale to 1 if not specified
+                                loaded_image = pygame.transform.scale(
+                                    loaded_image,
+                                    (loaded_image.get_width() * scale, loaded_image.get_height() * scale)
                                 )
+                                images.append(loaded_image)
+
+                        # Load idle image if specified
+                        idle_img = None
+                        if "idle_image" in sprite:
+                            idle_info = sprite["idle_image"]
+                            idle_img = pygame.image.load(idle_info["path"]).convert_alpha()
+                            idle_img = pygame.transform.scale(
+                                idle_img,
+                                (idle_img.get_width() * idle_info["scale"], idle_img.get_height() * idle_info["scale"])
                             )
-                        try:
-                            idle_info = sprite['idle_image']
-                            idle_img = mySpritesheet.image_at(
-                                idle_info["x"],
-                                idle_info["y"],
-                                idle_info["scale"],
-                                colorkey=-1,
-                                xTileSize=xSize,
-                                yTileSize=ySize
-                            )
-                        except KeyError:
-                            idle_img = None
-                        try:
-                            loop = sprite['loop']
-                        except KeyError:
-                            loop = True
+
+                        # Looping flag
+                        loop = sprite.get("loop", True)
 
                         dic[sprite["name"]] = Sprite(
                             None,
-                            animation=Animation(images, idleSprite=idle_img, looping=loop, interval_time=sprite["interval_time"]),
+                            animation=Animation(images, idleSprite=idle_img, looping=loop, interval_time=sprite.get("interval_time", 0.15)),
                         )
 
-                    resDict.update(dic)
-                    continue
                 else:
+                    # Handle loading non-animation sprites here (if needed)
                     for sprite in data["sprites"]:
                         try:
-                            colorkey = sprite["colorKey"]
+                            colorkey = sprite.get("colorKey")
                         except KeyError:
                             colorkey = None
                         try:
@@ -157,19 +152,19 @@ class SpriteManager:
                             ySize = sprite['ysize']
                         except KeyError:
                             xSize, ySize = data['size']
+
+                        # Load individual image
                         dic[sprite["name"]] = Sprite(
-                            mySpritesheet.image_at(
-                                sprite["x"],
-                                sprite["y"],
-                                sprite["scalefactor"],#//shrink_scale,
-                                colorkey,
-                                xTileSize=xSize,
-                                yTileSize=ySize,
-                            ),
+                            pygame.image.load(sprite["path"]).convert_alpha(),
                         )
                     resDict.update(dic)
                     continue
+
+                resDict.update(dic)
+
         return resDict
+
+
 
 class SpriteSheet(object):
     def __init__(self, filename):
@@ -199,3 +194,30 @@ def render_text(text, x, y, font, screen):
     """Render text at a given position."""
     text_surface = font.render(text, True, (0, 0, 0))  # Render text in black color
     screen.blit(text_surface, (x, y))
+    
+def read_saveFile():
+    """Read the save file and return the data as a dictionary."""
+    try:
+        with open(SAVE_FILE_NAME, 'r') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error reading save file: {e}")
+        return {}
+    
+def save_values(updated_values):
+    """Update only the provided keys in the save file without overwriting other data."""
+    try:
+        # Load existing data from save file
+        with open(SAVE_FILE_NAME, 'r') as file:
+            data = json.load(file)
+        
+        # Update only the keys provided in updated_values
+        data.update(updated_values)
+        
+        # Save the updated data back to the file
+        with open(SAVE_FILE_NAME, 'w') as file:
+            json.dump(data, file, indent=4)
+            print("Save file updated successfully.")
+    
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error updating save file: {e}")
