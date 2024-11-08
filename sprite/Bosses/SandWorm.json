@@ -1,0 +1,79 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "sandworm_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm4.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        }, {
+            "name": "sandworm_boss_dash_start",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/SandWorm/SandWorm2.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.1,
+            "loop": true
+        }, {
+            "name": "sandworm_boss_dash_1",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm3.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        }, {
+            "name": "sandworm_boss_dash_2",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm4.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        }, {
+            "name": "sandworm_boss_shockwave",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm6.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/SandWorm/SandWorm5.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.25,
+            "loop": false
+        }, {
+            "name": "sandworm_boss_sand_bullet",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm4.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/SandWorm/SandWorm5.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.25,
+            "loop": false
+        }
+    ]
+}

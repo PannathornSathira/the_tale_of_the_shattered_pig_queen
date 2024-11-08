@@ -98,6 +98,8 @@ class SpriteManager:
                 "./sprite/Bosses/KingMummy.json",
                 "./sprite/Bosses/BlackWidow.json",
                 "./sprite/Bosses/Medusa.json",
+                "./sprite/Bosses/SandWorm.json",
+                "./sprite/Bosses/SandWormBullet.json",
             ]
         )
 

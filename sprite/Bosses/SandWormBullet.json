@@ -1,0 +1,13 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "sandworm_bullet",
+            "path": "./graphics/SandWorm/bullet1.PNG",
+            "xsize": 204,
+            "ysize": 120,
+            "colorKey": null
+        }
+    ]
+}
