@@ -2,12 +2,14 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 
 class SandWormBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, health=health, damage=damage)
+        super().__init__(x - 100, HEIGHT-600, width=300, height=600, health=health, damage=damage)
+        self.animation = sprite_collection["sandworm_boss_idle"].animation
 
         # Customizing the appearance
         self.image.fill((255, 255, 0))
@@ -52,10 +54,18 @@ class SandWormBoss(BaseBoss):
             self.shockwave_effect_time += dt
             if self.shockwave_effect_time >= self.shockwave_effect_duration:
                 self.shockwave_effect_isVisible = False  # Hide effect after duration
+                
+        if self.current_attack == self.shockwave and self.warning_time_timer >= 0:
+            self.animation = sprite_collection["sandworm_boss_shockwave"].animation
+            
+        if self.current_attack == self.sand_bullet and self.warning_time_timer >= 0:
+            self.animation = sprite_collection["sandworm_boss_sand_bullet"].animation
+                
+        self.animation.update(dt)
 
     def select_attack(self, player):
-        attack_choice = random.choice(["sand_bullet", "shockwave", "dash"])
-        # attack_choice = random.choice(["dash"])
+        # attack_choice = random.choice(["sand_bullet", "shockwave", "dash"])
+        attack_choice = random.choice(["sand_bullet"])
 
         if attack_choice == "sand_bullet":
             self.current_attack = self.sand_bullet
@@ -71,7 +81,8 @@ class SandWormBoss(BaseBoss):
         bullet_direction = "left"
         bullet_x = self.x + (self.width // 2)  # Center the bullet on the boss
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
-        bullet_width = 100
+        bullet_width = 50
+        bullet_height = 20
         
         distance_y = (player.character_y + player.height // 2) - (self.y + (self.height // 2))
         distance_x = abs((player.character_x + player.width // 2) - (self.x + (self.width // 2)))
@@ -81,8 +92,14 @@ class SandWormBoss(BaseBoss):
         bullet = BossBullet(bullet_x, bullet_y, bullet_direction, speed_y)
         bullet.speed = self.sand_bullet_speed
         bullet.width = bullet_width
+        bullet.height = bullet_height
         bullet.rect.width = bullet_width
+        bullet.rect.height = bullet_height
+        bullet.re_initialize()
         self.bullets.append(bullet)
+        
+        sprite_collection["sandworm_boss_sand_bullet"].animation.Refresh()
+        self.animation = sprite_collection["sandworm_boss_idle"].animation
         self.end_attack()
         
     def shockwave(self, dt, player):
@@ -106,7 +123,9 @@ class SandWormBoss(BaseBoss):
         for i in range(self.bullet_layer_num):
             bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
             self.bullets.append(bullet)  # Add bullet to the list
-                
+            
+        sprite_collection["sandworm_boss_shockwave"].animation.Refresh()
+        self.animation = sprite_collection["sandworm_boss_idle"].animation
         self.end_attack()
         
     def dash(self, dt, player):
@@ -114,48 +133,67 @@ class SandWormBoss(BaseBoss):
         Dash: Dash toward and attack the player
         """
         if self.attack_elapsed_time == 0:
-            # Set initial y position to align with the player
-            self.y = player.character_y + player.height / 2 - self.width / 2
-
-            # Rotate the image for a horizontal strike position
-            rotated_image = pygame.transform.rotate(self.image, 90)
-            self.image = rotated_image
-            self.rect = self.image.get_rect(center=(self.x + self.original_width // 2, self.y + self.height // 2))
-            self.height = self.original_width
+            # Set initial x position to align with the player
+            self.x = player.character_x + player.width / 2 - self.width / 2
+            self.y = 0
 
         # Calculate the normalized time variable for elongation and contraction
         t = self.attack_elapsed_time / self.dash_attack_duration
 
-        # First half of the attack: elongate across the screen
-        if t <= 0.5:
-            # Increase width gradually to the screen width
-            self.width = int(self.original_width + (WIDTH - self.original_width) * (t * 2))
-            self.x = WIDTH - self.width  # Adjust x position to elongate from the right side
+        max_height = self.original_height
+        min_height = 200
+        if t <= 0.2:
+            self.height = min_height
+            self.y = HEIGHT - min_height
+            self.animation = sprite_collection["sandworm_boss_dash_start"].animation
+        # First half of the attack: elongate upwards from the ground
+        elif t <= 0.6:
+            # Increase height gradually up to a limit (e.g., 1/3 of screen height)
+            self.height = int(max_height * ((t - 0.2) * 2.5))
+            # Adjust y so the bottom of the boss stays at ground level
+            self.y = HEIGHT - self.height
+            if t <= 0.4:
+                self.animation = sprite_collection["sandworm_boss_dash_1"].animation
+            else:
+                self.animation = sprite_collection["sandworm_boss_dash_2"].animation
+
+        # Second half: contract height back down to original
         else:
-            # Second half: retract back to original width and position
-            self.width = int(WIDTH - (WIDTH - self.original_width) * (t - 0.5) * 2)
-            self.x = WIDTH - self.width  # Adjust position for retracting
-            if self.width < self.original_width:
-                self.width = self.original_width  # Restore to original width when finished
+            self.height = int(max_height - (max_height * ((t - 0.6) * 2.5)))
+            self.y = HEIGHT - self.height  # Keep the base at ground level
+            if t <= 0.8:
+                self.animation = sprite_collection["sandworm_boss_dash_2"].animation
+            else:
+                self.animation = sprite_collection["sandworm_boss_dash_1"].animation
+            # Clamp to prevent overshooting original height
+            if self.height < min_height:
+                self.height = min_height
+                self.animation = sprite_collection["sandworm_boss_dash_start"].animation
 
         # Adjust the image scale dynamically
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.image = pygame.transform.scale(self.original_image, (self.width, self.height))
         self.rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
 
         # End the attack and reset to original size and position
         if t >= 1.0:
-            self.end_attack()
+            self.animation = sprite_collection["sandworm_boss_idle"].animation
             self.width = self.original_width
             self.height = self.original_height
             self.x = self.original_x
             self.y = self.original_y
             self.image = self.original_image
             self.rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
+            self.end_attack()
 
 
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
-        super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width + 200, self.rect.height))
+            screen.blit(img, (self.x -100, self.y))
+            for bullet in self.bullets:
+                bullet.render(screen)
         
         # Render shockwave effect if visible
         if self.shockwave_effect_isVisible:
