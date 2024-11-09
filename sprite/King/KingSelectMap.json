@@ -6,11 +6,11 @@
             "name": "king_select_map",
             "images": [
                 {
-                    "path": "./graphics/King/King.PNG",
+                    "path": "./graphics/King/King.jpg",
                     "scale": 1
                 }
             ],
-            "interval_time": 0.1,
+            "interval_time": 0.5,
             "loop": true
         }
     ]

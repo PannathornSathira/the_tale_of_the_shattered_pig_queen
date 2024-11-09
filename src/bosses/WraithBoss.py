@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
@@ -9,14 +10,14 @@ from src.bosses.BeamAttack import BeamAttack
 
 class WraithBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, width=150, height=300, health=health, damage=damage)
+        super().__init__(1000, 200, width=250, height=400, health=health, damage=damage)
         
         self.player_character_x = 0
         self.player_character_y = 0
+        self.direction = "left"
 
         # Customizing the appearance
-        self.image.fill((0, 0, 0))  # Set color
-        self.visible = True
+        self.animation = sprite_collection["wraith_boss_idle"].animation
         
         # Blindness attack properties
         self.blindness_active = False
@@ -39,10 +40,12 @@ class WraithBoss(BaseBoss):
         self.original_y = self.y
         self.haunting_wail_duration = 5
         self.haunting_wail_bullet_speed = 400  # Speed of each bullet
-        self.haunting_wail_bullet_gap_cooldown = 0.05
+        self.haunting_wail_bullet_gap_cooldown = 0.08
         self.haunting_wail_bullet_gap_time = 0
         self.haunting_wail_current_angle = 0
         self.haunting_wail_num_bullets_in_circle = 30
+        self.haunting_wail_portal_animation = sprite_collection["wraith_boss_haunting_wail_portal"].animation
+        self.show_portal_effect = False
         
         #Illusions attack prop
         self.illusions_minibosses = []
@@ -55,8 +58,27 @@ class WraithBoss(BaseBoss):
         # Update position and check if the boss should attack
         super().update(dt, player, platforms)
         
+        if self.x + self.width <= player.character_x:
+            self.direction = "right"
+        elif self.x >= player.character_x + player.width:
+            self.direction = "left"
+        
         self.player_character_x = player.character_x
         self.player_character_y = player.character_y
+        
+        if self.warning_time_timer > 0 and self.current_attack == self.haunting_wail:
+            self.show_portal_effect = True
+            self.animation = sprite_collection["wraith_boss_shooting_animation"].animation
+        elif self.warning_time_timer > 0 and self.current_attack == self.homing_bullet:
+            self.animation = sprite_collection["wraith_boss_shooting_animation"].animation
+        elif self.warning_time_timer > 0 and self.warning_time_timer <= self.warning_time and self.current_attack == self.illusions:
+            self.y = HEIGHT + 100
+        else:
+            self.animation = sprite_collection["wraith_boss_idle"].animation
+            self.show_portal_effect = False
+            
+        if self.show_portal_effect:
+            self.haunting_wail_portal_animation.update(dt)
         
         # Update blindness effect
         if self.blindness_active:
@@ -79,10 +101,14 @@ class WraithBoss(BaseBoss):
                 illusion.update(dt, player, platforms)
             else:
                 self.illusions_minibosses.remove(illusion)
+                
+        self.animation.update(dt)
 
     def select_attack(self, player):
 
         attack_choice = random.choice(["blindness", "homing_bullet", "illusions", "haunting_wail"])
+        # attack_choice = random.choice(["illusions"])
+
 
         if attack_choice == "blindness":
             self.current_attack = self.blindness
@@ -165,10 +191,10 @@ class WraithBoss(BaseBoss):
             
             # Create and position the bullet
             bullet = BossBullet(self.x + self.width / 2, self.y + self.height / 2, "general", self.damage, (bullet_dx, bullet_dy), damage=self.damage)
-            bullet.width = BULLET_WIDTH
-            bullet.height = BULLET_WIDTH
-            bullet.rect.width = BULLET_WIDTH
-            bullet.rect.height = BULLET_WIDTH
+            bullet.width = 20
+            bullet.height = 10
+            bullet.re_initialize()
+            bullet.set_image(sprite_collection["wraith_bullet2"].image)
             self.bullets.append(bullet)
             
             # Increment angle to create a circular firing pattern
@@ -184,8 +210,12 @@ class WraithBoss(BaseBoss):
 
 
     def render(self, screen):
-        if self.visible:
-            super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width + 100, self.rect.height))
+            if self.direction == "right":
+                img = pygame.transform.flip(img, True, False)
+            screen.blit(img, (self.x - 50, self.y))
             
         # Render blindness effect with spotlight
         if self.blindness_active:
@@ -208,9 +238,17 @@ class WraithBoss(BaseBoss):
 
             # Draw the overlay onto the screen
             screen.blit(darkness_overlay, (0, 0))
+            
+        if self.show_portal_effect:
+            img = self.haunting_wail_portal_animation.image
+            img = pygame.transform.scale(img, (self.rect.width + 100, 100))
+            screen.blit(img, (WIDTH / 2 - (self.rect.width + 100)/2, HEIGHT / 2 + 40))
     
         # Render homing bullets
         for bullet in self.homing_bullets:
+            bullet.render(screen)
+            
+        for bullet in self.bullets:
             bullet.render(screen)
             
         for illusion in self.illusions_minibosses:
@@ -223,9 +261,11 @@ class HomingBullet:
         self.y = y
         self.speed = speed
         self.damage = damage
-        self.size = 5
-        self.image = pygame.Surface((self.size, self.size))
-        self.image.fill((191, 0, 255))
+        self.width = 25
+        self.height = 15
+        self.image = sprite_collection["wraith_bullet1"].image
+        self.original_image = self.image.copy()
+        self.rect = self.image.get_rect(center=(self.x, self.y))
         self.hit_player = False
         self.life_time = 10
         self.active = True
@@ -238,8 +278,8 @@ class HomingBullet:
         if self.active:
             self.life_time -= dt
             # Calculate direction towards the player
-            target_x = player.character_x + player.width / 2 - self.size / 2
-            target_y = player.character_y + player.height / 2 - self.size / 2
+            target_x = player.character_x + player.width / 2 - self.width / 2
+            target_y = player.character_y + player.height / 2 - self.height / 2
             dx = target_x - self.x
             dy = target_y - self.y
             target_angle = math.atan2(dy, dx)
@@ -258,9 +298,12 @@ class HomingBullet:
             # Move in the current direction
             self.x += math.cos(self.direction) * self.speed * dt
             self.y += math.sin(self.direction) * self.speed * dt
+            
+            angle_degrees = math.degrees(-self.direction) + 180
+            self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), angle_degrees)
+            self.rect = self.image.get_rect(center=(self.x, self.y))
 
-            # Check if IceShard hits the player
-            if pygame.Rect(self.x, self.y, self.size, self.size).colliderect(player.rect):
+            if self.rect.colliderect(player.rect):
                 self.hit_player = True
                 
             if self.life_time <= 0:
@@ -268,21 +311,27 @@ class HomingBullet:
 
     def render(self, screen):
         if self.active:
-            screen.blit(self.image, (self.x, self.y))
+            img = self.image
+            screen.blit(img, (self.x, self.y))
         
         
 class IllusionBoss(BaseBoss):
     def __init__(self, x, y, width, height, speed=75, damage=15, health=500):
-        super().__init__(x, y, width=150, height=300, health=health)
+        super().__init__(x, y, width=200, height=280, health=health)
         self.speed = speed
         self.damage = damage
-        self.image.fill((0,0,0))  # Spiderling color
-        
+        self.animation = sprite_collection["wraith_boss_illusion"].animation
+        self.direction = "left"
         self.alive = True
 
     def update(self, dt, player, platforms):
         super().update(dt, player, platforms)
         # Calculate direction towards the player
+        if self.x + self.width <= player.character_x:
+            self.direction = "right"
+        elif self.x >= player.character_x + player.width:
+            self.direction = "left"
+            
         target_x = player.character_x + player.width / 2 - self.width / 2
         target_y = player.character_y + player.height / 2 - self.height / 2
         dx = target_x - self.x
@@ -302,6 +351,8 @@ class IllusionBoss(BaseBoss):
             if bullet.active and self.rect.colliderect(pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)):
                 bullet.active = False
                 self.take_damage(bullet.damage)
+                
+        self.animation.update(dt)
             
 
     def contact_hit(self, player):
@@ -311,5 +362,10 @@ class IllusionBoss(BaseBoss):
             player.take_damage(self.damage)
 
     def render(self, screen):
-        super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width + 80, self.rect.height))
+            if self.direction == "right":
+                img = pygame.transform.flip(img, True, False)
+            screen.blit(img, (self.x - 40, self.y))
 

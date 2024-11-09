@@ -103,6 +103,8 @@ class SpriteManager:
                 "./sprite/Bosses/MedusaImage.json",
                 "./sprite/Bosses/SandWorm.json",
                 "./sprite/Bosses/SandWormBullet.json",
+                "./sprite/Bosses/Wraith.json",
+                "./sprite/Bosses/WraithImage.json",
             ]
         )
 

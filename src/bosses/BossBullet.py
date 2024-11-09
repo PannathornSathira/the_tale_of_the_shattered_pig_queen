@@ -34,7 +34,10 @@ class BossBullet(Bullet):
         
     def calculate_angle(self):
         """Calculate the rotation angle based on dx and dy speeds."""
-        angle_radians = math.atan2(-self.speed_y, self.speed)  # Negative dy to adjust for screen coordinates
+        if self.dx != 0 or self.dy != 0:
+            angle_radians = math.atan2(self.dy, self.dx) + math.pi
+        else:
+            angle_radians = math.atan2(-self.speed_y, self.speed)  # Negative dy to adjust for screen coordinates
         angle_degrees = math.degrees(angle_radians)
         return angle_degrees
 

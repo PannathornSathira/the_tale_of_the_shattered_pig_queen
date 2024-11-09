@@ -1,0 +1,20 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "wraith_bullet1",
+            "path": "./graphics/Wraith/bullet2.PNG",
+            "xsize": 182,
+            "ysize": 99,
+            "colorKey": null
+        },
+        {
+            "name": "wraith_bullet2",
+            "path": "./graphics/Wraith/bullet2.PNG",
+            "xsize": 203,
+            "ysize": 120,
+            "colorKey": null
+        }
+    ]
+}

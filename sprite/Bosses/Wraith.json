@@ -1,0 +1,62 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "wraith_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/Wraith/Wraith1.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        },
+        {
+            "name": "wraith_boss_shooting_animation",
+            "images": [
+                {
+                    "path": "./graphics/Wraith/Wraith2.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        },
+        {
+            "name": "wraith_boss_haunting_wail_portal",
+            "images": [
+                {
+                    "path": "./graphics/Wraith/Teleport1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Wraith/Teleport2.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Wraith/Teleport3.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Wraith/Teleport4.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.1,
+            "loop": true
+        },
+        {
+            "name": "wraith_boss_illusion",
+            "images": [
+                {
+                    "path": "./graphics/Wraith/Wraith3.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        }
+    ]
+}
