@@ -6,18 +6,18 @@
             "name": "king_fire_shotgun",
             "images": [
                 {
-                    "path": "./graphics/King/King_shotgun1.PNG",
+                    "path": "./graphics/King/King_Shotgun1.jpg",
                     "scale": 1
                 },
                 {
-                    "path": "./graphics/King/King_shotgun2.PNG",
+                    "path": "./graphics/King/King_Shotgun2.jpg",
                     "scale": 1
                 }
             ],
             "interval_time": 0.1,
             "loop": true,
             "idle_image": {
-                "path": "./graphics/King/King_shotgun1.PNG",
+                "path": "./graphics/King/King_Shotgun1.jpg",
                 "scale": 1
             }
         }

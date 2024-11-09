@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from src.constants import *
 from src.bosses.BeamAttack import BeamAttack
 class BaseBoss:
@@ -75,6 +75,7 @@ class BaseBoss:
         self.attack_delay_timer = 0
         self.attack_elapsed_time = 0
         self.warning_time_timer = 0
+        self.attack_cooldown = random.randint(2, 5)
 
     def contact_hit(self, player):
         """Implement an attack pattern against the player."""
