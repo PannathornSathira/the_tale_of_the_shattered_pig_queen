@@ -3,9 +3,16 @@
     "spriteSheetURL": null,
     "sprites": [
         {
-            "name": "sandworm_bullet",
+            "name": "sandworm_bullet1",
             "path": "./graphics/SandWorm/bullet1.PNG",
             "xsize": 204,
+            "ysize": 120,
+            "colorKey": null
+        },
+        {
+            "name": "sandworm_bullet2",
+            "path": "./graphics/SandWorm/bullet2.PNG",
+            "xsize": 203,
             "ysize": 120,
             "colorKey": null
         }

@@ -96,6 +96,7 @@ class SpriteManager:
                 "./sprite/King/KingFireShotgun.json",
                 "./sprite/King/KingSelectMap.json",
                 "./sprite/Bosses/KingMummy.json",
+                "./sprite/Bosses/KingMummyImage.json",
                 "./sprite/Bosses/BlackWidow.json",
                 "./sprite/Bosses/Medusa.json",
                 "./sprite/Bosses/SandWorm.json",

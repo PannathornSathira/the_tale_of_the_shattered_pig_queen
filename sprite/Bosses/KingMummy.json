@@ -8,18 +8,32 @@
                 {
                     "path": "./graphics/KingMummy/KingMummy2.PNG",
                     "scale": 1
-                },
-                {
-                    "path": "./graphics/KingMummy/KingMummy3.PNG",
-                    "scale": 1
                 }
             ],
-            "interval_time": 0.2,
+            "interval_time": 0.5,
             "loop": true,
             "idle_image": {
                 "path": "./graphics/KingMummy/KingMummy1.PNG",
                 "scale": 1
             }
+        },{
+            "name": "king_mummy_cursed_wrapping",
+            "images": [
+                {
+                    "path": "./graphics/KingMummy/CursedWrapping1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/KingMummy/CursedWrapping2.PNG",
+                    "scale": 1
+                },                
+                {
+                    "path": "./graphics/KingMummy/CursedWrapping3.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
         }
     ]
 }

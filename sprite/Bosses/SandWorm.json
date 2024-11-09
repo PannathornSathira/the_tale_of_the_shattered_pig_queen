@@ -74,6 +74,20 @@
             ],
             "interval_time": 0.25,
             "loop": false
+        }, {
+            "name": "sandworm_boss_shockwave_effect",
+            "images": [
+                {
+                    "path": "./graphics/SandWorm/SandWorm1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/SandWorm/SandWorm2.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.1,
+            "loop": true
         }
     ]
 }
