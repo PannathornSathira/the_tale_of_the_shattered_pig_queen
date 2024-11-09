@@ -1,0 +1,27 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "medusa_boss_snake",
+            "path": "./graphics/Medusa/Medusa3.3.PNG",
+            "xsize": 296,
+            "ysize": 74,
+            "colorKey": null
+        },
+        {
+            "name": "medusa_boss_arrow1",
+            "path": "./graphics/Medusa/Arrow1.PNG",
+            "xsize": 184,
+            "ysize": 74,
+            "colorKey": null
+        },
+        {
+            "name": "medusa_boss_arrow2",
+            "path": "./graphics/Medusa/Arrow2.PNG",
+            "xsize": 183,
+            "ysize": 74,
+            "colorKey": null
+        }
+    ]
+}

@@ -10,8 +10,12 @@ class BeamAttack(BossBullet):
         self.rect.width = self.width
         self.rect.height = self.height
         self.active = True
-        self.color = (0, 255, 0)
+        self.color = (255, 0, 0)
         self.speed = BEAM_SPEED
+        self.image = pygame.Surface(
+            (self.width, self.height)
+        )
+        self.image.fill(self.color)
         
         # Adjust beam starting postition and rotation
         # if self.direction == "right":
