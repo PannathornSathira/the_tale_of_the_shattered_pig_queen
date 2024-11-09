@@ -26,6 +26,44 @@
             ],
             "interval_time": 0.5,
             "loop": false
+        }, {
+            "name": "medusa_boss_petrifying_gaze",
+            "images": [
+                {
+                    "path": "./graphics/Medusa/Medusa2.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": false
+        }, {
+            "name": "medusa_boss_arrow_barrage",
+            "images": [
+                {
+                    "path": "./graphics/Medusa/Medusa4.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Medusa/Medusa6.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": false
+        }, {
+            "name": "medusa_boss_arrow_attack",
+            "images": [
+                {
+                    "path": "./graphics/Medusa/Medusa5.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Medusa/Medusa6.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": false
         }
     ]
 }

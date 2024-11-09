@@ -12,24 +12,25 @@ class BossBullet(Bullet):
         self.speed_y = dy
         self.color = (255, 0, 0)
         self.damage = 10
-        self.image = sprite_collection["sandworm_bullet1"].image
-        
+        self.image = pygame.Surface(
+            (self.width, self.height)
+        )
+        self.image.fill((255, 0, 0))
+        self.original_image = self.image.copy()
         self.angle = self.calculate_angle()
-        self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
-        self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
+        self.image = pygame.transform.rotate(self.original_image, -self.angle)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
         
     def re_initialize(self):
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.angle = self.calculate_angle()
-        self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
-        self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
+        self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), -self.angle)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
     
     def set_image(self, image):
-        self.image = image
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.original_image = image
         self.angle = self.calculate_angle()
-        self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
-        self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
+        self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), -self.angle)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
         
     def calculate_angle(self):
         """Calculate the rotation angle based on dx and dy speeds."""
@@ -43,4 +44,4 @@ class BossBullet(Bullet):
             self.y += self.speed_y * dt
 
     def render(self, screen):
-        screen.blit(self.rotated_image, self.rect)
+        screen.blit(self.image, self.rect)

@@ -1,0 +1,13 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "black_widow_boss_cobweb",
+            "path": "./graphics/BlackWidow/Cobweb.PNG",
+            "xsize": 510,
+            "ysize": 684,
+            "colorKey": null
+        }
+    ]
+}

@@ -20,6 +20,21 @@
                 "path": "./graphics/BlackWidow/BlackWidow1.PNG",
                 "scale": 1
             }
+        },
+        {
+            "name": "black_widow_spiderling",
+            "images": [
+                {
+                    "path": "./graphics/BlackWidow/Spiderling1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlackWidow/Spiderling2.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
         }
     ]
 }
