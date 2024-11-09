@@ -23,11 +23,12 @@ class SandWormBoss(BaseBoss):
         self.shockwave_effect_duration = 0.3
         self.shockwave_effect_time = 0
         self.shockwave_effect_isVisible = False
-        self.shockwave_effect_rect = pygame.Rect(self.x + self.width / 2 - self.shockwave_distance, GROUND_LEVEL_Y, self.shockwave_distance * 2, 20)
+        self.shockwave_effect_rect = pygame.Rect(self.x + self.width / 2 - self.shockwave_distance, GROUND_LEVEL_Y, self.shockwave_distance * 2, 50)
         self.bullet_layer_num = 5
         self.bullet_angle = 150
         self.cone_starting_angle = 0
         self.cone_starting_angle_random_shift_max = 90
+        self.shockwave_effect_animation = sprite_collection["sandworm_boss_shockwave_effect"].animation
         
         # Dash attack prop
         self.dash_attack_duration = 3
@@ -52,8 +53,10 @@ class SandWormBoss(BaseBoss):
         # Update effect duration
         if self.shockwave_effect_isVisible:
             self.shockwave_effect_time += dt
+            self.shockwave_effect_animation.update(dt)
             if self.shockwave_effect_time >= self.shockwave_effect_duration:
                 self.shockwave_effect_isVisible = False  # Hide effect after duration
+                self.shockwave_effect_animation.Refresh()
                 
         if self.current_attack == self.shockwave and self.warning_time_timer >= 0:
             self.animation = sprite_collection["sandworm_boss_shockwave"].animation
@@ -64,8 +67,8 @@ class SandWormBoss(BaseBoss):
         self.animation.update(dt)
 
     def select_attack(self, player):
-        # attack_choice = random.choice(["sand_bullet", "shockwave", "dash"])
-        attack_choice = random.choice(["sand_bullet"])
+        attack_choice = random.choice(["sand_bullet", "shockwave", "dash"])
+        # attack_choice = random.choice(["sand_bullet"])
 
         if attack_choice == "sand_bullet":
             self.current_attack = self.sand_bullet
@@ -95,7 +98,7 @@ class SandWormBoss(BaseBoss):
         bullet.height = bullet_height
         bullet.rect.width = bullet_width
         bullet.rect.height = bullet_height
-        bullet.re_initialize()
+        bullet.set_image(sprite_collection["sandworm_bullet1"].image)
         self.bullets.append(bullet)
         
         sprite_collection["sandworm_boss_sand_bullet"].animation.Refresh()
@@ -122,6 +125,7 @@ class SandWormBoss(BaseBoss):
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
         for i in range(self.bullet_layer_num):
             bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
+            bullet.set_image(sprite_collection["sandworm_bullet2"].image)
             self.bullets.append(bullet)  # Add bullet to the list
             
         sprite_collection["sandworm_boss_shockwave"].animation.Refresh()
@@ -141,7 +145,7 @@ class SandWormBoss(BaseBoss):
         t = self.attack_elapsed_time / self.dash_attack_duration
 
         max_height = self.original_height
-        min_height = 200
+        min_height = 100
         if t <= 0.2:
             self.height = min_height
             self.y = HEIGHT - min_height
@@ -197,4 +201,6 @@ class SandWormBoss(BaseBoss):
         
         # Render shockwave effect if visible
         if self.shockwave_effect_isVisible:
-            pygame.draw.rect(screen, (255, 0, 0), self.shockwave_effect_rect)
+            img = sprite_collection["sandworm_boss_shockwave_effect"].animation.image
+            img = pygame.transform.scale(img, (self.shockwave_effect_rect.width, self.shockwave_effect_rect.height))
+            screen.blit(img, (self.shockwave_effect_rect.x, self.shockwave_effect_rect.y))

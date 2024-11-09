@@ -12,7 +12,7 @@ class BossBullet(Bullet):
         self.speed_y = dy
         self.color = (255, 0, 0)
         self.damage = 10
-        self.image = sprite_collection["sandworm_bullet"].image
+        self.image = sprite_collection["sandworm_bullet1"].image
         
         self.angle = self.calculate_angle()
         self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
@@ -23,7 +23,13 @@ class BossBullet(Bullet):
         self.angle = self.calculate_angle()
         self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
         self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
-        print(self.angle)
+    
+    def set_image(self, image):
+        self.image = image
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.angle = self.calculate_angle()
+        self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
+        self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
         
     def calculate_angle(self):
         """Calculate the rotation angle based on dx and dy speeds."""

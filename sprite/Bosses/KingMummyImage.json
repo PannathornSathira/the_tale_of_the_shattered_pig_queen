@@ -1,0 +1,20 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "king_mummy_dead",
+            "path": "./graphics/KingMummy/KingMummy_dead.PNG",
+            "xsize": 199,
+            "ysize": 472,
+            "colorKey": null
+        },
+        {
+            "name": "king_mummy_revive",
+            "path": "./graphics/KingMummy/KingMummy_revive.PNG",
+            "xsize": 419,
+            "ysize": 370,
+            "colorKey": null
+        }
+    ]
+}
