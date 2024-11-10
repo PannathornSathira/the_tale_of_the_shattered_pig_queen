@@ -8,9 +8,9 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class BlueDragonBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, health=health, damage=damage)
-
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
+        super().__init__(x, y, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance for the Blue Dragon
         self.image.fill((0, 0, 255))  # Set color to blue
 
@@ -137,6 +137,7 @@ class BlueDragonBoss(BaseBoss):
                         self.beam_width,
                         self.beam_height,
                         damage=self.damage,
+                        scaling=self.damage_speed_scaling
                     )
                 )
 
@@ -172,7 +173,8 @@ class BlueDragonBoss(BaseBoss):
                     y=bullet_y,
                     direction=bullet_direction,
                     dy=self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle * i),
-                    damage=self.damage
+                    damage=self.damage,
+                    scaling=self.damage_speed_scaling
                 )  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
 

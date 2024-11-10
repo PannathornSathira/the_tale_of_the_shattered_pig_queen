@@ -8,10 +8,10 @@ from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class MedusaBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, width=300, height=400, health=health, damage=damage)
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
+        super().__init__(x, y, width=200, height=400, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
         self.animation = sprite_collection["medusa_boss_idle"].animation
-
+        self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance for the Blue Dragon
         self.image.fill((0, 200, 200))  # Set color to blue
         
@@ -102,7 +102,8 @@ class MedusaBoss(BaseBoss):
 
             # Generate a beam at random vertical positions but spaced apart
             beam_y = random.randint(0, HEIGHT - self.petrify_beam_height)
-            beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height, self.damage)
+            beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height, self.damage, scaling=self.damage_speed_scaling)
+            beam.damage = 0
             self.petrify_beams.append(beam)  # Store the beam in a list
 
         # End the attack after the designated duration
@@ -138,10 +139,7 @@ class MedusaBoss(BaseBoss):
         if self.bullet_gap_time >= self.bullet_gap_cooldown:
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
-                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
-                bullet.width = 50
-                bullet.height = 20
-                bullet.set_image(sprite_collection["medusa_boss_arrow1"].image)
+                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
         
         # End the bullet attack if the duration is over
@@ -162,7 +160,7 @@ class MedusaBoss(BaseBoss):
         
         speed_y =  distance_y * arrow_speed / (distance_x + 1)
         
-        bullet = BossBullet(arrow_x, arrow_y, arrow_direction, speed_y, damage=self.damage)
+        bullet = BossBullet(arrow_x, arrow_y, arrow_direction, speed_y, damage=self.damage, scaling=self.damage_speed_scaling)
         bullet.speed = arrow_speed
         bullet.width = 200
         bullet.height = 50

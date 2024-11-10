@@ -7,13 +7,13 @@ from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class KrakenBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, health=health, damage=damage)
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling = 1):
+        super().__init__(x, y, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
 
         # Customizing the appearance for the Blue Dragon
         self.color = (200, 200, 255)
         self.image.fill(self.color)  # Set color to blue
-
+        self.damage_speed_scaling = damage_speed_scaling
         self.position = "right"
         
         # Charge attack prop
@@ -114,7 +114,7 @@ class KrakenBoss(BaseBoss):
         if self.bullet_gap_time >= self.bullet_gap_cooldown:
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
-                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
+                bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
                 self.bullets.append(bullet)  # Add bullet to the list
         
         # End the bullet attack if the duration is over
@@ -128,7 +128,7 @@ class KrakenBoss(BaseBoss):
                 start_x = 0 - BEAM_WIDTH
             else:
                 start_x = WIDTH
-            beam = BeamAttack(start_x, player.character_y + (player.height / 2) - (BEAM_HEIGHT / 2), beam_direction, damage=self.damage)
+            beam = BeamAttack(start_x, player.character_y + (player.height / 2) - (BEAM_HEIGHT / 2), beam_direction, damage=self.damage, scaling=self.damage_speed_scaling)
             self.bullets.append(beam)
             
         # End the attack if the duration is over
@@ -141,7 +141,7 @@ class KrakenBoss(BaseBoss):
         if self.attack_elapsed_time == 0:
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage))
+                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling))
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1

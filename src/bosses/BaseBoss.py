@@ -2,7 +2,7 @@ import pygame, random
 from src.constants import *
 from src.bosses.BeamAttack import BeamAttack
 class BaseBoss:
-    def __init__(self, x, y, width=200, height=400, health=100, damage=10):
+    def __init__(self, x, y, width=200, height=400, health=100, damage=10, damage_speed_scaling=1):
         self.x = x
         self.y = y
         self.health = health
