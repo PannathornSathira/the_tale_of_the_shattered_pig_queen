@@ -8,9 +8,9 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class GreatSharkBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, health=health, damage=damage)
-
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
+        super().__init__(x, y, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance
         self.image.fill((200, 200, 200))  # Set color
         self.visible = True

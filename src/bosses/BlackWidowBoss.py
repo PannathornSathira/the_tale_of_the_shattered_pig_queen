@@ -9,11 +9,11 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class BlackWidowBoss(BaseBoss):
-    def __init__(self, x, y, health=30, damage=10):
-        super().__init__(x, y, width=200, height=200, health=health, damage=damage)
+    def __init__(self, x, y, health=30, damage=10, damage_speed_scaling=1):
+        super().__init__(x, y, width=200, height=200, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
         self.animation = sprite_collection["black_widow_boss"].animation
         self.direction = "left"
-
+        self.damage_speed_scaling = damage_speed_scaling
 
         # Customizing the appearance
         self.image.fill((0, 0, 0))

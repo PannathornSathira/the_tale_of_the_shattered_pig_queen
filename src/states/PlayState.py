@@ -24,9 +24,34 @@ class PlayState:
         
         self.swiftness_potion_active = False
         self.swiftness_potion_timer = 0
-
+        
+        self.power_scale_swiftness=1
+        self.power_scale_damage=1
+        
+        self.health_potion_image = pygame.image.load("./graphics/shop/HP_potion2.PNG")  
+        self.health_potion_image = pygame.transform.scale(self.health_potion_image, (30, 35))
+        
+        self.damage_potion_image = pygame.image.load("./graphics/shop/damage_potion.PNG")  
+        self.damage_potion_image = pygame.transform.scale(self.damage_potion_image, (30, 35))
+        
+        self.swifness_potion_image = pygame.image.load("./graphics/shop/swifness_potion.PNG")  
+        self.swifness_potion_image = pygame.transform.scale(self.swifness_potion_image, (30, 35)) # Adjust image size
+        # Potion levels and costs
+        self.potion_levels = {
+            "Health Potion": {
+                "power": [0, 1.1, 1.2, 1.3, 1.4, 1.5]
+            },
+            "Damage Potion": {
+                "power": [0, 1.1, 1.15, 1.2, 1.25, 1.3, 30],
+            },
+            "Swiftness Potion": {
+                "power": [0, 1.1, 1.15, 1.2, 1.25, 1.3, 30],
+            }
+        }
+        
     def Enter(self, params):
         self.level = params["level"]
+        self.saved_values = read_saveFile()
         if self.level.area == 1:
             self.bg_image = pygame.image.load("./graphics/Backgrounds/Ocean+sand.JPG")
         elif self.level.area == 2:
@@ -53,7 +78,7 @@ class PlayState:
             self.coin_scaling = 200
         self.boss_health = self.boss.health
         self.max_health = self.player.health
-        
+        self.max_boss_health = self.boss.health # For boss health bar
         self.damage_potions = params.get("damage_potions", 0)
         self.health_potions = params.get("health_potions", 0)
         self.swiftness_potions = params.get("swiftness_potions", 0)
@@ -92,16 +117,16 @@ class PlayState:
             self.damage_potion_timer -= dt * 1000  # Decrease timer
             if self.damage_potion_timer <= 0:
                 # Reset player damage after potion effect ends
-                self.player.bullet_damage /= 1.1
+                self.player.bullet_damage /= self.power_scale_damage
                 self.damage_potion_active = False
                 print("Damage Potion effect has ended.")
-        
+
         if self.swiftness_potion_active:
             self.swiftness_potion_timer -= dt * 1000  # Decrease timer
             if self.swiftness_potion_timer <= 0:
                 # Reset player movement after potion effect ends
-                self.player.movement_speed /= 1.1
-                self.player.default_move_speed /= 1.1
+                self.player.movement_speed /= self.power_scale_swiftness
+                self.player.default_move_speed /= self.power_scale_swiftness
                 self.swiftness_potion_active = False
                 print("Swiftness Potion effect has ended.")
         self.level.update(dt, events)
@@ -121,22 +146,27 @@ class PlayState:
                     })
                 # Activate the damage potion by Press T
                 if event.key == pygame.K_t and self.damage_potions > 0 and not self.damage_potion_active:
-                   
+                    current_potion_level = self.saved_values["damage_potion_upgrade_level"]
+                    self.power_scale_damage = self.potion_levels["Damage Potion"]["power"][current_potion_level]
                     self.damage_potions -= 1
-                    self.player.bullet_damage *= 1.1  # Increase damage by 10%
+                    self.player.bullet_damage *= self.power_scale_damage  # Increase damage by 10%
                     self.damage_potion_active = True
                     self.damage_potion_timer = 10000  # Set the timer for 10 seconds
                 
                 # Activate the health potion by Press Y
                 if event.key == pygame.K_y and self.health_potions > 0:
+                    current_potion_level = self.saved_values["health_potion_upgrade_level"]
+                    power_scale_health = self.potion_levels["Health Potion"]["power"][current_potion_level]
                     self.health_potions -= 1
-                    self.player.health += 1.10 * self.max_health  # Increase health by 10% of max hp
+                    self.player.health += power_scale_health * self.max_health  # Increase health by 10% of max hp
                 
                 # Activate the health potion by Press U
                 if event.key == pygame.K_u and self.swiftness_potions > 0 and not self.swiftness_potion_active:
+                    current_potion_level = self.saved_values["swiftness_potion_upgrade_level"]
+                    self.power_scale_swiftness = self.potion_levels["Swiftness Potion"]["power"][current_potion_level]
                     self.swiftness_potions -= 1
-                    self.player.movement_speed *= 1.1
-                    self.player.default_move_speed *= 1.1
+                    self.player.movement_speed *= self.power_scale_swiftness
+                    self.player.default_move_speed *= self.power_scale_swiftness
                     self.swiftness_potion_active = True
                     self.swiftness_potion_timer = 10000  # Set the timer for 10 seconds
 
@@ -150,15 +180,38 @@ class PlayState:
         self.boss.render(screen)
         self.player.render(screen)
         if self.player.alive:
-            render_text(f"Player Health: {self.player.health}", 20, 20, self.font, screen)
+            render_text("Player HP:", 20, 0, self.font, screen)
+            player_health_percentage = self.player.health / self.max_health
+            player_health_bar_width = int(200 * player_health_percentage)  # Adjust the width as needed
+            pygame.draw.rect(screen, (255, 0, 0), (150, 2, player_health_bar_width, 20))  # Red health bar
+            pygame.draw.rect(screen, (255, 255, 255), (150, 2, 200, 20), 2)
         if self.boss.alive:
-            render_text(f"Boss Health: {self.boss.health}", 20, 60, self.font, screen)
+            render_text("Boss HP:", 20, 40, self.font, screen)
+            boss_health_percentage = self.boss_health / self.max_boss_health
+            boss_health_bar_width = int(200 * boss_health_percentage) 
+            pygame.draw.rect(screen, (0, 0, 255), (150, 40, boss_health_bar_width, 20)) 
+            pygame.draw.rect(screen, (255, 255, 255), (150, 40, 200, 20), 2)
             
-        render_text(f"Total Coins: {self.total_coins}", 20, 100, self.font, screen)
-        render_text(f"Damage Potions: {self.damage_potions}", 20, 140, self.font, screen)
-        render_text(f"Health Potions: {self.health_potions}", 320, 140, self.font, screen)
-        render_text(f"Swiftness Potions: {self.swiftness_potions}", 620, 140, self.font, screen)
+        render_text(f"Coins: {self.total_coins}", 20, 80, self.font, screen)
+        render_text(f": {self.damage_potions}", 55, 130, self.font, screen)
+        screen.blit(self.damage_potion_image, (20, 120))
+        #render_text(f"Health Potions: {self.health_potions}", 320, 120, self.font, screen)
+        
+        render_text(f": {self.health_potions}", 120, 130, self.font, screen)
+        screen.blit(self.health_potion_image, (90, 120))
+        
+        
+        render_text(f": {self.swiftness_potions}", 190, 130, self.font, screen)
+        screen.blit(self.swifness_potion_image, (160, 120))
+        
+        if self.damage_potion_active:
+            remaining_time = int(self.damage_potion_timer / 1000)  # Convert to seconds
+            render_text(f"Damage Potion Time: {remaining_time}s", 20, 180, self.font, screen)
 
+        # Show remaining time for Swiftness Potion if active
+        if self.swiftness_potion_active:
+            remaining_time = int(self.swiftness_potion_timer / 1000)  # Convert to seconds
+            render_text(f"Swiftness Potion Time: {remaining_time}s", 320, 180, self.font, screen)
         
     def CheckVictory(self):
         pass

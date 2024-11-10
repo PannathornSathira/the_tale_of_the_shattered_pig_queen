@@ -7,9 +7,9 @@ from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class TornadoFiendBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, height=300, health=health, damage=damage)
-
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
+        super().__init__(x, y, height=300, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance
         self.image.fill((230, 230, 255))  # Set color to blue
         
@@ -81,7 +81,7 @@ class TornadoFiendBoss(BaseBoss):
                 direction = "left"
 
             # Create bullet and add to boss's bullet list
-            bullet = BossBullet(x_position, row_y, direction, damage=self.damage)
+            bullet = BossBullet(x_position, row_y, direction, damage=self.damage, scaling=self.damage_speed_scaling)
             self.bullets.append(bullet)
             
             self.barrage_isFromLeft = not self.barrage_isFromLeft
@@ -113,7 +113,7 @@ class TornadoFiendBoss(BaseBoss):
             self.x = WIDTH / 2 - self.width / 2
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage))
+                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling))
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
