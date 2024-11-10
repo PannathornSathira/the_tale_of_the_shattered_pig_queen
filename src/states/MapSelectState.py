@@ -17,7 +17,7 @@ class MapSelectState:
         ]
         
         # Initialize the player character
-        self.character = pygame.Rect(100, 100, 70, 85)  # Character's starting position and size
+        self.character = pygame.Rect(100, 100, 60, 85)  # Character's starting position and size
         self.character_animation = sprite_collection["king_select_map"].animation
         self.character_direction = "right"
         self.character_speed = 5  # Speed of the character movement

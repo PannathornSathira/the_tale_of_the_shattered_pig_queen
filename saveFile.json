@@ -1,9 +1,9 @@
 {
-    "total_coins": 511800.0,
+    "total_coins": 510300.0,
     "damage_potions": 0,
     "health_potions": 0,
     "swiftness_potions": 15,
-    "health": 500,
+    "health": 750,
     "defense": 1.7,
     "jump": 1,
     "shotgun": 0.54,

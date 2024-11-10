@@ -1,0 +1,20 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "tornado_bullet",
+            "path": "./graphics/Tornado/Tornado_Bullet.png",
+            "xsize": 48,
+            "ysize": 28,
+            "colorKey": null
+        },
+        {
+            "name": "tornado_lightning",
+            "path": "./graphics/Tornado/Tornado_Lightning.png",
+            "xsize": 85,
+            "ysize": 432,
+            "colorKey": null
+        }
+    ]
+}

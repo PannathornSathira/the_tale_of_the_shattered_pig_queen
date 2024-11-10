@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
@@ -9,10 +10,13 @@ from src.bosses.BeamAttack import BeamAttack
 
 class BlueDragonBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
-        super().__init__(x, y, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        super().__init__(x=900, y=y, width=380, height=400, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.y = GROUND_LEVEL_Y - self.height
+        self.rect.y = self.y
         self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance for the Blue Dragon
         self.image.fill((0, 0, 255))  # Set color to blue
+        self.animation = sprite_collection["blue_dragon_boss_idle"].animation
 
         # Stomp attack properties
         self.stomp_attack_duration = 5.5
@@ -35,9 +39,9 @@ class BlueDragonBoss(BaseBoss):
 
         # Frozen pillars attack prop
         self.beam_count = 5
-        self.beam_width = 150
-        self.beam_gap = 60
-        self.beam_height = 1000
+        self.beam_width = 80
+        self.beam_gap = 100
+        self.beam_height = 400
         self.beam_delay = 0.25
         self.beams = []
 
@@ -69,6 +73,14 @@ class BlueDragonBoss(BaseBoss):
 
             if not ice_shard.active:
                 self.ice_shards.remove(ice_shard)
+                
+        if self.warning_time_timer > 0 and self.current_attack == self.glacial_shards:
+            self.animation = sprite_collection["blue_dragon_boss_raise_hand"].animation
+        else:
+            sprite_collection["blue_dragon_boss_raise_hand"].animation.Refresh()
+            self.animation = sprite_collection["blue_dragon_boss_idle"].animation
+                
+        self.animation.update(dt)
 
     def select_attack(self, player):
         attack_choice = random.choice(
@@ -90,6 +102,7 @@ class BlueDragonBoss(BaseBoss):
         Stomp: Stomps the ground, inflicting damage. If the player is too close, they get stunned for 3 seconds.
         """
         self.stomp_duration_time += dt
+        self.animation = sprite_collection["blue_dragon_boss_stomp"].animation
         if self.stomp_duration_time >= self.stomp_duration_gap:
             self.stomp_duration_time = 0
 
@@ -116,6 +129,7 @@ class BlueDragonBoss(BaseBoss):
 
         # End the attack after the designated duration
         if self.attack_elapsed_time >= self.stomp_attack_duration:
+            self.animation = sprite_collection["blue_dragon_boss_idle"].animation
             self.end_attack()
 
     def frozen_pillars(self, dt, player):
@@ -129,8 +143,7 @@ class BlueDragonBoss(BaseBoss):
                 range(WIDTH // (self.beam_width + self.beam_gap)), self.beam_count
             )
             for i in range(self.beam_count):
-                self.beams.append(
-                    BeamAttack(
+                beam = BeamAttack(
                         beam_x_positions[i] * (self.beam_width + self.beam_gap),
                         HEIGHT,
                         beam_direction,
@@ -139,7 +152,8 @@ class BlueDragonBoss(BaseBoss):
                         damage=self.damage,
                         scaling=self.damage_speed_scaling
                     )
-                )
+                beam.set_image(sprite_collection["blue_dragon_ice_pillar"].image)
+                self.beams.append(beam)
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
@@ -176,6 +190,7 @@ class BlueDragonBoss(BaseBoss):
                     damage=self.damage,
                     scaling=self.damage_speed_scaling
                 )  # Create a bullet
+                bullet.set_image(sprite_collection["blue_dragon_bullet"].image)
                 self.bullets.append(bullet)  # Add bullet to the list
 
         # End the bullet attack if the duration is over
@@ -192,14 +207,21 @@ class BlueDragonBoss(BaseBoss):
             self.num_ice_shards -= 1
             spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
             spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-            ice_shard = IceShard(spawn_x, spawn_y, damage=self.damage)
+            ice_shard = IceShard(spawn_x, spawn_y, damage=self.damage, damage_speed_scaling=self.damage_speed_scaling)
             self.ice_shards.append(ice_shard)
             if self.num_ice_shards <= 0:
+                self.num_ice_shards = 3
                 self.end_attack()
 
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
-        super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            screen.blit(img, (self.x, self.y))
+        
+        for bullet in self.bullets:
+            bullet.render(screen)
 
         # Render stomp effect if visible
         if self.stomp_effect_isVisible:
@@ -211,17 +233,20 @@ class BlueDragonBoss(BaseBoss):
 
 
 class IceShard:
-    def __init__(self, x, y, speed=75, damage=5, turn_rate=50):
+    def __init__(self, x, y, speed=75, damage=5, turn_rate=50, damage_speed_scaling=1):
         self.x = x
         self.y = y
         self.speed = speed
         self.damage = damage
-        self.size = 30
-        self.image = pygame.Surface((self.size, self.size))
-        self.image.fill((144, 213, 255))
+        self.width = 40
+        self.height = 20
+        self.original_image = sprite_collection["blue_dragon_ice_shard"].image
+        self.image = self.original_image.copy()
+        self.rect = self.image.get_rect(center=(self.x, self.y))
         self.hit_player = False
         self.life_time = 10
         self.active = True
+        self.damage_speed_scaling = damage_speed_scaling
 
         # Starting direction (facing down initially)
         self.direction = math.radians(180)  # Facing downwards
@@ -231,8 +256,8 @@ class IceShard:
         if self.active:
             self.life_time -= dt
             # Calculate direction towards the player
-            target_x = player.character_x + player.width / 2 - self.size / 2
-            target_y = player.character_y + player.height / 2 - self.size / 2
+            target_x = player.character_x + player.width / 2 - self.width / 2
+            target_y = player.character_y + player.height / 2 - self.height / 2
             dx = target_x - self.x
             dy = target_y - self.y
             target_angle = math.atan2(dy, dx)
@@ -253,15 +278,16 @@ class IceShard:
             # Move in the current direction
             self.x += math.cos(self.direction) * self.speed * dt
             self.y += math.sin(self.direction) * self.speed * dt
+            
+            angle_degrees = math.degrees(-self.direction) + 180
+            self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), angle_degrees)
+            self.rect = self.image.get_rect(center=(self.x, self.y))
 
             # Check if IceShard hits the player
-            if pygame.Rect(self.x, self.y, self.size, self.size).colliderect(
+            if self.rect.colliderect(
                 player.rect
             ):
                 self.hit_player = True
-
-            if self.life_time <= 3:
-                self.image.fill((255, 0, 0))
 
             if self.life_time <= 0:
                 self.active = False
@@ -275,12 +301,12 @@ class IceShard:
             bullet_dx = math.cos(angle) * bullet_speed
             bullet_dy = math.sin(angle) * bullet_speed
             bullet = BossBullet(
-                self.x, self.y, "general", general_speed=(bullet_dx, bullet_dy), damage=self.damage
+                self.x, self.y, "general", general_speed=(bullet_dx, bullet_dy), damage=self.damage, scaling=self.damage_speed_scaling
             )
-            bullet.width = BULLET_WIDTH
-            bullet.height = BULLET_WIDTH
-            bullet.rect.width = BULLET_WIDTH
-            bullet.rect.height = BULLET_WIDTH
+            bullet.width = 20
+            bullet.height = 10
+            bullet.re_initialize()
+            bullet.set_image(sprite_collection["blue_dragon_ice_shard_small"].image)
             boss.bullets.append(bullet)  # Assign bullet to the boss
 
     def render(self, screen):

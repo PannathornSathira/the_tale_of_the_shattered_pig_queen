@@ -57,8 +57,8 @@ class KrakenBoss(BaseBoss):
 
     def select_attack(self, player):
         
-        # attack_choice = random.choice(["charge", "tempest_barrage", "lightning_wave_beam", "thunder_strike_cluster"])
-        attack_choice = random.choice(["thunder_strike_cluster"])
+        attack_choice = random.choice(["charge", "tempest_barrage", "lightning_wave_beam", "thunder_strike_cluster"])
+        # attack_choice = random.choice(["thunder_strike_cluster"])
 
 
         if attack_choice == "charge":

@@ -196,8 +196,8 @@ class SandWormBoss(BaseBoss):
             img = self.animation.image
             img = pygame.transform.scale(img, (self.rect.width + 200, self.rect.height))
             screen.blit(img, (self.x -100, self.y))
-            for bullet in self.bullets:
-                bullet.render(screen)
+        for bullet in self.bullets:
+            bullet.render(screen)
         
         # Render shockwave effect if visible
         if self.shockwave_effect_isVisible:
