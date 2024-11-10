@@ -16,7 +16,6 @@ class BeamAttack(BossBullet):
             (self.width, self.height)
         )
         self.image.fill(self.color)
-        self.color = (0, 255, 0)
         self.speed = BEAM_SPEED * self.scaling
         
         # Adjust beam starting postition and rotation

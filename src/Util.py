@@ -95,6 +95,8 @@ class SpriteManager:
                 "./sprite/King/KingFireGun.json",
                 "./sprite/King/KingFireShotgun.json",
                 "./sprite/King/KingSelectMap.json",
+                "./sprite/Bosses/Kraken.json",
+                "./sprite/Bosses/KrakenImage.json",
                 "./sprite/Bosses/KingMummy.json",
                 "./sprite/Bosses/KingMummyImage.json",
                 "./sprite/Bosses/BlackWidow.json",
@@ -102,7 +104,7 @@ class SpriteManager:
                 "./sprite/Bosses/Medusa.json",
                 "./sprite/Bosses/MedusaImage.json",
                 "./sprite/Bosses/SandWorm.json",
-                "./sprite/Bosses/SandWormBullet.json",
+                "./sprite/Bosses/SandWormImage.json",
                 "./sprite/Bosses/Wraith.json",
                 "./sprite/Bosses/WraithImage.json",
             ]
