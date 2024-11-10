@@ -144,8 +144,8 @@ class PlayState:
                         "health_potions": self.health_potions,
                         "swiftness_potions": self.swiftness_potions
                     })
-                # Activate the damage potion by Press T
-                if event.key == pygame.K_t and self.damage_potions > 0 and not self.damage_potion_active:
+                # Activate the damage potion by Press A
+                if event.key == pygame.K_a and self.damage_potions > 0 and not self.damage_potion_active:
                     current_potion_level = self.saved_values["damage_potion_upgrade_level"]
                     self.power_scale_damage = self.potion_levels["Damage Potion"]["power"][current_potion_level]
                     self.damage_potions -= 1
@@ -153,15 +153,17 @@ class PlayState:
                     self.damage_potion_active = True
                     self.damage_potion_timer = 10000  # Set the timer for 10 seconds
                 
-                # Activate the health potion by Press Y
-                if event.key == pygame.K_y and self.health_potions > 0:
+                # Activate the health potion by Press S
+                if event.key == pygame.K_s and self.health_potions > 0:
                     current_potion_level = self.saved_values["health_potion_upgrade_level"]
                     power_scale_health = self.potion_levels["Health Potion"]["power"][current_potion_level]
                     self.health_potions -= 1
                     self.player.health += power_scale_health * self.max_health  # Increase health by 10% of max hp
+                    if self.player.health > self.max_health:
+                        self.player.health = self.max_health
                 
-                # Activate the health potion by Press U
-                if event.key == pygame.K_u and self.swiftness_potions > 0 and not self.swiftness_potion_active:
+                # Activate the health potion by Press D
+                if event.key == pygame.K_d and self.swiftness_potions > 0 and not self.swiftness_potion_active:
                     current_potion_level = self.saved_values["swiftness_potion_upgrade_level"]
                     self.power_scale_swiftness = self.potion_levels["Swiftness Potion"]["power"][current_potion_level]
                     self.swiftness_potions -= 1
