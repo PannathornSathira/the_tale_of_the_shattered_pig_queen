@@ -51,6 +51,7 @@ class MapSelectState:
             self.player.shotgun_ability = False
         else:
             self.player.shotgun_ability = True
+            self.player.shotgun_damage_scale = self.saved_values["shotgun"]
             
         self.player.default_move_speed = self.saved_values["movement_speed"] * CHARACTER_MOVE_SPEED
         self.player.revert_to_default()
