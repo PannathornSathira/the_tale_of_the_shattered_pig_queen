@@ -6,18 +6,18 @@
             "name": "king_fire_gun",
             "images": [
                 {
-                    "path": "./graphics/King/King_Gun1.jpg",
+                    "path": "./graphics/King/King_Gun1.png",
                     "scale": 1
                 },
                 {
-                    "path": "./graphics/King/King_Gun2.jpg",
+                    "path": "./graphics/King/King_Gun2.png",
                     "scale": 1
                 }
             ],
             "interval_time": 0.1,
             "loop": true,
             "idle_image": {
-                "path": "./graphics/King/King_Gun1.jpg",
+                "path": "./graphics/King/King_Gun1.png",
                 "scale": 1
             }
         }

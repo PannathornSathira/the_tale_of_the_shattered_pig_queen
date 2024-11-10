@@ -1,0 +1,34 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "blue_dragon_ice_pillar",
+            "path": "./graphics/BlueDragon/Dragon_IcePillar.png",
+            "xsize": 74,
+            "ysize": 136,
+            "colorKey": null
+        },
+        {
+            "name": "blue_dragon_bullet",
+            "path": "./graphics/BlueDragon/Dragon_Bullet.png",
+            "xsize": 48,
+            "ysize": 28,
+            "colorKey": null
+        },
+        {
+            "name": "blue_dragon_ice_shard",
+            "path": "./graphics/BlueDragon/Dragon_IceShard.png",
+            "xsize": 153,
+            "ysize": 49,
+            "colorKey": null
+        },
+        {
+            "name": "blue_dragon_ice_shard_small",
+            "path": "./graphics/BlueDragon/Dragon_IceShardSmall.png",
+            "xsize": 88,
+            "ysize": 74,
+            "colorKey": null
+        }
+    ]
+}

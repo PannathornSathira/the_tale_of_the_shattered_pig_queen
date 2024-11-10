@@ -179,8 +179,9 @@ class MedusaBoss(BaseBoss):
             else:
                 img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
                 screen.blit(img, (self.x, self.y))
-            for bullet in self.bullets:
-                bullet.render(screen)
+                
+        for bullet in self.bullets:
+            bullet.render(screen)
             
         for beam in self.petrify_beams:
             beam.render(screen)

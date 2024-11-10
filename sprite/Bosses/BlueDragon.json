@@ -1,0 +1,91 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "blue_dragon_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Idle1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Idle2.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Idle3.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Idle4.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "blue_dragon_boss_stomp",
+            "images": [
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Stomp1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Stomp2.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Stomp3.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_Stomp4.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "blue_dragon_boss_raise_hand",
+            "images": [
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand2.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand3.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand4.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand5.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand6.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand7.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlueDragon/Dragon_RaiseHand8.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": false
+        }
+    ]
+}
