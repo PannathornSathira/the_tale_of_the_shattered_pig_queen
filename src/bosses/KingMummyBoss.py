@@ -88,10 +88,10 @@ class KingMummyBoss(BaseBoss):
                     self.velocity_y = self.gravity * dt
                     self.jump_cooldown_timer = 0
             
-            if player.character_x + player.width <= self.x:
+            if player.character_x + player.width <= self.x + 10:
                 self.x -= self.move_speed * dt
                 self.direction = "left"
-            elif player.character_x >= self.x + self.width:
+            elif player.character_x + 10 >= self.x + self.width:
                 self.x += self.move_speed * dt
                 self.direction = "right"
 
