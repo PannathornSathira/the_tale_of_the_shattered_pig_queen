@@ -3,19 +3,21 @@ import random, pygame, math
 from src.bosses.BossBullet import BossBullet
 
 class BeamAttack(BossBullet):
-    def __init__(self, x, y, direction, width=BEAM_WIDTH, height=BEAM_HEIGHT, damage=10):
+    def __init__(self, x, y, direction, width=BEAM_WIDTH, height=BEAM_HEIGHT, damage=10, scaling=1):
         super().__init__(x, y, direction, damage=damage)
+        self.scaling = scaling
         self.width = width
         self.height = height
         self.rect.width = self.width
         self.rect.height = self.height
         self.active = True
         self.color = (255, 0, 0)
-        self.speed = BEAM_SPEED
         self.image = pygame.Surface(
             (self.width, self.height)
         )
         self.image.fill(self.color)
+        self.color = (0, 255, 0)
+        self.speed = BEAM_SPEED * self.scaling
         
         # Adjust beam starting postition and rotation
         # if self.direction == "right":

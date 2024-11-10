@@ -40,9 +40,23 @@ class MapSelectState:
         
         # Configure player based on save file
         self.player.health = self.saved_values["health"]
+        self.player.defense = self.saved_values["defense"]
+        if self.saved_values["jump"] == 0:
+            self.player.jump_ability = False
+        else:
+            self.player.jump_ability = True
+            self.player.jump_scaling = self.saved_values["jump"]
+        
+        if self.saved_values["shotgun"] == 0:
+            self.player.shotgun_ability = False
+        else:
+            self.player.shotgun_ability = True
+            self.player.shotgun_damage_scale = self.saved_values["shotgun"]
+            
         self.player.default_move_speed = self.saved_values["movement_speed"] * CHARACTER_MOVE_SPEED
         self.player.revert_to_default()
         self.player.bullet_damage = self.saved_values["bullet_damage"]
+        self.slow_damage_boss = self.saved_values["boss_damage_speed"]
 
         # Update completed levels
         self.complete_level = params.get("completed_level")
@@ -94,7 +108,8 @@ class MapSelectState:
             "total_coins": self.saved_values["total_coins"],
             "damage_potions": self.saved_values["damage_potions"],
             "health_potions": self.saved_values["health_potions"],
-            "swiftness_potions": self.saved_values["swiftness_potions"]
+            "swiftness_potions": self.saved_values["swiftness_potions"],
+            
         })
         
     def spawn_boss(self, area):
@@ -115,15 +130,15 @@ class MapSelectState:
             damage = 50
             
         if area == 1:
-            return random.choice([KrakenBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage), GreatSharkBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage)])
+            return random.choice([KrakenBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), GreatSharkBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
         elif area == 2:
-            return random.choice([BlackWidowBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage), MedusaBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage)])
+            return random.choice([BlackWidowBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), MedusaBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
         elif area == 3:
-            return random.choice([BlueDragonBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage), TornadoFiendBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage)])
+            return random.choice([BlueDragonBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), TornadoFiendBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
         elif area == 4:
-            return random.choice([KingMummyBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage), SandWormBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage)])
+            return random.choice([KingMummyBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), SandWormBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
         elif area == 5:
-            return WraithBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage)
+            return WraithBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)
 
     def render(self, screen):
         screen.blit(self.bg_image, (0, 0))

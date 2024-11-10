@@ -14,8 +14,8 @@ class ShopState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
-        self.items_left = ["Health Upgrade", "Damage Upgrade", "Movement Speed", "Defense Upgrade", "Start Journey"]
-        self.items_right = ["Health Potion", "Damage Potion", "Swiftness Potion"]
+        self.items_left = ["Health Upgrade", "Damage Upgrade", "Movement Speed", "Defense Upgrade","Jump Upgrade","Slow Motion Upgrade", "Shotgun Upgrade", "Start Journey"]
+        self.items_right = ["Health Potion", "Damage Potion", "Swiftness Potion", "Health Potion Upgrade", "Damage Potion Upgrade", "Swiftness Potion Upgrade"]
         self.side = 'left' 
         self.selected_item_index = 0
         self.total_coins = 0
@@ -33,6 +33,32 @@ class ShopState:
         self.dmg_costs = [0, 100, 250, 600, 1200, 2000]
         self.speed_levels = [1.0, 1.05, 1.10, 1.15, 1.20, 1.30]
         self.speed_costs = [0, 80, 200, 500, 1000, 1800]
+        self.defense_levels = [1.0, 1.10, 1.20, 1.35, 1.50, 1.70]
+        self.defense_costs = [0, 120, 300, 700, 1400, 2500]
+        
+        self.jump_levels = [0.0, 1, 1.10, 1.20, 1.30, 1.40]
+        self.jump_costs = [0, 150, 300, 600, 1200, 2000]
+        
+        self.shotgun_levels = [0.0, 0.6, 0.54, 0.47, 0.4, 0.34]
+        self.shotgun_costs = [0, 100, 300, 600, 1200, 2000]
+        
+        self.slowmo_levels = [1, 0.9, 0.85, 0.8, 0.75, 0.7]
+        self.slowmo_costs = [0, 100, 300, 700, 1300, 2000]
+        # Potion levels and costs
+        self.potion_levels = {
+            "Health Potion": {
+                "levels": [0, 10, 20, 30, 40, 50],
+                "costs": [0, 50, 120, 250, 400, 600]
+            },
+            "Damage Potion": {
+                "levels": [0, 10, 15, 20, 25, 30],
+                "costs": [0, 50, 120, 250, 400, 600]
+            },
+            "Swiftness Potion": {
+                "levels": [0, 10, 15, 20, 25, 30],
+                "costs": [0, 50, 120, 250, 400, 600]
+            }
+        }
 
     def Exit(self):
         pass
@@ -84,9 +110,66 @@ class ShopState:
                     print("Not enough coins to purchase Movement Speed Upgrade.")
             else:
                 print("Movement speed is already at max level.")
-
+                
+        elif item == "Defense Upgrade":
+            current_defense_level = self.defense_levels.index(self.saved_values["defense"]) if self.saved_values["defense"] in self.defense_levels else 0
+            if current_defense_level < len(self.defense_levels) - 1:
+                next_defense_cost = self.defense_costs[current_defense_level + 1]
+                if self.saved_values["total_coins"] >= next_defense_cost:
+                    self.saved_values["total_coins"] -= next_defense_cost
+                    self.saved_values["defense"] = self.defense_levels[current_defense_level + 1]
+                    save_values(self.saved_values)
+                    print(f"Purchased Defense Upgrade. New Defense: {self.saved_values['defense']}. Coins left: {self.saved_values["total_coins"]}.")
+                else:
+                    print("Not enough coins to purchase Defense Upgrade.")
+            else:
+                print("Defense Upgrade is already at max level.")
+                
+        elif item == "Jump Upgrade":
+            current_jump_level = self.jump_levels.index(self.saved_values["jump"]) if self.saved_values["jump"] in self.jump_levels else 0
+            if current_jump_level < len(self.jump_levels) - 1:
+                next_jump_cost = self.jump_costs[current_jump_level + 1]
+                if self.saved_values["total_coins"] >= next_jump_cost:
+                    self.saved_values["total_coins"] -= next_jump_cost
+                    self.saved_values["jump"] = self.jump_levels[current_jump_level + 1]
+                    save_values(self.saved_values)
+                    print(f"Purchased Jump Upgrade. New Jump: {self.saved_values['jump']}. Coins left: {self.saved_values["total_coins"]}.")
+                else:
+                    print("Not enough coins to purchase Jump Upgrade.")
+            else:
+                print("Defense Upgrade is already at max level.")
+        
+        elif item == "Shotgun Upgrade":
+            current_shotgun_level = self.shotgun_levels.index(self.saved_values["shotgun"]) if self.saved_values["shotgun"] in self.shotgun_levels else 0
+            if current_shotgun_level < len(self.shotgun_levels) - 1:
+                next_shotgun_cost = self.shotgun_costs[current_shotgun_level + 1]
+                if self.saved_values["total_coins"] >= next_shotgun_cost:
+                    self.saved_values["total_coins"] -= next_shotgun_cost
+                    self.saved_values["shotgun"] = self.shotgun_levels[current_shotgun_level + 1]
+                    save_values(self.saved_values)
+                    print(f"Purchased Jump Upgrade. New Jump: {self.saved_values['shotgun']}. Coins left: {self.saved_values["total_coins"]}.")
+                else:
+                    print("Not enough coins to purchase Jump Upgrade.")
+            else:
+                print("Defense Upgrade is already at max level.")
+        
+        elif item == "Slow Motion Upgrade":
+            current_slowmo_level = self.slowmo_levels.index(self.saved_values["boss_damage_speed"]) if self.saved_values["boss_damage_speed"] in self.slowmo_levels else 0
+            if current_slowmo_level < len(self.slowmo_levels) - 1:
+                next_slowmo_cost = self.slowmo_costs[current_slowmo_level + 1]
+                if self.saved_values["total_coins"] >= next_slowmo_cost:
+                    self.saved_values["total_coins"] -= next_slowmo_cost
+                    self.saved_values["boss_damage_speed"] = self.slowmo_levels[current_slowmo_level + 1]
+                    save_values(self.saved_values)
+                    print(f"Purchased Jump Upgrade. New Jump: {self.saved_values['boss_damage_speed']}. Coins left: {self.saved_values["total_coins"]}.")
+                else:
+                    print("Not enough coins to purchase Jump Upgrade.")
+            else:
+                print("Defense Upgrade is already at max level.")
+        
         elif item == "Damage Potion":
-            potion_cost = 300  # Set the cost of the Damage Potion
+            current_potion_level = self.saved_values["damage_potion_upgrade_level"]
+            potion_cost = self.potion_levels["Damage Potion"]["costs"][current_potion_level]
             if self.saved_values["total_coins"] >= potion_cost:
                 self.saved_values["total_coins"] -= potion_cost
                 self.saved_values["damage_potions"] += 1
@@ -96,7 +179,8 @@ class ShopState:
                 print("Not enough coins to purchase Damage Potion.")
         
         elif item == "Health Potion":
-            potion_cost = 250  # Set the cost of the Health Potion
+            current_potion_level = self.saved_values["health_potion_upgrade_level"]
+            potion_cost = self.potion_levels["Health Potion"]["costs"][current_potion_level]
             if self.saved_values["total_coins"] >= potion_cost:
                 self.saved_values["total_coins"] -= potion_cost
                 self.saved_values["health_potions"] += 1
@@ -105,8 +189,14 @@ class ShopState:
             else:
                 print("Not enough coins to purchase Health Potion.")
         
+        
+        
         elif item == "Swiftness Potion":
-            potion_cost = 250  # Set the cost of the Swiftness Potion
+            current_potion_level = self.saved_values["swiftness_potion_upgrade_level"]
+            potion_cost = self.potion_levels["Swiftness Potion"]["costs"][current_potion_level]  # Set the cost of the Swiftness Potion
+            print(current_potion_level)
+            print(potion_cost)
+            print("The swifness potion cost is", potion_cost)
             if self.saved_values["total_coins"] >= potion_cost:
                 self.saved_values["total_coins"] -= potion_cost
                 self.saved_values["swiftness_potions"] += 1
@@ -114,7 +204,23 @@ class ShopState:
                 print(f"Purchased Swiftness Potion. Potions available: {self.saved_values["swiftness_potions"]}. Coins left: {self.saved_values["total_coins"]}.")
             else:
                 print("Not enough coins to purchase Swiftness Potion.")   
-                     
+        
+        elif item in ["Health Potion Upgrade", "Damage Potion Upgrade", "Swiftness Potion Upgrade"]:
+            potion_name = item.replace(" Upgrade", "")
+            potion_info = self.potion_levels[potion_name]
+            current_potion_level = self.saved_values.get(f"{item.lower().replace(' ', '_')}_level", 0)
+            if current_potion_level < len(potion_info["levels"]) - 1:
+                next_potion_cost = potion_info["costs"][current_potion_level + 1]
+                if self.saved_values["total_coins"] >= next_potion_cost:
+                    self.saved_values["total_coins"] -= next_potion_cost
+                    self.saved_values[f"{item.lower().replace(' ', '_')}_level"] = current_potion_level + 1
+                    save_values(self.saved_values)
+                    print(f"Purchased {item} Upgrade. New level: {current_potion_level + 1}. Coins left: {self.saved_values['total_coins']}.")
+                else:
+                    print(f"Not enough coins to purchase {item} Upgrade.")
+            else:
+                print(f"{item} is already at max level.")
+                             
         elif item == "Start Journey":
             g_state_manager.Change("WORLD_MAP", {
                 "completed_level": None,
@@ -170,9 +276,9 @@ class ShopState:
             screen.blit(text_surface, (screen.get_width() // 2 + 50, 150 + index * 50))
         
         coins_text = f"Coins: {self.saved_values["total_coins"]}"
-        potions_text = f"Damage Potions: {self.saved_values["damage_potions"]}"
-        health_potions_text = f"Health Potions: {self.saved_values["health_potions"]}"
-        swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]}"
+        potions_text = f"Damage Potions: {self.saved_values["damage_potions"]} and LV: {self.saved_values["damage_potion_upgrade_level"]}"
+        health_potions_text = f"Health Potions: {self.saved_values["health_potions"]} and LV: {self.saved_values["health_potion_upgrade_level"]}"
+        swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]} and LV: {self.saved_values["swiftness_potion_upgrade_level"]}"
 
         # Render the potion counts
         coins_surface = self.font.render(coins_text, True, self.text_color)
@@ -180,7 +286,7 @@ class ShopState:
         health_potions_surface = self.font.render(health_potions_text, True, self.text_color)
         swiftness_potions_surface = self.font.render(swiftness_potions_text, True, self.text_color)
 
-        screen.blit(coins_surface, (50, 450))
+        screen.blit(coins_surface, (50, 520))
         screen.blit(potions_surface, (screen.get_width() // 2 + 50, 450))
         screen.blit(health_potions_surface, (screen.get_width() // 2 + 50, 500))
         screen.blit(swiftness_potions_surface, (screen.get_width() // 2 + 50, 550))

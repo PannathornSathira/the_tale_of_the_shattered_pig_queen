@@ -6,6 +6,7 @@ class Bullet:
         self.y = y
         self.direction = direction  # "left" or "right"
         self.speed = BULLET_SPEED  # Bullet speed
+        self.scaling = 1
         self.dx = general_speed[0]
         self.dy = general_speed[1]
         self.bullet_type = bullet_type
@@ -42,6 +43,7 @@ class Bullet:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def update(self, dt):
+       self.speed = self.speed * self.scaling 
        if self.bullet_type == "shotgun" and self.travelled_distance >= self.max_distance:
             self.active = False
             return

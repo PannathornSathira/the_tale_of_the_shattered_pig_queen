@@ -6,12 +6,12 @@ from src.bosses.BaseBoss import BaseBoss
 from src.resources import *
 
 class KingMummyBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x, y, width=60, height=80, health=health, damage=damage)
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling = 1):
+        super().__init__(x, y, width=50, height=80, health=health, damage=damage, damage_speed_scaling = damage_speed_scaling)
         self.animation = sprite_collection["king_mummy_boss"].animation
         self.visible = True
         self.direction = "left"
-
+        self.damage_speed_scaling = damage_speed_scaling
         # Revive properties
         self.num_life = 2
         self.reviving = False

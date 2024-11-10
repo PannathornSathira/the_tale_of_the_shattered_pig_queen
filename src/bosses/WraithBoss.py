@@ -9,9 +9,9 @@ from src.bosses.BeamAttack import BeamAttack
 
 
 class WraithBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(1000, 200, width=250, height=400, health=health, damage=damage)
-        
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
+        super().__init__(x, y, width=150, height=300, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.damage_speed_scaling = damage_speed_scaling
         self.player_character_x = 0
         self.player_character_y = 0
         self.direction = "left"
@@ -145,7 +145,7 @@ class WraithBoss(BaseBoss):
         if self.bullet_gap_time >= self.bullet_gap_cooldown:
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
-                bullet = HomingBullet(bullet_x, bullet_y, damage=self.damage)  # Create a bullet
+                bullet = HomingBullet(bullet_x, bullet_y, damage=self.damage,scaling=self.damage_speed_scaling)  # Create a bullet
                 bullet.direction = math.radians(self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i))
                 self.homing_bullets.append(bullet)  # Add bullet to the list
         
@@ -190,7 +190,7 @@ class WraithBoss(BaseBoss):
             bullet_dy = math.sin(self.haunting_wail_current_angle) * self.haunting_wail_bullet_speed
             
             # Create and position the bullet
-            bullet = BossBullet(self.x + self.width / 2, self.y + self.height / 2, "general", self.damage, (bullet_dx, bullet_dy), damage=self.damage)
+            bullet = BossBullet(self.x + self.width / 2, self.y + self.height / 2, "general", self.damage, (bullet_dx, bullet_dy), damage=self.damage, scaling=self.damage_speed_scaling)
             bullet.width = 20
             bullet.height = 10
             bullet.re_initialize()
@@ -256,10 +256,11 @@ class WraithBoss(BaseBoss):
     
 
 class HomingBullet:
-    def __init__(self, x, y, speed=125, damage=10, turn_rate=50):
+    def __init__(self, x, y, speed=125, damage=10, turn_rate=50, scaling=1):
         self.x = x
         self.y = y
         self.speed = speed
+        self.scaling = scaling
         self.damage = damage
         self.width = 25
         self.height = 15
@@ -276,6 +277,7 @@ class HomingBullet:
 
     def update(self, dt, player):
         if self.active:
+            self.speed=self.scaling
             self.life_time -= dt
             # Calculate direction towards the player
             target_x = player.character_x + player.width / 2 - self.width / 2
