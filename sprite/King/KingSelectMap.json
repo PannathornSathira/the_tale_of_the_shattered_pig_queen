@@ -6,7 +6,7 @@
             "name": "king_select_map",
             "images": [
                 {
-                    "path": "./graphics/King/King.jpg",
+                    "path": "./graphics/King/King.png",
                     "scale": 1
                 }
             ],

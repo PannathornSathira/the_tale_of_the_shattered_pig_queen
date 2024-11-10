@@ -1,0 +1,27 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "kraken_boss_bullet",
+            "path": "./graphics/Kraken/Kraken_Bullet.png",
+            "xsize": 74,
+            "ysize": 74,
+            "colorKey": null
+        },
+        {
+            "name": "kraken_boss_thunder",
+            "path": "./graphics/Kraken/Kraken_VerticalWave.png",
+            "xsize": 133,
+            "ysize": 272,
+            "colorKey": null
+        },
+        {
+            "name": "kraken_boss_lightning",
+            "path": "./graphics/Kraken/Kraken_HorizontalWave.png",
+            "xsize": 148,
+            "ysize": 206,
+            "colorKey": null
+        }
+    ]
+}

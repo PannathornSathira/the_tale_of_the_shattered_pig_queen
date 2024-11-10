@@ -2,13 +2,15 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
 
 class KrakenBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling = 1):
-        super().__init__(x, y, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        super().__init__(x=1050, y=200, width=350, height=350, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.animation = sprite_collection["kraken_boss_idle"].animation
 
         # Customizing the appearance for the Blue Dragon
         self.color = (200, 200, 255)
@@ -19,6 +21,8 @@ class KrakenBoss(BaseBoss):
         # Charge attack prop
         self.charge_duration = 2
         self.initial_y = self.y
+        self.end_x_left = -100
+        self.end_x_right = 1050
 
         # Tempest attack prop
         self.tempest_duration = 2
@@ -28,18 +32,28 @@ class KrakenBoss(BaseBoss):
         self.bullet_angle = 125
         self.barrage_starting_angle = 0
         self.barrage_starting_angle_random_shift_max = 90
+        self.lightnings = []
+        self.lightning_speed = 800
+        self.lightning_gap = 50
+        self.lightning_current_pos = 0
+        self.lightning_last_pos = 0
         
         #Thunder strike attack prop
         self.beam_count = 5
-        self.beam_width = 150
-        self.beam_gap = 60
-        self.beam_height = 1000
+        self.beam_width = 100
+        self.beam_gap = 100
+        self.beam_height = 600
         self.beam_delay = 0.25
         self.beams = []
 
     def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
         super().update(dt, player, platforms)
+        self.animation.update(dt)
+        for lightning in self.lightnings:
+            lightning.update(dt, player)
+            if not lightning.active:
+                self.lightnings.remove(lightning)
 
     def select_attack(self, player):
         
@@ -65,34 +79,25 @@ class KrakenBoss(BaseBoss):
         else:
             angle = 90  # Rotate 90 degrees right
         if self.attack_elapsed_time == 0:
-            self.y = (4 * TILE_SIZE - CHARACTER_HEIGHT) * 3
-            rotated_image = pygame.transform.rotate(self.image, angle)
-            self.image = rotated_image
-            self.rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
+            self.y = self.y - player.height - 10
+            self.animation = sprite_collection["kraken_boss_charge"].animation
         
         t = self.attack_elapsed_time / self.charge_duration  # Normalized time [0, 1]
         tweened_t = self.ease_in_out_quad(t)
 
         # Interpolate the position based on the tweened time
         if self.position == "right":
-            start_pos = WIDTH - self.width
-            end_pos = 0
+            start_pos = self.end_x_right
+            end_pos = self.end_x_left
         else:
-            start_pos = 0
-            end_pos = WIDTH - self.width
+            start_pos = self.end_x_left
+            end_pos = self.end_x_right
             
         self.x = start_pos + tweened_t * (end_pos - start_pos)
 
         # End the charge if the duration is over
         if self.attack_elapsed_time >= self.charge_duration:
             self.y = self.initial_y
-            
-            # Reset the image to its original orientation
-            self.image = pygame.Surface((self.width, self.height))
-            self.image.fill(self.color)  # Set color back to blue
-
-            # Reset the rectangle
-            self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
             # Flip position
             if self.position == "right":
@@ -101,6 +106,7 @@ class KrakenBoss(BaseBoss):
                 self.position = "right"
 
             self.x = end_pos
+            self.animation = sprite_collection["kraken_boss_idle"].animation
             self.end_attack()
 
     def tempest_barrage(self, dt, player):
@@ -115,6 +121,10 @@ class KrakenBoss(BaseBoss):
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
                 bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
+                bullet.width = 30
+                bullet.height = 30
+                bullet.re_initialize()
+                bullet.set_image(sprite_collection["kraken_boss_bullet"].image)
                 self.bullets.append(bullet)  # Add bullet to the list
         
         # End the bullet attack if the duration is over
@@ -122,26 +132,57 @@ class KrakenBoss(BaseBoss):
             self.end_attack()
             
     def lightning_wave_beam(self, dt, player):
-        beam_direction = "left" if self.position == "right" else "right"
+        direction = "left" if self.position == "right" else "right"
         if self.attack_elapsed_time == 0:
-            if beam_direction == "left":
-                start_x = 0 - BEAM_WIDTH
-            else:
-                start_x = WIDTH
-            beam = BeamAttack(start_x, player.character_y + (player.height / 2) - (BEAM_HEIGHT / 2), beam_direction, damage=self.damage, scaling=self.damage_speed_scaling)
-            self.bullets.append(beam)
+            self.animation = sprite_collection["kraken_boss_lightning_wave_beam"].animation
+            if direction == "left": 
+                self.lightning_last_pos = WIDTH
+                self.lightning_current_pos = WIDTH
+            elif direction == "right":
+                self.lightning_last_pos = 0
+                self.lightning_current_pos = 0
+                
+        if direction == "left":
+            self.lightning_current_pos -= self.lightning_speed * dt
+            if self.lightning_current_pos <= self.lightning_last_pos - self.lightning_gap and self.lightning_current_pos >= 0:
+                lightning_height = random.randint(200,400)
+                lightning_width = lightning_height / 4
+                self.lightnings.append(Lightning(self.lightning_current_pos, HEIGHT-lightning_height, lightning_width, lightning_height, self.damage))
+                self.lightning_last_pos = self.lightning_current_pos
+                
+        elif direction == "right":
+            self.lightning_current_pos += self.lightning_speed * dt
+            if self.lightning_current_pos >= self.lightning_last_pos + self.lightning_gap and self.lightning_current_pos <= WIDTH:
+                lightning_height = random.randint(200,400)
+                lightning_width = lightning_height / 4
+                self.lightnings.append(Lightning(self.lightning_current_pos, HEIGHT-lightning_height, lightning_width, lightning_height, self.damage))
+                self.lightning_last_pos = self.lightning_current_pos
+                
+            
+        
+            # if beam_direction == "left":
+            #     start_x = WIDTH - 1
+            # else:
+            #     start_x = 0 - BEAM_WIDTH + 1
+            # beam = BeamAttack(start_x, player.character_y + (player.height / 2) - (BEAM_HEIGHT / 2), beam_direction, damage=self.damage, scaling=self.damage_speed_scaling)
+            # beam.set_image(sprite_collection["kraken_boss_lightning"].image)
+            # self.bullets.append(beam)
             
         # End the attack if the duration is over
-        if len(self.bullets) == 0:
+        if len(self.lightnings) == 0 and self.attack_elapsed_time >= 1:
+            self.animation = sprite_collection["kraken_boss_idle"].animation
             self.end_attack()
             
     def thunder_strike_cluster(self, dt, player):
         beam_direction = "down"
 
         if self.attack_elapsed_time == 0:
+            self.animation = sprite_collection["kraken_boss_lightning_thunder_strike_cluster"].animation
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling))
+                beam = BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling)
+                beam.set_image(sprite_collection["kraken_boss_thunder"].image)
+                self.beams.append(beam)
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
@@ -149,6 +190,7 @@ class KrakenBoss(BaseBoss):
             self.bullets.append(self.beams[beam_index - 1])
                 
         if len(self.bullets) == 0:
+            self.animation = sprite_collection["kraken_boss_idle"].animation
             self.end_attack()
             self.beams = []
 
@@ -161,4 +203,43 @@ class KrakenBoss(BaseBoss):
 
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
-        super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            if self.position == "left":
+                img = pygame.transform.flip(img, True, False)
+            screen.blit(img, (self.x, self.y))
+            
+        for bullet in self.bullets:
+            bullet.render(screen)
+            
+        for lightning in self.lightnings:
+            lightning.render(screen)
+
+
+class Lightning:
+    def __init__(self, x, y, width, height, damage=10):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.image = sprite_collection["kraken_boss_lightning"].image
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.duration = 1
+        self.timer = 0
+        self.damage = damage
+        self.active = True
+        
+    def update(self, dt, player):
+        if self.rect.colliderect(player.rect):
+            player.take_damage(self.damage)
+            
+        self.timer += dt
+        if self.timer >= self.duration:
+            self.active = False
+            
+    def render(self, screen):
+        if self.active:
+            img = self.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            screen.blit(img, (self.x, self.y))

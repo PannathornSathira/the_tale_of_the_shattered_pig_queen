@@ -1,0 +1,98 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "tornado_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/Tornado/Tornado1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "tornado_boss_barrage",
+            "images": [
+                {
+                    "path": "./graphics/Tornado/Tornado1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.1,
+            "loop": true
+        },
+        {
+            "name": "tornado_boss_summon",
+            "images": [
+                {
+                    "path": "./graphics/Tornado/Tornado_Summon1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado_Summon2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado_Summon3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado_Summon4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.2,
+            "loop": true
+        },
+        {
+            "name": "tornado_boss_fiendling",
+            "images": [
+                {
+                    "path": "./graphics/Tornado/Tornado1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Tornado/Tornado4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        }
+    ]
+}

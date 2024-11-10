@@ -1,0 +1,20 @@
+{
+    "type": "image",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "greatshark_boss_torpedo",
+            "path": "./graphics/GreatShark/Shark_Torpedo1.png",
+            "xsize": 104,
+            "ysize": 74,
+            "colorKey": null
+        },
+        {
+            "name": "greatshark_boss_bullet",
+            "path": "./graphics/GreatShark/Shark_Bullet.png",
+            "xsize": 74,
+            "ysize": 85,
+            "colorKey": null
+        }
+    ]
+}

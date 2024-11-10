@@ -1,0 +1,159 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "greatshark_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Stand1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Stand2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Stand3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Stand4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "greatshark_boss_prepare_assault",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Hide1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Hide2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Hide3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Hide4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.35,
+            "loop": false
+        },
+        {
+            "name": "greatshark_boss_assault",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Assault.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        },
+        {
+            "name": "greatshark_boss_assault_up",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Assault_Up.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.5,
+            "loop": true
+        },
+        {
+            "name": "greatshark_boss_attack_effect",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack4.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack5.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack6.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack7.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack8.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Attack9.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.3,
+            "loop": true
+        },
+        {
+            "name": "greatshark_boss_torpedo_explode",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Torpedo1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Torpedo2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Torpedo3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Torpedo4.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Torpedo5.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.05,
+            "loop": false
+        },
+        {
+            "name": "greatshark_boss_vortex",
+            "images": [
+                {
+                    "path": "./graphics/GreatShark/Shark_Vortex1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/GreatShark/Shark_Vortex2.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        }
+    ]
+}
