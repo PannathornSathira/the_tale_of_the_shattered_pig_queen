@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from src.constants import *
+from src.resources import *
 from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 from src.bosses.BeamAttack import BeamAttack
@@ -12,6 +13,7 @@ class TornadoFiendBoss(BaseBoss):
         self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance
         self.image.fill((230, 230, 255))  # Set color to blue
+        self.animation = sprite_collection["tornado_boss_idle"].animation
         
         # Cyclone barage attack prop
         self.barrage_gap = 0.4  # Time between rows in seconds
@@ -27,9 +29,9 @@ class TornadoFiendBoss(BaseBoss):
         
         # Tornado judgement attack prop
         self.beam_count = 5
-        self.beam_width = 150
-        self.beam_gap = 60
-        self.beam_height = 1000
+        self.beam_width = 100
+        self.beam_gap = 100
+        self.beam_height = 500
         self.beam_delay = 0.25
         self.beams = []
         
@@ -37,7 +39,7 @@ class TornadoFiendBoss(BaseBoss):
         self.tornado_frenzy_duration = 10
         self.original_x = self.x
         self.original_y = self.y
-        self.tornado_frenzy_speed = 100
+        self.tornado_frenzy_speed = 200
 
     def update(self, dt, player, platforms):
         # Update position and check if the boss should attack
@@ -48,9 +50,20 @@ class TornadoFiendBoss(BaseBoss):
             fiendling.update(dt, player, platforms)
             if not fiendling.alive:
                 self.fiendlings.remove(fiendling)
+                
+        if self.warning_time_timer > 0:
+            if self.current_attack == self.tornado_swarm:
+                self.animation = sprite_collection["tornado_boss_summon"].animation
+            elif self.current_attack == self.cyclone_barrage:
+                self.animation = sprite_collection["tornado_boss_barrage"].animation
+        else:
+            self.animation = sprite_collection["tornado_boss_idle"].animation
+                
+        self.animation.update(dt)
 
     def select_attack(self, player):
         attack_choice = random.choice(["cyclone_barrage", "tornado_swarm", "tornado_judgement", "tornado_frenzy"])
+        # attack_choice = random.choice(["tornado_frenzy"])
 
         if attack_choice == "cyclone_barrage":
             self.current_attack = self.cyclone_barrage
@@ -82,6 +95,11 @@ class TornadoFiendBoss(BaseBoss):
 
             # Create bullet and add to boss's bullet list
             bullet = BossBullet(x_position, row_y, direction, damage=self.damage, scaling=self.damage_speed_scaling)
+            if direction == "right":
+                img = pygame.transform.flip(sprite_collection["tornado_bullet"].image, True, False)
+            else:
+                img = sprite_collection["tornado_bullet"].image
+            bullet.set_image(img)
             self.bullets.append(bullet)
             
             self.barrage_isFromLeft = not self.barrage_isFromLeft
@@ -113,7 +131,9 @@ class TornadoFiendBoss(BaseBoss):
             self.x = WIDTH / 2 - self.width / 2
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                self.beams.append(BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling))
+                beam = BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling)
+                beam.set_image(sprite_collection["tornado_lightning"].image)
+                self.beams.append(beam)
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
@@ -121,13 +141,15 @@ class TornadoFiendBoss(BaseBoss):
             self.bullets.append(self.beams[beam_index - 1])
                 
         if len(self.bullets) == 0:
-            self.end_attack()
-            self.beams = []
-            
-        if self.attack_elapsed_time >= self.barrage_attack_duration:
             self.x = self.original_x
             self.y = self.original_y
             self.end_attack()
+            self.beams = []
+            
+        # if self.attack_elapsed_time >= self.barrage_attack_duration:
+        #     self.x = self.original_x
+        #     self.y = self.original_y
+        #     self.end_attack()
             
     def tornado_frenzy(self, dt, player):
         """
@@ -157,7 +179,13 @@ class TornadoFiendBoss(BaseBoss):
 
     def render(self, screen):
         """Render the boss and possibly some visual effects for its attacks."""
-        super().render(screen)
+        if self.alive:
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            screen.blit(img, (self.x, self.y))
+            
+        for bullet in self.bullets:
+            bullet.render(screen)
         
         for fiendling in self.fiendlings:
             fiendling.render(screen)
@@ -167,13 +195,12 @@ class Fiendling:
     def __init__(self, x, y, speed=75, damage=5):
         self.x = x
         self.y = y
-        self.width = CHARACTER_WIDTH * 3
-        self.height = CHARACTER_HEIGHT * 3
+        self.width = CHARACTER_WIDTH
+        self.height = CHARACTER_HEIGHT
         self.direction = random.choice(["left", "right"])  # Start in a random direction
 
         # Placeholder fiendling image
-        self.image = pygame.Surface((self.width, self.height))
-        self.image.fill((50, 50, 50))  # Grey color as a placeholder for fiendling
+        self.animation = sprite_collection["tornado_boss_fiendling"].animation
 
         self.speed = speed
         self.damage = damage
@@ -186,7 +213,7 @@ class Fiendling:
         self.on_ground = False
         self.jump_force = JUMP_FORCE
         self.gravity = GRAVITY
-        self.ground_y = GROUND_LEVEL_Y - TILE_SIZE - 20
+        self.ground_y = GROUND_LEVEL_Y
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         
         # AI movement timer
@@ -200,7 +227,7 @@ class Fiendling:
         #     self.direction = random.choice(["left", "right"])  # Ensure it doesn’t jump again immediately
         if self.last_direction_change >= self.change_direction_interval:
             self.last_direction_change = 0
-            self.direction = random.choice(["left", "right", "jump"])
+            self.direction = random.choice(["left","right","jump","down"])
             self.change_direction_interval = random.randint(1, 3)
             
         if self.x + self.width >= WIDTH:
@@ -218,18 +245,17 @@ class Fiendling:
             self.velocity_y = self.jump_force
             self.on_ground = False
             self.direction = random.choice(["left", "right"])
+        elif self.direction == "down" and self.on_ground and self.y + self.height < self.ground_y:
+            self.on_ground = False
+            self.y += self.height + 20
+            self.rect.y = self.y
+            self.velocity_y = self.gravity * dt
+            self.direction = random.choice(["left", "right"])
         
         # Apply gravity
         if not self.on_ground:
             self.velocity_y += self.gravity * dt
             self.y += self.velocity_y * dt
-
-        # Reset position when fiendling touches ground
-        if self.y + self.height >= self.ground_y:
-            self.y = self.ground_y
-            self.velocity_y = 0
-            self.on_ground = True
-            self.is_jumping = False
             
         # Platform collision check
         collided, platform = self.check_platform_collision(platforms)
@@ -240,10 +266,17 @@ class Fiendling:
             elif self.y + CHARACTER_HEIGHT < self.ground_y:
                 self.on_ground = False
         else:
-            self.y = platform.rect.top - CHARACTER_HEIGHT * 2.5
+            self.y = platform.rect.top - CHARACTER_HEIGHT
             self.on_ground = True
             self.is_jumping = False
             self.velocity_y = 0
+
+        # Reset position when fiendling touches ground
+        if self.y + self.height >= self.ground_y:
+            self.y = self.ground_y - self.height
+            self.velocity_y = 0
+            self.on_ground = True
+            self.is_jumping = False
 
         # Update the fiendling's rect position
         self.rect.x = self.x
@@ -258,6 +291,8 @@ class Fiendling:
             if bullet.rect.colliderect(self) and self.alive:
                 self.take_damage(bullet.damage)
                 player.bullets.remove(bullet)
+                
+        self.animation.update(dt)
 
     def check_platform_collision(self, platforms):
         for platform_row in platforms:
@@ -272,12 +307,12 @@ class Fiendling:
             self.alive = False
 
     def render(self, screen):
-        fiendling_img = self.image
-        if self.direction == "left":
-            fiendling_img = pygame.transform.flip(fiendling_img, True, False)
         if self.alive:
-            screen.blit(fiendling_img, (self.x, self.y))
-            pygame.draw.rect(screen, (255,0,0), self.rect)
+            img = self.animation.image
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            if self.direction == "left":
+                img = pygame.transform.flip(img, True, False)
+            screen.blit(img, (self.x, self.y))
 
         
 
