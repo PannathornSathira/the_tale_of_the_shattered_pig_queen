@@ -1,2 +1,2 @@
-__pycache__/
-src/__pychacke__/
+*/__pycache__/
+*/.DS_Store
