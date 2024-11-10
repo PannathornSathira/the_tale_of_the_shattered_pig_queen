@@ -7,10 +7,10 @@ from src.bosses.BaseBoss import BaseBoss
 from src.bosses.BossBullet import BossBullet
 
 class SandWormBoss(BaseBoss):
-    def __init__(self, x, y, health=300, damage=10):
-        super().__init__(x - 100, HEIGHT-600, width=300, height=600, health=health, damage=damage)
+    def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
+        super().__init__(x - 100, HEIGHT-600, width=300, height=600, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
         self.animation = sprite_collection["sandworm_boss_idle"].animation
-
+        self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance
         self.image.fill((255, 255, 0))
         
@@ -89,7 +89,7 @@ class SandWormBoss(BaseBoss):
         
         speed_y =  distance_y * self.sand_bullet_speed / (distance_x + 1)
         
-        bullet = BossBullet(bullet_x, bullet_y, bullet_direction, speed_y)
+        bullet = BossBullet(bullet_x, bullet_y, bullet_direction, speed_y, scaling=self.damage_speed_scaling)
         bullet.speed = self.sand_bullet_speed
         bullet.width = bullet_width
         bullet.height = bullet_height
@@ -121,7 +121,7 @@ class SandWormBoss(BaseBoss):
         bullet_x = self.x + (self.width // 2)  # Center the bullet on the boss
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
         for i in range(self.bullet_layer_num):
-            bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage)  # Create a bullet
+            bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
             self.bullets.append(bullet)  # Add bullet to the list
             
         sprite_collection["sandworm_boss_shockwave"].animation.Refresh()

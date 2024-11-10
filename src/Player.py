@@ -50,7 +50,14 @@ class Player:
         self.active_weapon = "pistol"  # Default weapon
         self.shotgun_spread = 5  # Number of bullets for shotgun spread
         self.shotgun_angle = 15
+        self.shotgun_ability = False
 
+        self.defense_scale = 1
+        self.jump_ability= False
+        self.jump_count = 0  # Track the number of jumps performed
+        self.count_test = 0
+        self.jump_scaling = 1
+        
     def update(self, dt, events, platforms, boss):
         # Update stun timer if player is stunned
         if self.is_stunned:
@@ -78,13 +85,31 @@ class Player:
                     self.character_x = WIDTH - self.width
                 else:
                     self.character_x += self.movement_speed * dt
+            """
             elif pressedKeys[pygame.K_z] and self.on_ground:
                 self.is_jumping = True
                 self.velocity_y = self.jump_force
                 self.on_ground = False
             else:
                 self.direction = "front"
-                
+            """
+            if pressedKeys[pygame.K_z]:
+                if self.on_ground:
+                    # First jump
+                    self.is_jumping = True
+                    self.velocity_y = self.jump_force * self.jump_scaling
+                    self.on_ground = False
+                    self.jump_count = 1
+                elif self.jump_count == 1 and self.velocity_y > 0 and self.jump_ability:
+                    # Double jump
+                    self.count_test +=1
+                    self.is_jumping = True
+                    self.velocity_y = self.jump_force * self.jump_scaling
+                    self.jump_count += 1
+                    print(self.jump_ability)
+                    print("Double Jump:", self.count_test)
+                    print("----------")
+            """
             if pressedKeys[pygame.K_z] and pressedKeys[pygame.K_RIGHT] and self.on_ground:
                 self.is_jumping = True
                 self.velocity_y = self.jump_force  # Apply the jump force
@@ -104,7 +129,7 @@ class Player:
                     self.character_x = 0
                 else:
                     self.character_x -= self.movement_speed * dt  # Move right while jumping
-                    
+            """   
             # Shooting control
             if pressedKeys[pygame.K_x]:
                 self.animation.update(dt)
@@ -124,7 +149,7 @@ class Player:
             if pressedKeys[pygame.K_1]:
                 self.active_weapon = "pistol"
                 self.animation = sprite_collection["king_fire_gun"].animation
-            elif pressedKeys[pygame.K_2]:
+            elif pressedKeys[pygame.K_2] and self.shotgun_ability:
                 self.active_weapon = "shotgun"
                 self.animation = sprite_collection["king_fire_shotgun"].animation
             
@@ -141,12 +166,14 @@ class Player:
         if not self.on_ground:
             self.velocity_y += self.gravity * dt  # Apply gravity to vertical speed
             self.character_y += self.velocity_y * dt  # Update vertical position 
+            
         
         if self.character_y >= self.ground_y:
             self.character_y = self.ground_y
             self.velocity_y = 0
             self.on_ground = True
             self.is_jumping = False
+            self.jump_count = 0
             self.poison_platform_accumulated_time = 0  # Reset if not on poison platform
             self.revert_to_default()
 
@@ -172,6 +199,7 @@ class Player:
             self.on_ground = True
             self.is_jumping = False
             self.velocity_y = 0
+            self.jump_count = 0
 
         if self.invulnerable:
             self.flash_timer = self.flash_timer+dt
@@ -207,7 +235,7 @@ class Player:
     
     def take_damage(self, damage):
         if not self.invulnerable:  # Only take damage if not invulnerable
-            self.health -= damage
+            self.health -= damage * self.defense_scale
             if self.health <= 0:
                 self.alive = False
             self.SetInvulnerable(1) 
