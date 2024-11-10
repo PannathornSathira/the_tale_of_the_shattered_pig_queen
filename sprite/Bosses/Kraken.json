@@ -1,0 +1,82 @@
+{
+    "type": "animation",
+    "spriteSheetURL": null,
+    "sprites": [
+        {
+            "name": "kraken_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/Kraken/Kraken_Idle1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_Idle2.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "kraken_boss_charge",
+            "images": [
+                {
+                    "path": "./graphics/Kraken/Kraken_Charge1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_Charge2.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "kraken_boss_lightning_wave_beam",
+            "images": [
+                {
+                    "path": "./graphics/Kraken/Kraken_HorizontalAtk1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_HorizontalAtk2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_HorizontalAtk3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_HorizontalAtk4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.2,
+            "loop": true
+        },
+        {
+            "name": "kraken_boss_lightning_thunder_strike_cluster",
+            "images": [
+                {
+                    "path": "./graphics/Kraken/Kraken_VerticalAtk1.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_VerticalAtk2.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_VerticalAtk3.png",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/Kraken/Kraken_VerticalAtk4.png",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.2,
+            "loop": true
+        }
+    ]
+}
