@@ -48,10 +48,10 @@ class Player:
         
         
         self.active_weapon = "pistol"  # Default weapon
-        self.shotgun_spread = 5  # Number of bullets for shotgun spread
+        self.shotgun_spread = 3  # Number of bullets for shotgun spread
         self.shotgun_angle = 15
         self.shotgun_ability = False
-
+        self.shotgun_damage_scale = 0.6
         self.defense_scale = 1
         self.jump_ability= False
         self.jump_count = 0  # Track the number of jumps performed
@@ -259,7 +259,7 @@ class Player:
             # Shotgun fires multiple bullets in a spread
             for i in range(self.shotgun_spread):
                 angle_offset = (i - self.shotgun_spread // 2) * self.shotgun_angle
-                bullet = Bullet(bullet_x, bullet_y, bullet_direction, angle_offset=angle_offset, bullet_type = "shotgun", damage=self.bullet_damage)
+                bullet = Bullet(bullet_x, bullet_y, bullet_direction, angle_offset=angle_offset, bullet_type = "shotgun", damage=self.bullet_damage * self.shotgun_damage_scale)
                 self.bullets.append(bullet)
                 
         

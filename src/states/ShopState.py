@@ -39,7 +39,7 @@ class ShopState:
         self.jump_levels = [0.0, 1, 1.10, 1.20, 1.30, 1.40]
         self.jump_costs = [0, 150, 300, 600, 1200, 2000]
         
-        self.shotgun_levels = [0.0, 1, 1, 1, 1, 1]
+        self.shotgun_levels = [0.0, 0.6, 0.54, 0.47, 0.4, 0.34]
         self.shotgun_costs = [0, 100, 300, 600, 1200, 2000]
         
         self.slowmo_levels = [1, 0.9, 0.85, 0.8, 0.75, 0.7]
