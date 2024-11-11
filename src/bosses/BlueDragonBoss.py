@@ -23,18 +23,18 @@ class BlueDragonBoss(BaseBoss):
         self.stomp_duration_gap = 1
         self.stomp_duration_time = 0
         self.stomp_damage = self.damage
-        self.stomp_stun_distance = 300
+        self.stomp_stun_distance = 400
         self.stomp_effect_duration = 0.2
         self.stomp_effect_time = 0
         self.stomp_effect_isVisible = False
         self.stomp_effect_rect1 = pygame.Rect(
-            0, GROUND_LEVEL_Y, WIDTH, 20
+            0, GROUND_LEVEL_Y-50, WIDTH, 50
         )  # Define the size and position of the effect
         self.stomp_effect_rect2 = pygame.Rect(
             self.x + self.width / 2 - self.stomp_stun_distance,
-            GROUND_LEVEL_Y,
+            GROUND_LEVEL_Y-100,
             self.stomp_stun_distance * 2,
-            20,
+            100,
         )  # Define the size and position of the effect
 
         # Frozen pillars attack prop
@@ -83,10 +83,10 @@ class BlueDragonBoss(BaseBoss):
         self.animation.update(dt)
 
     def select_attack(self, player):
-        attack_choice = random.choice(
-            ["stomp", "frozen_pillars", "frostbite_ring", "glacial_shards"]
-        )
-        # attack_choice = random.choice(["glacial_shards"])
+        # attack_choice = random.choice(
+        #     ["stomp", "frozen_pillars", "frostbite_ring", "glacial_shards"]
+        # )
+        attack_choice = random.choice(["stomp"])
 
         if attack_choice == "stomp":
             self.current_attack = self.stomp
@@ -225,8 +225,18 @@ class BlueDragonBoss(BaseBoss):
 
         # Render stomp effect if visible
         if self.stomp_effect_isVisible:
-            pygame.draw.rect(screen, (255, 0, 0), self.stomp_effect_rect1)
-            pygame.draw.rect(screen, (255, 165, 0), self.stomp_effect_rect2)
+            stomp_far = sprite_collection["blue_dragon_stomp_effect_far"].image
+            rect_far = self.stomp_effect_rect1
+            stomp_far = pygame.transform.scale(stomp_far, (70, rect_far.height))
+            for i in range(rect_far.x, rect_far.x + rect_far.width, 50):
+                screen.blit(stomp_far, (i, rect_far.y))
+                
+            stomp_near = sprite_collection["blue_dragon_stomp_effect_near"].image
+            rect_near = self.stomp_effect_rect2
+            stomp_near = pygame.transform.scale(stomp_near, (70, rect_near.height))
+            for i in range(rect_near.x, rect_near.x + rect_near.width, 50):
+                screen.blit(stomp_near, (i, rect_near.y))
+
 
         for ice_shard in self.ice_shards:
             ice_shard.render(screen)

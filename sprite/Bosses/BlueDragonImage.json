@@ -29,6 +29,20 @@
             "xsize": 88,
             "ysize": 74,
             "colorKey": null
+        },
+        {
+            "name": "blue_dragon_stomp_effect_near",
+            "path": "./graphics/BlueDragon/Dragon_StompNear.PNG",
+            "xsize": 88,
+            "ysize": 74,
+            "colorKey": null
+        },
+        {
+            "name": "blue_dragon_stomp_effect_far",
+            "path": "./graphics/BlueDragon/Dragon_StompFar.PNG",
+            "xsize": 88,
+            "ysize": 74,
+            "colorKey": null
         }
     ]
 }
