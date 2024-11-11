@@ -28,14 +28,11 @@ class PlayState:
         self.power_scale_swiftness=1
         self.power_scale_damage=1
         
-        self.health_potion_image = pygame.image.load("./graphics/shop/HP_potion2.PNG")  
-        self.health_potion_image = pygame.transform.scale(self.health_potion_image, (30, 35))
+        self.health_potion_image = potion_dict["health"]
         
-        self.damage_potion_image = pygame.image.load("./graphics/shop/damage_potion.PNG")  
-        self.damage_potion_image = pygame.transform.scale(self.damage_potion_image, (30, 35))
+        self.damage_potion_image = potion_dict["damage"]
         
-        self.swifness_potion_image = pygame.image.load("./graphics/shop/swifness_potion.PNG")  
-        self.swifness_potion_image = pygame.transform.scale(self.swifness_potion_image, (30, 35)) # Adjust image size
+        self.swifness_potion_image = potion_dict["swiftness"]
         # Potion levels and costs
         self.potion_levels = {
             "Health Potion": {
@@ -53,31 +50,31 @@ class PlayState:
         self.level = params["level"]
         self.saved_values = read_saveFile()
         if self.level.area == 1:
-            self.bg_image = pygame.image.load("./graphics/Backgrounds/Ocean+sand.JPG")
+            self.bg_image = background_dict["sea"]
         elif self.level.area == 2:
-            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+            self.bg_image = background_dict["forest"]
         elif self.level.area == 3:
-            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+            self.bg_image = background_dict["sky"]
         elif self.level.area == 4:
-            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+            self.bg_image = background_dict["desert"]
         elif self.level.area == 5:
-            self.bg_image = pygame.image.load("./graphics/Backgrounds/Castle_bg.PNG")
+            self.bg_image = background_dict["castle"]
         self.boss = params["boss"]
         self.player = params["player"]
         self.total_coins = params["total_coins"]
         self.difficulty = params["difficulty"]
         if self.difficulty == 1:
-            self.coin_scaling = 10
+            self.coin_scaling = 2
         elif self.difficulty == 2:
-            self.coin_scaling = 20
+            self.coin_scaling = 4
         elif self.difficulty == 3:
-            self.coin_scaling = 50
+            self.coin_scaling = 6
         elif self.difficulty == 4:
-            self.coin_scaling = 100
+            self.coin_scaling = 8
         elif self.difficulty == 5:
-            self.coin_scaling = 200
+            self.coin_scaling = 10
         self.boss_health = self.boss.health
-        self.max_health = self.player.health
+        self.max_health = self.player.max_health
         self.max_boss_health = self.boss.health # For boss health bar
         self.damage_potions = params.get("damage_potions", 0)
         self.health_potions = params.get("health_potions", 0)
@@ -93,7 +90,7 @@ class PlayState:
                 "health_potions": self.health_potions,
                 "swiftness_potions": self.swiftness_potions
             })
-            g_state_manager.Change("MAIN_MENU", {})
+            g_state_manager.Change("SHOP", {})
 
         if self.boss.alive:
             self.boss.update(dt, self.player, self.level.platforms)
@@ -108,10 +105,13 @@ class PlayState:
                 "swiftness_potions": self.swiftness_potions
             })
             self.player.bullets = []
-            g_state_manager.Change("WORLD_MAP", {
-                "player": self.player,
-                "completed_level": self.level.area
-            })
+            if self.level.area == 5:
+                g_state_manager.Change("END", {})
+            else:
+                g_state_manager.Change("WORLD_MAP", {
+                    "player": self.player,
+                    "completed_level": self.level.area
+                })
             
         if self.damage_potion_active:
             self.damage_potion_timer -= dt * 1000  # Decrease timer
@@ -135,6 +135,7 @@ class PlayState:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     g_state_manager.Change("PAUSE", {
+                        "prev_state": "play",
                         "level": self.level,
                         "boss": self.boss,
                         "player": self.player,

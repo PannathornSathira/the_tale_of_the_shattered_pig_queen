@@ -6,6 +6,29 @@ g_state_manager = StateMachine()
 
 sprite_collection = SpriteManager().spriteCollection
 
+background_dict = {
+    "sea": pygame.image.load("./graphics/Backgrounds/Bg_Sea Level.JPG"),
+    "forest": pygame.image.load("./graphics/Backgrounds/Bg_forest.JPG"),
+    "sky": pygame.image.load("./graphics/Backgrounds/Bg_Sky.JPG"),
+    "desert": pygame.image.load("./graphics/Backgrounds/Bg_Desert_New.PNG"),
+    "castle": pygame.image.load("./graphics/Backgrounds/Bg_Last Level.PNG")
+}
+
+tile_dict = {
+    "sea": pygame.image.load("./graphics/platform/Sea Level.PNG"),
+    "forest": pygame.image.load("./graphics/platform/Forest Level.PNG"),
+    "sky": pygame.image.load("./graphics/platform/Sky Level.PNG"),
+    "sand": pygame.image.load("./graphics/platform/Sand Level.PNG"),
+    "castle": pygame.image.load("./graphics/platform/Last Level.PNG"),
+    "common": pygame.image.load("./graphics/platform/Common.PNG"),
+}
+
+potion_dict = {
+    "health": pygame.transform.scale(pygame.image.load("./graphics/shop/HP_potion2.PNG"), (30, 35)),
+    "damage": pygame.transform.scale(pygame.image.load("./graphics/shop/damage_potion.PNG"), (30, 35)),
+    "swiftness": pygame.transform.scale(pygame.image.load("./graphics/shop/swifness_potion.PNG"), (30, 35)),
+}
+
 # s_paddle_image_list = [sprite_collection["p_blue_1"].image, sprite_collection["p_green_1"].image,
 #                      sprite_collection["p_red_1"].image, sprite_collection["p_purple_1"].image]
 

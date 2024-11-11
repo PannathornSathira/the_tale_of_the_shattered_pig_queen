@@ -9,7 +9,7 @@ from src.bosses.BeamAttack import BeamAttack
 
 class MedusaBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
-        super().__init__(x, y, width=200, height=400, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        super().__init__(x, y, width=300, height=400, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
         self.animation = sprite_collection["medusa_boss_idle"].animation
         self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance for the Blue Dragon
@@ -101,7 +101,7 @@ class MedusaBoss(BaseBoss):
             self.petrify_beam_gap_time = 0
 
             # Generate a beam at random vertical positions but spaced apart
-            beam_y = random.randint(0, HEIGHT - self.petrify_beam_height)
+            beam_y = random.randint(0, GROUND_LEVEL_Y - self.petrify_beam_height)
             beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height, self.damage, scaling=self.damage_speed_scaling)
             beam.damage = 0
             self.petrify_beams.append(beam)  # Store the beam in a list
@@ -140,6 +140,7 @@ class MedusaBoss(BaseBoss):
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
                 bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
+                bullet.set_image(sprite_collection["medusa_boss_arrow1"].image)
                 self.bullets.append(bullet)  # Add bullet to the list
         
         # End the bullet attack if the duration is over
@@ -198,17 +199,17 @@ class MedusaSnake:
         self.elapsed_time = 0
         self.damage = damage
         
-        # Initial position based on player’s y-coordinate and boss’s x
-        self.x = boss.x
-        self.y = player.character_y + player.height / 2 - boss.width / 2
-        
         # Dimensions and images
         self.original_width = 0
         self.original_height = 100
         self.width = self.original_width
         self.height = self.original_height
         self.original_image = sprite_collection["medusa_boss_snake"].image
-        self.image = sprite_collection["medusa_boss_snake"].image
+        self.image = sprite_collection["medusa_boss_snake"].image      
+        # Initial position based on player’s y-coordinate and boss’s x
+        self.x = boss.x
+        self.y = player.character_y + player.height / 2 - self.height / 2
+        
         self.rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
 
     def update(self, dt, player):

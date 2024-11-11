@@ -29,6 +29,7 @@ class GameMain:
             "WORLD_MAP": MapSelectState(self.screen, self.font),
             "SHOP": ShopState(self.screen, self.font),
             "PAUSE": PauseState(self.screen, self.font),
+            "END": EndState(self.screen, self.font),
         }
         g_state_manager.SetStates(states)
         

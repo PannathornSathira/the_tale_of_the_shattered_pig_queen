@@ -286,7 +286,7 @@ class ShopState:
         health_potions_surface = self.font.render(health_potions_text, True, self.text_color)
         swiftness_potions_surface = self.font.render(swiftness_potions_text, True, self.text_color)
 
-        screen.blit(coins_surface, (50, 520))
+        screen.blit(coins_surface, (50, 600))
         screen.blit(potions_surface, (screen.get_width() // 2 + 50, 450))
         screen.blit(health_potions_surface, (screen.get_width() // 2 + 50, 500))
         screen.blit(swiftness_potions_surface, (screen.get_width() // 2 + 50, 550))

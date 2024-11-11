@@ -84,8 +84,8 @@ class SandWormBoss(BaseBoss):
         bullet_direction = "left"
         bullet_x = self.x + (self.width // 2)  # Center the bullet on the boss
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
-        bullet_width = 50
-        bullet_height = 20
+        bullet_width = 100
+        bullet_height = 40
         
         distance_y = (player.character_y + player.height // 2) - (self.y + (self.height // 2))
         distance_x = abs((player.character_x + player.width // 2) - (self.x + (self.width // 2)))
@@ -125,6 +125,9 @@ class SandWormBoss(BaseBoss):
         bullet_y = self.y + (self.height // 2)  # Start bullet at the center height of the boss
         for i in range(self.bullet_layer_num):
             bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.cone_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
+            bullet.width = 50
+            bullet.height = 20
+            bullet.re_initialize()
             bullet.set_image(sprite_collection["sandworm_bullet2"].image)
             self.bullets.append(bullet)  # Add bullet to the list
             

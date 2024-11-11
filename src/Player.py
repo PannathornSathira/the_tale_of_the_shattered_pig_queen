@@ -16,6 +16,7 @@ class Player:
         # self.sprite_collection = SpriteManager().spriteCollection
         self.animation = sprite_collection["king_fire_gun"].animation
         self.health = health
+        self.max_health = health
         self.defense = 0
         self.velocity_y = 0  # Vertical speed (used for jumping/falling)
         self.is_jumping = False  # Track if the player is in the air
@@ -232,6 +233,10 @@ class Player:
         
     def revert_to_default(self):
         self.movement_speed = self.default_move_speed
+        
+    def reset_position(self):
+        self.character_x = WIDTH / 2 - (CHARACTER_WIDTH) / 2
+        self.character_y = GROUND_LEVEL_Y - CHARACTER_HEIGHT
     
     def take_damage(self, damage):
         if not self.invulnerable:  # Only take damage if not invulnerable

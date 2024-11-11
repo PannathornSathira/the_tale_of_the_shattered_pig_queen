@@ -43,34 +43,34 @@ class Bullet:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def update(self, dt):
-       self.speed = self.speed * self.scaling 
-       if self.bullet_type == "shotgun" and self.travelled_distance >= self.max_distance:
+        actual_speed = self.speed * self.scaling 
+        if self.bullet_type == "shotgun" and self.travelled_distance >= self.max_distance:
             self.active = False
             return
         # Move the bullet in the correct direction
-       if self.direction == "right" and self.angle_offset == 0:
-            self.x += self.speed * dt
-            self.travelled_distance += abs(self.speed * dt)       
-       elif self.direction == "left" and self.angle_offset == 0:
-            self.x -= self.speed * dt
-            self.travelled_distance += abs(self.speed * dt)        
-       elif self.direction == "up":
-            self.y -= self.speed * dt
-            self.travelled_distance += abs(self.speed * dt)        
-       elif self.direction == "down":
-            self.y += self.speed * dt
-            self.travelled_distance += abs(self.speed * dt)        
-       else:
+        if self.direction == "right" and self.angle_offset == 0:
+            self.x += actual_speed * dt
+            self.travelled_distance += abs(actual_speed * dt)       
+        elif self.direction == "left" and self.angle_offset == 0:
+            self.x -= actual_speed * dt
+            self.travelled_distance += abs(actual_speed * dt)        
+        elif self.direction == "up":
+            self.y -= actual_speed * dt
+            self.travelled_distance += abs(actual_speed * dt)        
+        elif self.direction == "down":
+            self.y += actual_speed * dt
+            self.travelled_distance += abs(actual_speed * dt)        
+        else:
             self.x += self.dx * dt
             self.travelled_distance += math.sqrt(self.dx**2 + self.dy**2) * dt            
             self.y += self.dy * dt
         
-        # If the bullet moves off-screen, deactivate it
-       if self.x + self.width < 0 or self.x > WIDTH or self.y + self.height < 0 or self.y > HEIGHT:
-            self.active = False
-            
-       self.rect.x = self.x
-       self.rect.y = self.y
+            # If the bullet moves off-screen, deactivate it
+        if self.x + self.width < 0 or self.x > WIDTH or self.y + self.height < 0 or self.y > HEIGHT:
+                self.active = False
+                
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def render(self, screen):
         # Draw the bullet (just a simple rectangle for now)

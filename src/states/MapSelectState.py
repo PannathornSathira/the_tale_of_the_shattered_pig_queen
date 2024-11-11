@@ -14,6 +14,7 @@ class MapSelectState:
             pygame.Rect(630, 400, 200, 150),  # Area 3
             pygame.Rect(280, 480, 200, 150),  # Area 4
             pygame.Rect(970, 500, 200, 150),  # Area 5 (Final Boss)
+            pygame.Rect(80, 80, 200, 150),  # Shop (End Journey)
         ]
         
         # Initialize the player character
@@ -30,33 +31,43 @@ class MapSelectState:
         self.boss_spawn_y = 100
         self.completed_levels = []  # Track completed levels
         self.difficulty = len(self.completed_levels) + 1
+        
+        self.health_potion_image = potion_dict["health"]
+        
+        self.damage_potion_image = potion_dict["damage"]
+        
+        self.swifness_potion_image = potion_dict["swiftness"]
     
     def Exit(self):
         pass
 
     def Enter(self, params):
         self.saved_values = read_saveFile()
-        self.player = params.get("player", Player())
-        
-        # Configure player based on save file
-        self.player.health = self.saved_values["health"]
-        self.player.defense = self.saved_values["defense"]
-        if self.saved_values["jump"] == 0:
-            self.player.jump_ability = False
-        else:
-            self.player.jump_ability = True
-            self.player.jump_scaling = self.saved_values["jump"]
-        
-        if self.saved_values["shotgun"] == 0:
-            self.player.shotgun_ability = False
-        else:
-            self.player.shotgun_ability = True
-            self.player.shotgun_damage_scale = self.saved_values["shotgun"]
+        self.player = params.get("player")
+        if not self.player:
+            self.player = Player()
+            # Configure player based on save file
+            self.player.health = self.saved_values["health"]
+            self.player.max_health = self.saved_values["health"]
+            self.player.defense = self.saved_values["defense"]
+            if self.saved_values["jump"] == 0:
+                self.player.jump_ability = False
+            else:
+                self.player.jump_ability = True
+                self.player.jump_scaling = self.saved_values["jump"]
             
-        self.player.default_move_speed = self.saved_values["movement_speed"] * CHARACTER_MOVE_SPEED
-        self.player.revert_to_default()
-        self.player.bullet_damage = self.saved_values["bullet_damage"]
+            if self.saved_values["shotgun"] == 0:
+                self.player.shotgun_ability = False
+            else:
+                self.player.shotgun_ability = True
+                self.player.shotgun_damage_scale = self.saved_values["shotgun"]
+                
+            self.player.default_move_speed = self.saved_values["movement_speed"] * CHARACTER_MOVE_SPEED
+            self.player.bullet_damage = self.saved_values["bullet_damage"]
+            
         self.slow_damage_boss = self.saved_values["boss_damage_speed"]
+        self.player.revert_to_default()
+        self.player.reset_position()
 
         # Update completed levels
         self.complete_level = params.get("completed_level")
@@ -92,6 +103,15 @@ class MapSelectState:
                             self.start_level(index + 1, area)
                         elif index == 4 and all(lvl in self.completed_levels for lvl in range(1, 5)):
                             self.start_level(5, area)  # Start the final boss level
+                        elif index == 5:
+                            g_state_manager.Change("PAUSE", {
+                                "prev_state": "map",
+                                "player": self.player,
+                                "total_coins": self.saved_values["total_coins"],
+                                "damage_potions": self.saved_values["damage_potions"],
+                                "health_potions": self.saved_values["health_potions"],
+                                "swiftness_potions": self.saved_values["swiftness_potions"],
+                            })
                 break
         else:
             self.selected_area_index = None
@@ -109,7 +129,6 @@ class MapSelectState:
             "damage_potions": self.saved_values["damage_potions"],
             "health_potions": self.saved_values["health_potions"],
             "swiftness_potions": self.saved_values["swiftness_potions"],
-            
         })
         
     def spawn_boss(self, area):
@@ -151,9 +170,16 @@ class MapSelectState:
         screen.blit(char_img, (self.character.x, self.character.y))
 
         # Draw potion counts
-        render_text(f"Damage Potions: {self.saved_values['damage_potions']}", 320, 20, self.font, screen)
-        render_text(f"Health Potions: {self.saved_values['health_potions']}", 620, 20, self.font, screen)
-        render_text(f"Swiftness Potions: {self.saved_values['swiftness_potions']}", 920, 20, self.font, screen)
+        render_text(f": {self.saved_values['damage_potions']}", 330, 20, self.font, screen)
+        screen.blit(self.damage_potion_image, (300, 10))
+        #render_text(f"Health Potions: {self.health_potions}", 320, 120, self.font, screen)
+        
+        render_text(f": {self.saved_values['health_potions']}", 410, 20, self.font, screen)
+        screen.blit(self.health_potion_image, (380, 10))
+        
+        
+        render_text(f": {self.saved_values['swiftness_potions']}", 490, 20, self.font, screen)
+        screen.blit(self.swifness_potion_image, (460, 10))
         
         # Draw each map area with color based on its status
         for index, area in enumerate(self.map_areas):
@@ -162,6 +188,8 @@ class MapSelectState:
                 color = (128, 128, 128)  # Gray if completed
             elif index == 4 and not all(lvl in self.completed_levels for lvl in range(1, 5)):
                 color = (128, 128, 128)  # Gray if locked
+            elif index == 5:
+                color = (0, 255, 0) if index == self.selected_area_index else (0, 128, 128)
             else:
                 color = (0, 255, 0) if index == self.selected_area_index else (255, 0, 0)
 
