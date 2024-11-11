@@ -241,6 +241,7 @@ class Player:
     def take_damage(self, damage):
         if not self.invulnerable:  # Only take damage if not invulnerable
             self.health -= damage * self.defense_scale
+            gSounds["hit_player"].play()
             if self.health <= 0:
                 self.alive = False
             self.SetInvulnerable(1) 

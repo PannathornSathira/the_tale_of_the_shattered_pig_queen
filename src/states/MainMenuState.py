@@ -14,7 +14,7 @@ class MainMenuState:
         #self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH + 5, HEIGHT + 5))
         
     def Enter(self, params):
-        pass
+        gMusic["main"].play(-1)
 
     def update(self, dt, events):
         for event in events:

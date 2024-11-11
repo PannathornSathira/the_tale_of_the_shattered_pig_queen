@@ -77,6 +77,9 @@ class MapSelectState:
         else:
             self.completed_levels = []
             self.difficulty = 1
+        
+        if not pygame.mixer.music.get_busy():
+            gMusic["main"].play(-1)
 
     def update(self, dt, events):
         # Update character position based on keypresses

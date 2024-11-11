@@ -21,6 +21,7 @@ class PauseState:
         pass
 
     def Enter(self, params):
+        gSounds["pause"].play()
         self.prev_state = params["prev_state"]
         if self.prev_state == "play":
             self.level = params["level"]
@@ -44,9 +45,12 @@ class PauseState:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.selected_option_index = (self.selected_option_index - 1) % len(self.options)
+                    gSounds["no-select"].play()
                 elif event.key == pygame.K_DOWN:
                     self.selected_option_index = (self.selected_option_index + 1) % len(self.options)
+                    gSounds["no-select"].play()
                 elif event.key == pygame.K_RETURN:
+                    gSounds["select"].play()
                     if self.selected_option_index == 0:
                         if self.prev_state == "play":
                             g_state_manager.Change("PLAY", {
@@ -61,6 +65,7 @@ class PauseState:
                                 
                             })
                         elif self.prev_state == "map":
+                            pygame.mixer.stop()
                             g_state_manager.Change("WORLD_MAP", {
                                 "player": self.player,
                             })
