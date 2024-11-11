@@ -41,7 +41,7 @@ class KrakenBoss(BaseBoss):
         #Thunder strike attack prop
         self.beam_count = 5
         self.beam_width = 100
-        self.beam_gap = 100
+        self.beam_gap = 150
         self.beam_height = 600
         self.beam_delay = 0.25
         self.beams = []

@@ -9,8 +9,13 @@ class BossBullet(Bullet):
 
     def __init__(self, x, y, direction, dy=0, general_speed=(0, 0), damage=10, scaling=1):
         super().__init__(x, y, direction, general_speed, damage=damage)
+        self.width = 30
+        self.height = 10
+        self.rect.width = 10
+        self.rect.height = 30
         self.scaling = scaling
-        self.speed_y = dy * self.scaling
+        #self.speed_y = dy * self.scaling
+        self.speed_y = dy
         self.color = (255, 0, 0)
         self.damage = 10
         self.image = pygame.Surface(

@@ -10,6 +10,7 @@ from src.bosses.BeamAttack import BeamAttack
 class TornadoFiendBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
         super().__init__(x, y, height=300, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        self.max_health = health
         self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance
         self.image.fill((230, 230, 255))  # Set color to blue
@@ -116,7 +117,7 @@ class TornadoFiendBoss(BaseBoss):
         """
         spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
         spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-        fiendling = Fiendling(spawn_x, spawn_y, damage=self.damage//2)
+        fiendling = Fiendling(spawn_x, spawn_y, damage=self.damage//2, health=self.max_health // 10)
         self.fiendlings.append(fiendling)
         self.end_attack()
         
@@ -192,7 +193,7 @@ class TornadoFiendBoss(BaseBoss):
             
 
 class Fiendling:
-    def __init__(self, x, y, speed=75, damage=5):
+    def __init__(self, x, y, speed=75, damage=5, health=50):
         self.x = x
         self.y = y
         self.width = CHARACTER_WIDTH
@@ -205,7 +206,7 @@ class Fiendling:
         self.speed = speed
         self.damage = damage
         self.alive = True
-        self.health = 50
+        self.health = health
 
         # Movement and jump variables
         self.velocity_y = 0

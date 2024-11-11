@@ -45,7 +45,7 @@ class BlackWidowBoss(BaseBoss):
         # Poison attack properties
         self.poison_duration = 3  # Duration in seconds
         self.poison_tick_rate = 0.5  # Damage every 0.5 seconds
-        self.poison_damage = self.damage // 2  # Damage per tick
+        self.poison_damage = self.damage // 4  # Damage per tick
         self.is_poisoned = False
         self.poison_timer = 0
         self.poison_tick_timer = 0

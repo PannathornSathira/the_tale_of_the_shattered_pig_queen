@@ -8,7 +8,6 @@ from src.platforms.SpecialPlatform import SpecialPlatform
 
 class Level:
     def __init__(self, area=0):
-        self.tilemaps = GenerateTiles('./graphics/tiles.png', TILE_SIZE, TILE_SIZE, colorkey=-1, scale=3)
         self.tiles = []
         self.platforms = [[None for _ in range(8)] for _ in range(3)]  # 3x8 matrix for platforms
         self.map_width = WIDTH // (TILE_SIZE * 3) + 1
@@ -25,17 +24,17 @@ class Level:
                     platform.update(dt)
 
     def CreateMap(self):
-        for y in range(self.map_height):
-            self.tiles.append([])
-            for x in range(self.map_width):
-                if y < 5:
-                    self.tiles[y].append(SKY)
-                elif y == 5:
-                    self.tiles[y].append(GRASS)
-                elif y == 6:
-                    self.tiles[y].append(GROUND_BOUNDARY)
-                else:
-                    self.tiles[y].append(GROUND)
+        # for y in range(self.map_height):
+        #     self.tiles.append([])
+        #     for x in range(self.map_width):
+        #         if y < 5:
+        #             self.tiles[y].append(SKY)
+        #         elif y == 5:
+        #             self.tiles[y].append(GRASS)
+        #         elif y == 6:
+        #             self.tiles[y].append(GROUND_BOUNDARY)
+        #         else:
+        #             self.tiles[y].append(GROUND)
         self.GeneratePlatforms()
 
     def GeneratePlatforms(self):

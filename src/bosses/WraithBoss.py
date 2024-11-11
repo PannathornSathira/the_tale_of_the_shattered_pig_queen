@@ -15,6 +15,9 @@ class WraithBoss(BaseBoss):
         self.player_character_x = 0
         self.player_character_y = 0
         self.direction = "left"
+        
+        self.y = GROUND_LEVEL_Y - self.height
+        self.rect.y = self.y
 
         # Customizing the appearance
         self.animation = sprite_collection["wraith_boss_idle"].animation
@@ -51,7 +54,7 @@ class WraithBoss(BaseBoss):
         self.illusions_minibosses = []
         self.illusion_speed = 75
         self.illusion_damage = 15
-        self.illusion_health = 500
+        self.illusion_health = self.health // 4
         
 
     def update(self, dt, player, platforms):
@@ -107,7 +110,7 @@ class WraithBoss(BaseBoss):
     def select_attack(self, player):
 
         attack_choice = random.choice(["blindness", "homing_bullet", "illusions", "haunting_wail"])
-        # attack_choice = random.choice(["illusions"])
+        # attack_choice = random.choice(["homing_bullet"])
 
 
         if attack_choice == "blindness":
@@ -242,7 +245,7 @@ class WraithBoss(BaseBoss):
         if self.show_portal_effect:
             img = self.haunting_wail_portal_animation.image
             img = pygame.transform.scale(img, (self.rect.width + 100, 100))
-            screen.blit(img, (WIDTH / 2 - (self.rect.width + 100)/2, HEIGHT / 2 + 40))
+            screen.blit(img, (WIDTH / 2 - (self.rect.width + 100)/2, HEIGHT / 2 - 10))
     
         # Render homing bullets
         for bullet in self.homing_bullets:
@@ -277,7 +280,7 @@ class HomingBullet:
 
     def update(self, dt, player):
         if self.active:
-            self.speed=self.scaling
+            actual_speed = self.speed * self.scaling
             self.life_time -= dt
             # Calculate direction towards the player
             target_x = player.character_x + player.width / 2 - self.width / 2
@@ -298,8 +301,8 @@ class HomingBullet:
                 self.direction += max_turn if angle_diff > 0 else -max_turn
 
             # Move in the current direction
-            self.x += math.cos(self.direction) * self.speed * dt
-            self.y += math.sin(self.direction) * self.speed * dt
+            self.x += math.cos(self.direction) * actual_speed * dt
+            self.y += math.sin(self.direction) * actual_speed * dt
             
             angle_degrees = math.degrees(-self.direction) + 180
             self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), angle_degrees)

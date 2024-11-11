@@ -40,7 +40,7 @@ class BlueDragonBoss(BaseBoss):
         # Frozen pillars attack prop
         self.beam_count = 5
         self.beam_width = 80
-        self.beam_gap = 100
+        self.beam_gap = 150
         self.beam_height = 400
         self.beam_delay = 0.25
         self.beams = []
@@ -83,10 +83,10 @@ class BlueDragonBoss(BaseBoss):
         self.animation.update(dt)
 
     def select_attack(self, player):
-        # attack_choice = random.choice(
-        #     ["stomp", "frozen_pillars", "frostbite_ring", "glacial_shards"]
-        # )
-        attack_choice = random.choice(["stomp"])
+        attack_choice = random.choice(
+            ["stomp", "frozen_pillars", "frostbite_ring", "glacial_shards"]
+        )
+        # attack_choice = random.choice(["stomp"])
 
         if attack_choice == "stomp":
             self.current_attack = self.stomp
@@ -130,6 +130,7 @@ class BlueDragonBoss(BaseBoss):
         # End the attack after the designated duration
         if self.attack_elapsed_time >= self.stomp_attack_duration:
             self.animation = sprite_collection["blue_dragon_boss_idle"].animation
+            self.stomp_effect_isVisible = False
             self.end_attack()
 
     def frozen_pillars(self, dt, player):

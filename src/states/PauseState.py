@@ -15,19 +15,28 @@ class PauseState:
         self.player = None
         self.total_coins = 0
         
+        self.prev_state = ""
 
     def Exit(self):
         pass
 
     def Enter(self, params):
-        self.level = params["level"]
-        self.boss = params["boss"]
-        self.player = params["player"]
-        self.total_coins = params["total_coins"]
-        self.difficulty = params["difficulty"]
-        self.damage_potions = params['damage_potions']
-        self.health_potions = params.get("health_potions")
-        self.swiftness_potions = params.get("swiftness_potions")
+        self.prev_state = params["prev_state"]
+        if self.prev_state == "play":
+            self.level = params["level"]
+            self.boss = params["boss"]
+            self.player = params["player"]
+            self.total_coins = params["total_coins"]
+            self.difficulty = params["difficulty"]
+            self.damage_potions = params['damage_potions']
+            self.health_potions = params.get("health_potions")
+            self.swiftness_potions = params.get("swiftness_potions")
+        elif self.prev_state == "map":
+            self.player = params["player"]
+            self.total_coins = params["total_coins"]
+            self.damage_potions = params['damage_potions']
+            self.health_potions = params.get("health_potions")
+            self.swiftness_potions = params.get("swiftness_potions")
 
     def update(self, dt, events):
         # Handle player input for selecting options
@@ -39,17 +48,22 @@ class PauseState:
                     self.selected_option_index = (self.selected_option_index + 1) % len(self.options)
                 elif event.key == pygame.K_RETURN:
                     if self.selected_option_index == 0:
-                        g_state_manager.Change("PLAY", {
-                            "level": self.level,
-                            "boss": self.boss,
-                            "player": self.player,
-                            "total_coins": self.total_coins,
-                            "difficulty": self.difficulty,
-                            "damage_potions": self.damage_potions,
-                            "health_potions": self.health_potions,
-                            "swiftness_potions": self.swiftness_potions
-                            
-                        })
+                        if self.prev_state == "play":
+                            g_state_manager.Change("PLAY", {
+                                "level": self.level,
+                                "boss": self.boss,
+                                "player": self.player,
+                                "total_coins": self.total_coins,
+                                "difficulty": self.difficulty,
+                                "damage_potions": self.damage_potions,
+                                "health_potions": self.health_potions,
+                                "swiftness_potions": self.swiftness_potions
+                                
+                            })
+                        elif self.prev_state == "map":
+                            g_state_manager.Change("WORLD_MAP", {
+                                "player": self.player,
+                            })
                     elif self.selected_option_index == 1:
                         save_values({
                             "total_coins": self.total_coins,

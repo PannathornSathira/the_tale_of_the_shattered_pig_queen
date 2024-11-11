@@ -1,4 +1,5 @@
 from src.constants import *
+from src.resources import *
 from src.platforms.BasePlatform import BasePlatform
 import pygame
 import time
@@ -17,18 +18,10 @@ class SpecialPlatform(BasePlatform):
         self.fake = (area == 5)  # Determine if this is a fake platform
 
         # Set the platform color based on the area
-        if area == 1:
-            self.color = (255, 0, 0)  # Red
-        elif area == 2:
-            self.color = (0, 255, 0)  # Green
-        elif area == 3:
-            self.color = (0, 0, 255)  # Blue
-        elif area == 4:
-            self.color = (255, 255, 0)  # Yellow
-        elif area == 5:
-            self.color = (128, 128, 128)  # Grey for fake platforms
+        if self.area == 5:
+            self.image = tile_dict["castle"]
         else:
-            self.color = (0, 255, 255)  # Cyan
+            self.image = tile_dict["common"]
 
     def update(self, dt):
         # Update only if the platform is in the process of disappearing
@@ -85,6 +78,5 @@ class SpecialPlatform(BasePlatform):
             pass
 
     def render(self, screen):
-        # Render the platform only if it's currently visible and not hidden by flicker
-        if self.visible and not self.hidden:
-            pygame.draw.rect(screen, self.color, pygame.Rect(self.rect.x, self.rect.y, self.platform_length, self.platform_height))
+        if not self.hidden and self.visible:
+            super().render(screen)

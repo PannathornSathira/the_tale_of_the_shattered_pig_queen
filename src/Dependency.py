@@ -26,4 +26,5 @@ from src.states.MainMenuState import MainMenuState
 from src.states.PlayState import PlayState
 from src.states.ShopState import ShopState
 from src.states.PauseState import PauseState
+from src.states.EndState import EndState
 
