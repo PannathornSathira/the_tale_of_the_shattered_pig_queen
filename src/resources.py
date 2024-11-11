@@ -29,6 +29,27 @@ potion_dict = {
     "swiftness": pygame.transform.scale(pygame.image.load("./graphics/shop/swifness_potion.PNG"), (30, 35)),
 }
 
+gSounds = {
+    'confirm': pygame.mixer.Sound('sounds/common/confirm.wav'),
+    'pause': pygame.mixer.Sound('sounds/common/pause.wav'),
+    'recover': pygame.mixer.Sound('sounds/common/recover.wav'),
+    'victory': pygame.mixer.Sound('sounds/common/victory.wav'),
+    'hurt': pygame.mixer.Sound('sounds/common/hurt.wav'),
+    'select': pygame.mixer.Sound('sounds/common/select.wav'),
+    
+    'kraken_bullet': pygame.mixer.Sound('sounds/water stage/bullet sound.mp3'),
+    'kraken_charge': pygame.mixer.Sound('sounds/water stage/kraken charge.mp3'),
+    'kraken_thunder': pygame.mixer.Sound('sounds/water stage/thunder1.mp3'),
+    
+    'shark_missile': pygame.mixer.Sound('sounds/water stage/missile sound.mp3'),
+    'shark_missile_explode': pygame.mixer.Sound('sounds/water stage/missile-explosion.wav'),
+    'shark_vortex': pygame.mixer.Sound('sounds/water stage/kraken charge.mp3'),
+}
+
+gMusic = {
+    'main': pygame.mixer.Sound('sounds/music/main menu.mp3')
+}
+
 # s_paddle_image_list = [sprite_collection["p_blue_1"].image, sprite_collection["p_green_1"].image,
 #                      sprite_collection["p_red_1"].image, sprite_collection["p_purple_1"].image]
 
@@ -46,20 +67,6 @@ potion_dict = {
 #         'large': pygame.font.Font('./fonts/font.ttf', 96)
 # }
 
-# gSounds = {
-#     'confirm': pygame.mixer.Sound('sounds/confirm.wav'),
-#     'paddle-hit': pygame.mixer.Sound('sounds/paddle_hit.wav'),
-#     'pause': pygame.mixer.Sound('sounds/pause.wav'),
-#     'recover': pygame.mixer.Sound('sounds/recover.wav'),
-#     'victory': pygame.mixer.Sound('sounds/victory.wav'),
-#     'hurt': pygame.mixer.Sound('sounds/hurt.wav'),
-#     'select': pygame.mixer.Sound('sounds/select.wav'),
-#     'no-select': pygame.mixer.Sound('sounds/no-select.wav'),
-#     'wall-hit': pygame.mixer.Sound('sounds/wall_hit.wav'),
-#     'high-score': pygame.mixer.Sound('sounds/high_score.wav'),
-#     'brick-hit1': pygame.mixer.Sound('sounds/brick-hit-1.wav'),
-#     'brick-hit2': pygame.mixer.Sound('sounds/brick-hit-2.wav'),
-# }
 
 # brick_image_list = [sprite_collection["b_blue_1"].image, sprite_collection["b_blue_2"].image,
 #                    sprite_collection["b_blue_3"].image, sprite_collection["b_blue_4"].image,
