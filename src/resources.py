@@ -34,9 +34,11 @@ gSounds = {
     'pause': pygame.mixer.Sound('sounds/common/pause.wav'),
     'recover': pygame.mixer.Sound('sounds/common/recover.wav'),
     'victory': pygame.mixer.Sound('sounds/common/victory.wav'),
-    'hurt': pygame.mixer.Sound('sounds/common/hurt.wav'),
+    'hit_player': pygame.mixer.Sound('sounds/common/hit_player.wav'),
     'select': pygame.mixer.Sound('sounds/common/select.wav'),
-    
+    'no-select': pygame.mixer.Sound('sounds/common/no-select.wav'),
+    # 'bullet_sound': pygame.mixer.Sound('sounds/water stage/bullet sound.mp3'),
+
     'kraken_bullet': pygame.mixer.Sound('sounds/water stage/bullet sound.mp3'),
     'kraken_charge': pygame.mixer.Sound('sounds/water stage/kraken charge.mp3'),
     'kraken_thunder': pygame.mixer.Sound('sounds/water stage/thunder1.mp3'),
@@ -47,7 +49,9 @@ gSounds = {
 }
 
 gMusic = {
-    'main': pygame.mixer.Sound('sounds/music/main menu.mp3')
+    'main': pygame.mixer.Sound('sounds/music/main menu.mp3'),
+    'blackwidow': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/background.mp3'),
+    'medusa': pygame.mixer.Sound('sounds/Forest stage/Medusa/background.mp3'),
 }
 
 # s_paddle_image_list = [sprite_collection["p_blue_1"].image, sprite_collection["p_green_1"].image,

@@ -47,8 +47,10 @@ class PlayState:
         }
         
     def Enter(self, params):
+        gMusic["main"].stop()
         self.level = params["level"]
         self.saved_values = read_saveFile()
+        
         if self.level.area == 1:
             self.bg_image = background_dict["sea"]
         elif self.level.area == 2:
@@ -60,6 +62,17 @@ class PlayState:
         elif self.level.area == 5:
             self.bg_image = background_dict["castle"]
         self.boss = params["boss"]
+        
+        if pygame.mixer.music.get_busy():
+            # Check if music is actually paused before calling unpause
+            if pygame.mixer.get_pos() == -1:
+                pygame.mixer.music.unpause()
+        else:
+            if isinstance(self.boss, MedusaBoss):
+                gMusic["medusa"].play(-1)
+            elif isinstance(self.boss, BlackWidowBoss):
+                gMusic["blackwidow"].play(-1)
+            
         self.player = params["player"]
         self.total_coins = params["total_coins"]
         self.difficulty = params["difficulty"]
@@ -84,6 +97,7 @@ class PlayState:
         if self.player.alive:
             self.player.update(dt, events, self.level.platforms, self.boss)
         else:
+            pygame.mixer.stop()
             save_values({
                 "total_coins": self.total_coins,
                 "damage_potions": self.damage_potions,
@@ -98,6 +112,7 @@ class PlayState:
                 self.total_coins += (self.boss_health - self.boss.health) * self.coin_scaling
             self.boss_health = self.boss.health
         else:
+            pygame.mixer.stop()
             save_values({
                 "total_coins": self.total_coins,
                 "damage_potions": self.damage_potions,
@@ -134,6 +149,7 @@ class PlayState:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    pygame.mixer.pause()
                     g_state_manager.Change("PAUSE", {
                         "prev_state": "play",
                         "level": self.level,

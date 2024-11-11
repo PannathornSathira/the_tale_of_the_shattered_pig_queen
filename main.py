@@ -18,8 +18,6 @@ class GameMain:
         self.level.CreateMap()
         self.boss = WraithBoss(x=1100, y=100)
         
-        self.bg_music = gMusic["main"]
-        
         self.font = pygame.font.Font(None, 36)
 
         g_state_manager.SetScreen(self.screen)
@@ -65,7 +63,6 @@ class GameMain:
         pygame.display.update()
 
     def PlayGame(self):
-        self.bg_music.play(-1)
         clock = pygame.time.Clock()
 
         while True:
