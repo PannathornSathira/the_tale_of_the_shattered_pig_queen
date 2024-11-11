@@ -215,6 +215,8 @@ class GreatSharkBoss(BaseBoss):
         torpedo.set_image(sprite_collection["greatshark_boss_torpedo"].image)
         torpedo.speed = 0
         self.torpedos.append((torpedo, 0))
+        
+        gSounds['shark_missile'].play()
 
         self.end_attack()
             
@@ -281,6 +283,9 @@ class GreatSharkBoss(BaseBoss):
         self.torpedos = [t for t in self.torpedos if t[0] != torpedo]
         
         self.torpedo_explode_effect_rect = pygame.Rect(explosion_center[0] - explosion_radius, explosion_center[1] - explosion_radius, explosion_radius*2, explosion_radius*2)
+        
+        gSounds['shark_missile'].stop()
+        gSounds['shark_missile_explode'].play(maxtime=1000, fade_ms=500)
 
     def churning_tides(self, dt, player):
         """
@@ -294,6 +299,7 @@ class GreatSharkBoss(BaseBoss):
         if self.vortex is None:
             self.vortex = (vortex_x, vortex_y)
 
+        gSounds["shark_vortex"].play()
         self.end_attack()
             
     def update_vortex(self, dt, player):
@@ -312,28 +318,28 @@ class GreatSharkBoss(BaseBoss):
         # Determine player's direction relative to the vortex
         if distance > self.vortex_radius:
             # Player is outside the vortex radius, apply pulling effect based on direction
+            # if (
+            #     distance_x > 0 and player.direction == "left"
+            # ):  # Player is left of vortex
+            #     player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
+            # elif (
+            #     distance_x > 0 and player.direction == "right"
+            # ):  # Player moving towards vortex
+            #     player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
+            # elif (
+            #     distance_x < 0 and player.direction == "left"
+            # ):  # Player moving towards vortex
+            #     player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
+            # elif (
+            #     distance_x < 0 and player.direction == "right"
+            # ):  # Player is right of vortex
+            #     player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
             if (
-                distance_x > 0 and player.direction == "left"
-            ):  # Player is left of vortex
-                player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
-            elif (
-                distance_x > 0 and player.direction == "right"
-            ):  # Player moving towards vortex
-                player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
-            elif (
-                distance_x > 0 and player.direction == "front"
+                distance_x > 0
             ):  # Player is pulled inwards
                 player.character_x += pull_strength * dt
             elif (
-                distance_x < 0 and player.direction == "left"
-            ):  # Player moving towards vortex
-                player.movement_speed = CHARACTER_MOVE_SPEED + pull_strength
-            elif (
-                distance_x < 0 and player.direction == "right"
-            ):  # Player is right of vortex
-                player.movement_speed = CHARACTER_MOVE_SPEED - pull_strength
-            elif (
-                distance_x < 0 and player.direction == "front"
+                distance_x < 0
             ):  # Player is pulled inwards
                 player.character_x -= pull_strength * dt
         else:
@@ -350,6 +356,7 @@ class GreatSharkBoss(BaseBoss):
             player.revert_to_default()
             self.vortex_timer = 0
             self.vortex = None
+            gSounds["shark_vortex"].fadeout(1000)
 
     def rain(self, dt, player):
         bullet_direction = "down"

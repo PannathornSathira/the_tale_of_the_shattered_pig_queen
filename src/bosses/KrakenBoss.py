@@ -81,6 +81,7 @@ class KrakenBoss(BaseBoss):
         if self.attack_elapsed_time == 0:
             self.y = self.y - player.height - 10
             self.animation = sprite_collection["kraken_boss_charge"].animation
+            gSounds["kraken_charge"].play()
         
         t = self.attack_elapsed_time / self.charge_duration  # Normalized time [0, 1]
         tweened_t = self.ease_in_out_quad(t)
@@ -107,6 +108,7 @@ class KrakenBoss(BaseBoss):
 
             self.x = end_pos
             self.animation = sprite_collection["kraken_boss_idle"].animation
+            gSounds["kraken_charge"].fadeout(1000)
             self.end_attack()
 
     def tempest_barrage(self, dt, player):
@@ -121,11 +123,9 @@ class KrakenBoss(BaseBoss):
             self.bullet_gap_time = 0
             for i in range(self.bullet_layer_num):
                 bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
-                bullet.width = 30
-                bullet.height = 30
-                bullet.re_initialize()
                 bullet.set_image(sprite_collection["kraken_boss_bullet"].image)
                 self.bullets.append(bullet)  # Add bullet to the list
+            gSounds["kraken_bullet"].play()
         
         # End the bullet attack if the duration is over
         if self.attack_elapsed_time >= self.tempest_duration:
@@ -135,6 +135,7 @@ class KrakenBoss(BaseBoss):
         direction = "left" if self.position == "right" else "right"
         if self.attack_elapsed_time == 0:
             self.animation = sprite_collection["kraken_boss_lightning_wave_beam"].animation
+            gSounds["kraken_thunder"].play()
             if direction == "left": 
                 self.lightning_last_pos = WIDTH
                 self.lightning_current_pos = WIDTH
@@ -171,6 +172,7 @@ class KrakenBoss(BaseBoss):
         # End the attack if the duration is over
         if len(self.lightnings) == 0 and self.attack_elapsed_time >= 1:
             self.animation = sprite_collection["kraken_boss_idle"].animation
+            gSounds["kraken_thunder"].fadeout(1000)
             self.end_attack()
             
     def thunder_strike_cluster(self, dt, player):
@@ -178,6 +180,7 @@ class KrakenBoss(BaseBoss):
 
         if self.attack_elapsed_time == 0:
             self.animation = sprite_collection["kraken_boss_lightning_thunder_strike_cluster"].animation
+            gSounds["kraken_thunder"].play()
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
                 beam = BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling)
@@ -191,6 +194,7 @@ class KrakenBoss(BaseBoss):
                 
         if len(self.bullets) == 0:
             self.animation = sprite_collection["kraken_boss_idle"].animation
+            gSounds["kraken_thunder"].fadeout(1000)
             self.end_attack()
             self.beams = []
 
