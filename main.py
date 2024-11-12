@@ -1,7 +1,7 @@
 import pygame
 from src.constants import *
 
-pygame.mixer.pre_init(44100, -16, 2, 4096)
+pygame.mixer.pre_init(44100, -16, 4, 4096)
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 

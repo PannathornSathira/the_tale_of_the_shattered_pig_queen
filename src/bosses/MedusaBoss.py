@@ -105,6 +105,7 @@ class MedusaBoss(BaseBoss):
             beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height, self.damage, scaling=self.damage_speed_scaling)
             beam.set_image(sprite_collection["medusa_boss_beam"].image)
             self.petrify_beams.append(beam)  # Store the beam in a list
+            gSounds["medusa_beam"].play()
 
         # End the attack after the designated duration
         if self.attack_elapsed_time >= self.petrify_attack_duration:

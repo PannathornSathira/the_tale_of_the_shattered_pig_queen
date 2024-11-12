@@ -47,9 +47,11 @@ gSounds = {
     'shark_missile_explode': pygame.mixer.Sound('sounds/water stage/missile-explosion.wav'),
     'shark_vortex': pygame.mixer.Sound('sounds/water stage/kraken charge.mp3'),
     'shark_rain': pygame.mixer.Sound('sounds/water stage/rain.wav'),
+    'shark_charge': pygame.mixer.Sound('sounds/water stage/Shark Charge.mp3'),
     
     'medusa_arrow': pygame.mixer.Sound('sounds/Forest stage/Medusa/arrow.wav'),
     'medusa_snake': pygame.mixer.Sound('sounds/Forest stage/Medusa/snake.mp3'),
+    'medusa_beam': pygame.mixer.Sound('sounds/Forest stage/Medusa/fires beams.mp3'),
     
     'widow_cobweb': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/cobweb.mp3'),
     'widow_jump': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/jump.mp3'),

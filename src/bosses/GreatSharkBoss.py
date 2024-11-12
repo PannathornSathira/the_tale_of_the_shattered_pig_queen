@@ -29,6 +29,7 @@ class GreatSharkBoss(BaseBoss):
         self.next_assault_time = 0.5  # Delay before each new assault
         self.reappearance_duration = 0.3  # Time taken for the boss to reappear
         self.charge_duration = 2
+        self.charge_speed = 1000
         self.start_charge = True
         self.original_x = self.x
         self.original_y = self.y
@@ -113,6 +114,7 @@ class GreatSharkBoss(BaseBoss):
             self.current_attack = self.churning_tides
         elif attack_choice == "rain":
             self.current_attack = self.rain
+            gSounds["shark_rain"].play()
 
     def deepwater_assault(self, dt, player):
         """
@@ -136,19 +138,20 @@ class GreatSharkBoss(BaseBoss):
 
                     # Set the starting position and angle based on direction
                     if self.start_charge:
+                        gSounds["shark_charge"].play()
                         self.visible = False
                         self.start_charge = False  # Start charge only once per assault
                         if direction == "left":
                             self.width = 300
                             self.height = 150
-                            self.x = -self.width
+                            self.x = WIDTH
                             self.y = player.character_y + player.height / 2 - self.height / 2
                             self.direction = "left"
                             self.animation = sprite_collection["greatshark_boss_assault"].animation
                         elif direction == "right":
                             self.width = 300
                             self.height = 150
-                            self.x = WIDTH
+                            self.x = -self.width
                             self.y = player.character_y + player.height / 2 - self.height / 2
                             self.direction = "right"
                             self.animation = sprite_collection["greatshark_boss_assault"].animation
@@ -164,17 +167,21 @@ class GreatSharkBoss(BaseBoss):
                         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
                     # Calculate charge progress based on time interpolation
-                    t = (self.attack_elapsed_time - self.prepare_time - self.next_assault_time) / self.charge_duration
+                    # t = (self.attack_elapsed_time - self.prepare_time - self.next_assault_time) / self.charge_duration
 
                     # Interpolate position towards target direction
-                    if direction in ["left", "right"]:
-                        start_pos = -self.width if direction == "right" else WIDTH
-                        end_pos = WIDTH + self.width if direction == "right" else -self.width
-                        self.x = start_pos + t * (end_pos - start_pos)
+                    if direction == "left":
+                        # start_pos = -self.width if direction == "right" else WIDTH
+                        # end_pos = WIDTH + self.width if direction == "right" else -self.width
+                        # self.x = start_pos + t * (end_pos - start_pos)
+                        self.x -= self.charge_speed * dt
+                    elif direction == "right":
+                        self.x += self.charge_speed * dt
                     elif direction == "below":
-                        start_pos = HEIGHT
-                        end_pos = -self.height
-                        self.y = start_pos + t * (end_pos - start_pos)
+                        # start_pos = HEIGHT
+                        # end_pos = -self.height
+                        # self.y = start_pos + t * (end_pos - start_pos)
+                        self.y -= self.charge_speed * dt
 
                     # Conclude the current assault when the charge duration is complete
                     if (self.attack_elapsed_time - self.prepare_time - self.next_assault_time) >= self.charge_duration:
@@ -182,18 +189,18 @@ class GreatSharkBoss(BaseBoss):
                         self.next_assault_time += self.charge_duration + 0.5  # Set delay before the next assault
                         self.visible = False  # Hide the boss again
                         self.start_charge = True
-
-        # Finalize the attack sequence after three assaults
-        if self.assault_count >= 3:
-            self.reset_position()
-            self.visible = True
-            self.assault_count = 0
-            self.next_assault_time = 0.5  # Reset delay for future attacks
-            self.image.set_alpha(255)
-            sprite_collection["greatshark_boss_prepare_assault"].animation.Refresh()
-            self.animation = sprite_collection["greatshark_boss_idle"].animation
-            self.direction = "left"
-            self.end_attack()
+                        
+            else:
+                # Finalize the attack sequence after three assaults
+                self.reset_position()
+                self.visible = True
+                self.assault_count = 0
+                self.next_assault_time = 0.5  # Reset delay for future attacks
+                self.image.set_alpha(255)
+                sprite_collection["greatshark_boss_prepare_assault"].animation.Refresh()
+                self.animation = sprite_collection["greatshark_boss_idle"].animation
+                self.direction = "left"
+                self.end_attack()
 
     def reset_position(self):
         """Reset the boss to the original visible position after the assault sequence."""
@@ -217,8 +224,9 @@ class GreatSharkBoss(BaseBoss):
         self.torpedos.append((torpedo, 0))
         
         gSounds['shark_missile'].play()
-
-        self.end_attack()
+        
+        if len(self.bullets) == 0:
+            self.end_attack()
             
     def update_torpedo(self, torpedo_pair, dt, player):
         # Update torpedo's speed using an exponential function
@@ -360,7 +368,6 @@ class GreatSharkBoss(BaseBoss):
 
     def rain(self, dt, player):
         bullet_direction = "down"
-        gSounds["shark_rain"].play()
 
         self.rain_bullet_gap_time += dt
         if self.rain_bullet_gap_time >= self.rain_bullet_gap_cooldown:
