@@ -72,6 +72,12 @@ class PlayState:
                 gMusic["medusa"].play(-1)
             elif isinstance(self.boss, BlackWidowBoss):
                 gMusic["blackwidow"].play(-1)
+            elif isinstance(self.boss, KingMummyBoss):
+                gMusic["mummy"].play(-1)
+            elif isinstance(self.boss, SandWormBoss):
+                gMusic["sandworm"].play(-1)
+            elif isinstance(self.boss, WraithBoss):
+                gMusic["wraith"].play(-1)
             
         self.player = params["player"]
         self.total_coins = params["total_coins"]

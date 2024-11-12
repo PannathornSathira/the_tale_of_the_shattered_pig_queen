@@ -11,7 +11,7 @@ from src.bosses.BeamAttack import BeamAttack
 class BlackWidowBoss(BaseBoss):
     def __init__(self, x, y, health=30, damage=10, damage_speed_scaling=1):
         super().__init__(x, y, width=230, height=200, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
-        self.animation = sprite_collection["black_widow_boss"].animation
+        self.animation = sprite_collection["black_widow_boss_idle"].animation
         self.direction = "left"
         self.damage_speed_scaling = damage_speed_scaling
         self.gravity = GRAVITY
@@ -75,6 +75,7 @@ class BlackWidowBoss(BaseBoss):
             if self.poison_tick_timer >= self.poison_tick_rate:
                 player.health -= self.poison_damage
                 self.poison_tick_timer = 0  # Reset tick timer
+                gSounds['poison'].play()
 
             # End poison effect after poison duration
             if self.poison_timer >= self.poison_duration:
@@ -109,9 +110,9 @@ class BlackWidowBoss(BaseBoss):
             self.on_ground = True
         
         if self.current_attack == self.summon:
-            self.animation.update(dt)
+            self.animation = sprite_collection["black_widow_boss_spawn"].animation
         else:
-            self.animation.Idle()
+            self.animation = sprite_collection["black_widow_boss_idle"].animation
             
         if self.web is not None:
             self.web.x += self.web_speed_x * dt
@@ -127,6 +128,8 @@ class BlackWidowBoss(BaseBoss):
                 or self.web.y > HEIGHT
             ):
                 self.web = None
+                
+        self.animation.update(dt)
 
         # Update poison effect
         self.update_poison_effect(dt, player)
@@ -142,9 +145,7 @@ class BlackWidowBoss(BaseBoss):
         # Update spiderlings
         for spiderling in self.spiderlings:
             spiderling.update(dt, player)
-            if spiderling.hit_player:
-                player.take_damage(spiderling.damage)
-            elif not spiderling.alive:
+            if not spiderling.alive:
                 self.spiderlings.remove(spiderling)
                 
     def check_platform_collision(self, platforms):
@@ -180,6 +181,7 @@ class BlackWidowBoss(BaseBoss):
             self.jump_peak_y = (
                 self.jump_start_y - self.jump_height
             )  # Peak height for parabolic motion
+            gSounds['widow_jump'].play()
 
         t = self.attack_elapsed_time / self.jump_duration
         if t <= 1.0:
@@ -211,6 +213,8 @@ class BlackWidowBoss(BaseBoss):
         self.web_image = pygame.transform.rotate(pygame.transform.scale(self.web_original_image, (self.web.width, self.web.height)), angle_degrees)
         self.web = self.web_image.get_rect(center=(self.web.x, self.web.y))
         
+        gSounds['widow_cobweb'].play()
+        
         self.end_attack()
 
     def summon(self, dt, player):
@@ -221,6 +225,7 @@ class BlackWidowBoss(BaseBoss):
         spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
         spiderling = Spiderling(spawn_x, spawn_y, self, damage=self.damage//2, health=self.health//10)
         self.spiderlings.append(spiderling)
+        gSounds['spiderling'].play()
         self.end_attack()
 
     def render(self, screen):
@@ -248,7 +253,6 @@ class Spiderling:
         self.damage = damage
         self.size = 30
         self.animation = sprite_collection["black_widow_spiderling"].animation
-        self.hit_player = False
         self.alive = True
         self.health = health
         self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
@@ -281,7 +285,7 @@ class Spiderling:
                 
         # Check if spiderling hits the player
         if pygame.Rect(self.x, self.y, self.size, self.size).colliderect(player.rect):
-            self.hit_player = True
+            player.take_damage(self.damage)
             self.boss.apply_poison(player)
             
         for bullet in player.bullets:

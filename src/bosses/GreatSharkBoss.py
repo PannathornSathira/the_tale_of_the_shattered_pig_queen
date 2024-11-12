@@ -360,6 +360,7 @@ class GreatSharkBoss(BaseBoss):
 
     def rain(self, dt, player):
         bullet_direction = "down"
+        gSounds["shark_rain"].play()
 
         self.rain_bullet_gap_time += dt
         if self.rain_bullet_gap_time >= self.rain_bullet_gap_cooldown:
@@ -376,6 +377,7 @@ class GreatSharkBoss(BaseBoss):
 
         # End the bullet attack if the duration is over
         if self.attack_elapsed_time >= self.rain_duration:
+            gSounds["shark_rain"].fadeout(1000)
             self.end_attack()
 
     def exponential_speed(self, t):

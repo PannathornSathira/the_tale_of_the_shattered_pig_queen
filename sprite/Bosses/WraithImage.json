@@ -4,7 +4,7 @@
     "sprites": [
         {
             "name": "wraith_bullet1",
-            "path": "./graphics/Wraith/bullet2.PNG",
+            "path": "./graphics/Wraith/Bullet1.PNG",
             "xsize": 182,
             "ysize": 99,
             "colorKey": null

@@ -39,7 +39,7 @@ class Player:
         self.bullets = []
         self.bullet_damage = 1
         self.firerate_cooldown = 0.2
-        self.firerate_time = 0
+        self.firerate_time = self.firerate_cooldown
         
         self.stun_duration = 0  # Track how long the player is stunned
         self.is_stunned = False  # Flag to check if the player is stunned
@@ -139,7 +139,7 @@ class Player:
                     self.firerate_time = 0
                     self.shoot()  # Trigger shooting and shooting animation
             else:
-                self.firerate_time = 0
+                self.firerate_time = self.firerate_cooldown
                 self.animation.Idle()
                 
             if pressedKeys[pygame.K_DOWN] and self.on_ground:

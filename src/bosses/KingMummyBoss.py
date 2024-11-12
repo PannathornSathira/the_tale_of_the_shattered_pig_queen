@@ -8,7 +8,7 @@ from src.resources import *
 class KingMummyBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling = 1):
         super().__init__(x, y, width=140, height=200, health=health, damage=damage, damage_speed_scaling = damage_speed_scaling)
-        self.animation = sprite_collection["king_mummy_boss"].animation
+        self.animation = sprite_collection["king_mummy_boss_idle"].animation
         self.visible = True
         self.direction = "left"
         self.damage_speed_scaling = damage_speed_scaling
@@ -50,6 +50,8 @@ class KingMummyBoss(BaseBoss):
         # Cursed Speed properties
         self.cursed_speed_duration = 5
         self.original_move_speed = self.move_speed
+        
+        gSounds["mummy_sound"].play(-1)
 
     def update(self, dt, player, platforms):
         super().update(dt, player, platforms)
@@ -63,14 +65,13 @@ class KingMummyBoss(BaseBoss):
             self.jump_cooldown = 3
         
         if self.current_attack:
-            self.animation.update(dt)
+            self.animation = sprite_collection["king_mummy_boss_attack"].animation
         else:
-            self.animation.Idle()
+            self.animation = sprite_collection["king_mummy_boss_idle"].animation
 
         if self.reviving:
             self.revive(dt)
             self.current_attack = None
-            self.animation.Idle()
             
         if len(self.bandages) > 0:
             self.update_bandages(dt, player)
@@ -114,6 +115,8 @@ class KingMummyBoss(BaseBoss):
 
         self.rect.x = self.x
         self.rect.y = self.y
+        
+        self.animation.update(dt)
 
     def select_attack(self, player):
         attack_choice = random.choice(["cursed_wrappings", "cursed_speed"])
@@ -121,6 +124,7 @@ class KingMummyBoss(BaseBoss):
             self.current_attack = self.cursed_wrappings
         elif attack_choice == "cursed_speed":
             self.current_attack = self.cursed_speed
+            gSounds["mummy_speed"].play()
 
     def die(self):
         """Handle boss death."""
@@ -132,6 +136,7 @@ class KingMummyBoss(BaseBoss):
             self.reviving = True
             self.invulnerable = True
             self.revive_timer = 0
+            gSounds["mummy_sound"].fadeout(1000)
 
     def revive(self, dt):
         """Make the boss invulnerable and blink during revival."""
@@ -144,8 +149,8 @@ class KingMummyBoss(BaseBoss):
             self.width = 200
         else:
             self.revive_image = sprite_collection["king_mummy_dead"].image
-            self.rect.width = 100
-            self.width = 100
+            self.rect.width = 80
+            self.width = 80
 
         if self.blink_timer >= self.blink_interval:
             self.visible = not self.visible
@@ -158,6 +163,7 @@ class KingMummyBoss(BaseBoss):
             self.health = self.original_health
             self.rect.width = 140
             self.width = 140
+            gSounds["mummy_sound"].play(-1)
             
     def cursed_wrappings(self, dt, player):
         """Spawns bandages with a blinking appearance phase."""
@@ -182,7 +188,8 @@ class KingMummyBoss(BaseBoss):
             x = random.randint(0, WIDTH - self.bandage_width)
             bandage = Bandage(x, ground_y, self.bandage_width, self.bandage_height, damage=self.damage)
             self.bandages.append(bandage)
-
+            
+        gSounds["mummy_bandage_grab"].play()
         self.end_attack()
         
     def cursed_speed(self, dt, player):
@@ -192,6 +199,7 @@ class KingMummyBoss(BaseBoss):
         self.move_speed = self.original_move_speed * 2
         if self.attack_elapsed_time >= self.cursed_speed_duration:
             self.move_speed = self.original_move_speed
+            gSounds["mummy_speed"].fadeout(1000)
             self.end_attack()
 
 

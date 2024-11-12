@@ -20,7 +20,7 @@ tile_dict = {
     "sky": pygame.image.load("./graphics/platform/Sky Level.PNG"),
     "sand": pygame.image.load("./graphics/platform/Sand Level.PNG"),
     "castle": pygame.image.load("./graphics/platform/Last Level.PNG"),
-    "common": pygame.image.load("./graphics/platform/Common.PNG"),
+    "special": pygame.image.load("./graphics/platform/Special.PNG"),
 }
 
 potion_dict = {
@@ -46,12 +46,36 @@ gSounds = {
     'shark_missile': pygame.mixer.Sound('sounds/water stage/missile sound.mp3'),
     'shark_missile_explode': pygame.mixer.Sound('sounds/water stage/missile-explosion.wav'),
     'shark_vortex': pygame.mixer.Sound('sounds/water stage/kraken charge.mp3'),
+    'shark_rain': pygame.mixer.Sound('sounds/water stage/rain.wav'),
+    
+    'medusa_arrow': pygame.mixer.Sound('sounds/Forest stage/Medusa/arrow.wav'),
+    'medusa_snake': pygame.mixer.Sound('sounds/Forest stage/Medusa/snake.mp3'),
+    
+    'widow_cobweb': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/cobweb.mp3'),
+    'widow_jump': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/jump.mp3'),
+    'poison': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/poison.mp3'),
+    'spiderling': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/Spiderling.mp3'),
+    
+    'sandworm_bullet': pygame.mixer.Sound('sounds/Desert stage/SandBullet.mp3'),
+    'sandworm_shockwave': pygame.mixer.Sound('sounds/Desert stage/SandShockWave.mp3'),
+    'sandworm_dash': pygame.mixer.Sound('sounds/Desert stage/SandDashSound.mp3'),
+    
+    'mummy_sound': pygame.mixer.Sound('sounds/Desert stage/SandMummySound.mp3'),
+    'mummy_speed': pygame.mixer.Sound('sounds/Desert stage/SandSpeedBoost.mp3'),
+    'mummy_bandage_grab': pygame.mixer.Sound('sounds/Desert stage/SandGrabSound.mp3'),
+    
+    'wraith_bullet': pygame.mixer.Sound('sounds/Castle stage/CastleBossBullet.wav'),
+    'wraith_spell': pygame.mixer.Sound('sounds/Castle stage/CastleBossCastingSpell.mp3'),
+    'wraith_teleport': pygame.mixer.Sound('sounds/Castle stage/teleport.mp3'),
 }
 
 gMusic = {
     'main': pygame.mixer.Sound('sounds/music/main menu.mp3'),
-    'blackwidow': pygame.mixer.Sound('sounds/Forest stage/BlackWidow/background.mp3'),
-    'medusa': pygame.mixer.Sound('sounds/Forest stage/Medusa/background.mp3'),
+    'blackwidow': pygame.mixer.Sound('sounds/music/BlackWidow-music.mp3'),
+    'medusa': pygame.mixer.Sound('sounds/music/Medusa-music.mp3'),
+    'mummy': pygame.mixer.Sound('sounds/music/Mummy-music.mp3'),
+    'sandworm': pygame.mixer.Sound('sounds/music/SandWorm-music.mp3'),
+    'wraith': pygame.mixer.Sound('sounds/music/Wraith-music.mp3'),
 }
 
 # s_paddle_image_list = [sprite_collection["p_blue_1"].image, sprite_collection["p_green_1"].image,

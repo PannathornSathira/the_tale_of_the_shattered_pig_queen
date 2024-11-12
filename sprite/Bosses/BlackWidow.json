@@ -3,7 +3,22 @@
     "spriteSheetURL": null,
     "sprites": [
         {
-            "name": "black_widow_boss",
+            "name": "black_widow_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/BlackWidow/BlackWidow1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/BlackWidow/BlackWidow move.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "black_widow_boss_spawn",
             "images": [
                 {
                     "path": "./graphics/BlackWidow/BlackWidow1.PNG",
@@ -15,11 +30,7 @@
                 }
             ],
             "interval_time": 0.1,
-            "loop": true,
-            "idle_image": {
-                "path": "./graphics/BlackWidow/BlackWidow1.PNG",
-                "scale": 1
-            }
+            "loop": true
         },
         {
             "name": "black_widow_spiderling",

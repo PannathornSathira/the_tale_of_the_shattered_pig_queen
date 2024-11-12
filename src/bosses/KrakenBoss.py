@@ -215,7 +215,12 @@ class KrakenBoss(BaseBoss):
             screen.blit(img, (self.x, self.y))
             
         for bullet in self.bullets:
-            bullet.render(screen)
+            if self.position == "left":
+                img = bullet.image
+                img = pygame.transform.flip(img, True, False)
+                screen.blit(img, (bullet.x, bullet.y))
+            else:
+                bullet.render(screen)
             
         for lightning in self.lightnings:
             lightning.render(screen)

@@ -22,7 +22,7 @@ class BasePlatform:
     elif area == 5:
         self.image = tile_dict["castle"]
     else:
-        self.image = tile_dict["common"]
+        self.image = tile_dict["castle"]
     
     self.rect = pygame.Rect(x, y, self.platform_length, self.platform_height)
     

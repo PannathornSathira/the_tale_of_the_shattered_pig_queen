@@ -103,7 +103,7 @@ class MedusaBoss(BaseBoss):
             # Generate a beam at random vertical positions but spaced apart
             beam_y = random.randint(0, GROUND_LEVEL_Y - self.petrify_beam_height)
             beam = BeamAttack(WIDTH, beam_y, beam_direction, self.petrify_beam_width, self.petrify_beam_height, self.damage, scaling=self.damage_speed_scaling)
-            beam.damage = 0
+            beam.set_image(sprite_collection["medusa_boss_beam"].image)
             self.petrify_beams.append(beam)  # Store the beam in a list
 
         # End the attack after the designated duration
@@ -119,11 +119,13 @@ class MedusaBoss(BaseBoss):
         if not self.snake:
             # Initialize MedusaSnake at the start of the attack
             self.snake = MedusaSnake(self, player, self.snake_attack_duration, self.damage)
+            gSounds["medusa_snake"].play(-1)
                 
         # Update snake and check if attack is complete
         if self.snake.update(dt, player):
             # Reset snake after the attack finishes
             self.snake = None
+            gSounds["medusa_snake"].fadeout(1000)
             self.end_attack()
             
     def arrow_barrage(self, dt, player):
@@ -142,6 +144,7 @@ class MedusaBoss(BaseBoss):
                 bullet = BossBullet(bullet_x, bullet_y, bullet_direction, self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i), damage=self.damage, scaling=self.damage_speed_scaling)  # Create a bullet
                 bullet.set_image(sprite_collection["medusa_boss_arrow1"].image)
                 self.bullets.append(bullet)  # Add bullet to the list
+            gSounds["medusa_arrow"].play()
         
         # End the bullet attack if the duration is over
         if self.attack_elapsed_time >= self.arrow_barrage_duration:
@@ -167,6 +170,7 @@ class MedusaBoss(BaseBoss):
         bullet.height = 50
         bullet.set_image(sprite_collection["medusa_boss_arrow2"].image)
         self.bullets.append(bullet)
+        gSounds["medusa_arrow"].play()
         self.end_attack()
 
 

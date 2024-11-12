@@ -8,9 +8,13 @@
                 {
                     "path": "./graphics/Wraith/Wraith1.PNG",
                     "scale": 1
+                },
+                {
+                    "path": "./graphics/Wraith/Wraith move.PNG",
+                    "scale": 1
                 }
             ],
-            "interval_time": 0.5,
+            "interval_time": 0.4,
             "loop": true
         },
         {

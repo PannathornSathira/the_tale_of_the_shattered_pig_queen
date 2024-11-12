@@ -24,7 +24,7 @@ class WraithBoss(BaseBoss):
         
         # Blindness attack properties
         self.blindness_active = False
-        self.blindness_duration = 5  # Duration in seconds
+        self.blindness_duration = 8  # Duration in seconds
         self.blindness_timer = 0  # Timer to track blindness effect duration
         self.spotlight_radius = 500  # Radius around player that remains visible
 
@@ -121,6 +121,7 @@ class WraithBoss(BaseBoss):
             self.current_attack = self.illusions
         elif attack_choice == "haunting_wail":
             self.current_attack = self.haunting_wail
+            gSounds["wraith_teleport"].play()
             
     def blindness(self, dt, player):
         """
@@ -129,6 +130,7 @@ class WraithBoss(BaseBoss):
         if not self.blindness_active:
             self.blindness_active = True
             self.blindness_timer = 0
+            gSounds["wraith_spell"].play()
         self.end_attack()
             
     def end_blindness(self):
@@ -151,6 +153,8 @@ class WraithBoss(BaseBoss):
                 bullet = HomingBullet(bullet_x, bullet_y, damage=self.damage,scaling=self.damage_speed_scaling)  # Create a bullet
                 bullet.direction = math.radians(self.barrage_starting_angle - (self.bullet_angle * self.bullet_layer_num / 2) + (self.bullet_angle*i))
                 self.homing_bullets.append(bullet)  # Add bullet to the list
+                
+            gSounds["wraith_bullet"].play()
         
         # End the bullet attack if the duration is over
         if self.attack_elapsed_time >= self.homing_bullet_duration:
@@ -161,6 +165,7 @@ class WraithBoss(BaseBoss):
         Illusions: Splitting into 4 decoy spirits. The player must defeat all Illusions to cancel this ability. Attacking illusions does not affect Boss HP.
         """
         if self.attack_elapsed_time == 0:
+            gSounds["wraith_spell"].play()
             spawn_points = [(0,0), (WIDTH-self.width,0), (0, HEIGHT-self.height), (WIDTH-self.width, HEIGHT-self.height)]
             for i in range(4):
                 miniboss = IllusionBoss(spawn_points[i][0], spawn_points[i][1], self.width, self.height, speed=self.illusion_speed, damage=self.illusion_damage, health=self.illusion_health)
@@ -199,6 +204,8 @@ class WraithBoss(BaseBoss):
             bullet.re_initialize()
             bullet.set_image(sprite_collection["wraith_bullet2"].image)
             self.bullets.append(bullet)
+            gSounds["wraith_bullet"].stop()
+            gSounds["wraith_bullet"].play()
             
             # Increment angle to create a circular firing pattern
             angle_increment = (2 * math.pi) / self.haunting_wail_num_bullets_in_circle
@@ -219,6 +226,21 @@ class WraithBoss(BaseBoss):
             if self.direction == "right":
                 img = pygame.transform.flip(img, True, False)
             screen.blit(img, (self.x - 50, self.y))
+            
+        if self.show_portal_effect:
+            img = self.haunting_wail_portal_animation.image
+            img = pygame.transform.scale(img, (self.rect.width + 100, 100))
+            screen.blit(img, (WIDTH / 2 - (self.rect.width + 100)/2, HEIGHT / 2 - 10))
+    
+        # Render homing bullets
+        for bullet in self.homing_bullets:
+            bullet.render(screen)
+            
+        for bullet in self.bullets:
+            bullet.render(screen)
+            
+        for illusion in self.illusions_minibosses:
+            illusion.render(screen)
             
         # Render blindness effect with spotlight
         if self.blindness_active:
@@ -241,21 +263,6 @@ class WraithBoss(BaseBoss):
 
             # Draw the overlay onto the screen
             screen.blit(darkness_overlay, (0, 0))
-            
-        if self.show_portal_effect:
-            img = self.haunting_wail_portal_animation.image
-            img = pygame.transform.scale(img, (self.rect.width + 100, 100))
-            screen.blit(img, (WIDTH / 2 - (self.rect.width + 100)/2, HEIGHT / 2 - 10))
-    
-        # Render homing bullets
-        for bullet in self.homing_bullets:
-            bullet.render(screen)
-            
-        for bullet in self.bullets:
-            bullet.render(screen)
-            
-        for illusion in self.illusions_minibosses:
-            illusion.render(screen)
     
 
 class HomingBullet:

@@ -3,7 +3,22 @@
     "spriteSheetURL": null,
     "sprites": [
         {
-            "name": "king_mummy_boss",
+            "name": "king_mummy_boss_idle",
+            "images": [
+                {
+                    "path": "./graphics/KingMummy/KingMummy1.PNG",
+                    "scale": 1
+                },
+                {
+                    "path": "./graphics/KingMummy/King mummy move.PNG",
+                    "scale": 1
+                }
+            ],
+            "interval_time": 0.4,
+            "loop": true
+        },
+        {
+            "name": "king_mummy_boss_attack",
             "images": [
                 {
                     "path": "./graphics/KingMummy/KingMummy2.PNG",
@@ -11,11 +26,7 @@
                 }
             ],
             "interval_time": 0.5,
-            "loop": true,
-            "idle_image": {
-                "path": "./graphics/KingMummy/KingMummy1.PNG",
-                "scale": 1
-            }
+            "loop": true
         },{
             "name": "king_mummy_cursed_wrapping",
             "images": [

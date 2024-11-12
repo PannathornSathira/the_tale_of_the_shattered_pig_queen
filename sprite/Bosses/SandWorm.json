@@ -8,9 +8,13 @@
                 {
                     "path": "./graphics/SandWorm/SandWorm4.PNG",
                     "scale": 1
+                },
+                {
+                    "path": "./graphics/SandWorm/SandWorm move.PNG",
+                    "scale": 1
                 }
             ],
-            "interval_time": 0.5,
+            "interval_time": 0.4,
             "loop": true
         }, {
             "name": "sandworm_boss_dash_start",

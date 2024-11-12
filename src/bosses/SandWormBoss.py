@@ -100,6 +100,7 @@ class SandWormBoss(BaseBoss):
         bullet.rect.height = bullet_height
         bullet.set_image(sprite_collection["sandworm_bullet1"].image)
         self.bullets.append(bullet)
+        gSounds["sandworm_bullet"].play()
         
         sprite_collection["sandworm_boss_sand_bullet"].animation.Refresh()
         self.animation = sprite_collection["sandworm_boss_idle"].animation
@@ -133,6 +134,7 @@ class SandWormBoss(BaseBoss):
             
         sprite_collection["sandworm_boss_shockwave"].animation.Refresh()
         self.animation = sprite_collection["sandworm_boss_idle"].animation
+        gSounds["sandworm_shockwave"].play()
         self.end_attack()
         
     def dash(self, dt, player):
@@ -143,6 +145,7 @@ class SandWormBoss(BaseBoss):
             # Set initial x position to align with the player
             self.x = player.character_x + player.width / 2 - self.width / 2
             self.y = 0
+            gSounds["sandworm_dash"].play(-1)
 
         # Calculate the normalized time variable for elongation and contraction
         t = self.attack_elapsed_time / self.dash_attack_duration
@@ -184,6 +187,7 @@ class SandWormBoss(BaseBoss):
         # End the attack and reset to original size and position
         if t >= 1.0:
             self.animation = sprite_collection["sandworm_boss_idle"].animation
+            gSounds["sandworm_dash"].fadeout(1000)
             self.width = self.original_width
             self.height = self.original_height
             self.x = self.original_x

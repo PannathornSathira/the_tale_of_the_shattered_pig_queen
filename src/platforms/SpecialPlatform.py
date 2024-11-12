@@ -21,7 +21,7 @@ class SpecialPlatform(BasePlatform):
         if self.area == 5:
             self.image = tile_dict["castle"]
         else:
-            self.image = tile_dict["common"]
+            self.image = tile_dict["special"]
 
     def update(self, dt):
         # Update only if the platform is in the process of disappearing
