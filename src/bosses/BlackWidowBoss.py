@@ -241,7 +241,7 @@ class BlackWidowBoss(BaseBoss):
 
 
 class Spiderling:
-    def __init__(self, x, y, boss, speed=75, damage=5, health=5):
+    def __init__(self, x, y, boss, speed=120, damage=5, health=5):
         self.x = x
         self.y = y
         self.speed = speed

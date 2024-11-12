@@ -7,7 +7,7 @@ from src.resources import *
 
 class KingMummyBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling = 1):
-        super().__init__(x, y, width=50, height=80, health=health, damage=damage, damage_speed_scaling = damage_speed_scaling)
+        super().__init__(x, y, width=140, height=200, health=health, damage=damage, damage_speed_scaling = damage_speed_scaling)
         self.animation = sprite_collection["king_mummy_boss"].animation
         self.visible = True
         self.direction = "left"
@@ -34,13 +34,13 @@ class KingMummyBoss(BaseBoss):
         self.bandage_height = 20
         
         # Jump attack properties
-        self.move_speed = 75
+        self.move_speed = 100
         self.jump_force = JUMP_FORCE
         self.gravity = GRAVITY
         self.velocity_y = 0
         self.on_ground = False
         self.ground_y = GROUND_LEVEL_Y
-        self.jump_cooldown = 3
+        self.jump_cooldown = 2.5
         self.jump_cooldown_timer = 0
         self.x = WIDTH / 2 - self.width / 2
         self.y = 0 - self.height
@@ -83,7 +83,7 @@ class KingMummyBoss(BaseBoss):
                     self.jump_cooldown_timer = 0
                 elif player.character_y > self.y + self.height and self.jump_cooldown_timer >= self.jump_cooldown:
                     self.on_ground = False
-                    self.y += self.height
+                    self.y += self.height / 2
                     self.rect.y = self.y
                     self.velocity_y = self.gravity * dt
                     self.jump_cooldown_timer = 0
@@ -140,12 +140,12 @@ class KingMummyBoss(BaseBoss):
         
         if self.revive_timer / self.revive_duration >= 0.8:
             self.revive_image = sprite_collection["king_mummy_revive"].image
-            self.rect.width = 80
-            self.width = 80
+            self.rect.width = 200
+            self.width = 200
         else:
             self.revive_image = sprite_collection["king_mummy_dead"].image
-            self.rect.width = 50
-            self.width = 50
+            self.rect.width = 100
+            self.width = 100
 
         if self.blink_timer >= self.blink_interval:
             self.visible = not self.visible
@@ -156,8 +156,8 @@ class KingMummyBoss(BaseBoss):
             self.invulnerable = False
             self.visible = True
             self.health = self.original_health
-            self.rect.width = 60
-            self.width = 60
+            self.rect.width = 140
+            self.width = 140
             
     def cursed_wrappings(self, dt, player):
         """Spawns bandages with a blinking appearance phase."""
@@ -224,15 +224,15 @@ class KingMummyBoss(BaseBoss):
                     char_img = self.animation.image
                     
                 if self.current_attack:
-                    offset = 20
+                    offset = 60
                 else:
-                    offset = 0
+                    offset = 20
                 char_img = pygame.transform.scale(char_img, (self.rect.width + offset, self.rect.height))
                 if self.direction == "right":
                     char_img = pygame.transform.flip(char_img, True, False)
                     screen.blit(char_img, (self.x, self.y))
                 else:
-                    screen.blit(char_img, (self.x - offset, self.y))
+                    screen.blit(char_img, (self.x - offset//2, self.y))
             for bandage in self.bandages:
                 bandage.render(screen)
 
