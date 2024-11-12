@@ -38,7 +38,7 @@ class Player:
         self.alive = True
         self.bullets = []
         self.bullet_damage = 1
-        self.firerate_cooldown = 0.1
+        self.firerate_cooldown = 0.2
         self.firerate_time = 0
         
         self.stun_duration = 0  # Track how long the player is stunned

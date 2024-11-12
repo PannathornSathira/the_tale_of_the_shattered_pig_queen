@@ -15,7 +15,7 @@ class SandWormBoss(BaseBoss):
         self.image.fill((255, 255, 0))
         
         # Sand bullet prop
-        self.sand_bullet_speed = BULLET_SPEED * 2
+        self.sand_bullet_speed = BULLET_SPEED * 2.5
         
         # Shockwave prop
         self.shockwave_damage = self.damage
@@ -24,14 +24,14 @@ class SandWormBoss(BaseBoss):
         self.shockwave_effect_time = 0
         self.shockwave_effect_isVisible = False
         self.shockwave_effect_rect = pygame.Rect(self.x + self.width / 2 - self.shockwave_distance, GROUND_LEVEL_Y, self.shockwave_distance * 2, 50)
-        self.bullet_layer_num = 5
-        self.bullet_angle = 150
+        self.bullet_layer_num = 7
+        self.bullet_angle = 120
         self.cone_starting_angle = 0
         self.cone_starting_angle_random_shift_max = 90
         self.shockwave_effect_animation = sprite_collection["sandworm_boss_shockwave_effect"].animation
         
         # Dash attack prop
-        self.dash_attack_duration = 3
+        self.dash_attack_duration = 2
         self.original_width = self.width
         self.original_height = self.height
         self.original_x = self.x
