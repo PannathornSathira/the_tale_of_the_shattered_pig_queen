@@ -95,7 +95,9 @@ class BlackWidowBoss(BaseBoss):
             self.velocity_y += self.gravity * dt
             self.y += self.velocity_y * dt
 
-        if self.current_attack != self.jump:
+        if self.current_attack == self.jump and self.attack_elapsed_time > 0:
+            pass
+        else:
             collided, platform = self.check_platform_collision(self.platforms)
             if collided:
                 self.y = platform.rect.top - self.height + 1

@@ -68,10 +68,18 @@ class PlayState:
             if pygame.mixer.get_pos() == -1:
                 pygame.mixer.music.unpause()
         else:
-            if isinstance(self.boss, MedusaBoss):
+            if isinstance(self.boss, KrakenBoss):
+                gMusic["kraken"].play(-1)
+            elif isinstance(self.boss, GreatSharkBoss):
+                gMusic["greatshark"].play(-1)
+            elif isinstance(self.boss, MedusaBoss):
                 gMusic["medusa"].play(-1)
             elif isinstance(self.boss, BlackWidowBoss):
                 gMusic["blackwidow"].play(-1)
+            elif isinstance(self.boss, BlueDragonBoss):
+                gMusic["bluedragon"].play(-1)
+            elif isinstance(self.boss, TornadoFiendBoss):
+                gMusic["tornadofiend"].play(-1)
             elif isinstance(self.boss, KingMummyBoss):
                 gMusic["mummy"].play(-1)
             elif isinstance(self.boss, SandWormBoss):
@@ -104,6 +112,7 @@ class PlayState:
             self.player.update(dt, events, self.level.platforms, self.boss)
         else:
             pygame.mixer.stop()
+            gMusic['defeat'].play(maxtime=2000)
             save_values({
                 "total_coins": self.total_coins,
                 "damage_potions": self.damage_potions,
@@ -128,11 +137,13 @@ class PlayState:
             self.player.bullets = []
             if self.level.area == 5:
                 g_state_manager.Change("END", {})
+                gMusic["victory"].play(-1)
             else:
                 g_state_manager.Change("WORLD_MAP", {
                     "player": self.player,
                     "completed_level": self.level.area
                 })
+                gMusic["victory"].play(maxtime=1800)
             
         if self.damage_potion_active:
             self.damage_potion_timer -= dt * 1000  # Decrease timer
@@ -175,6 +186,7 @@ class PlayState:
                     self.player.bullet_damage *= self.power_scale_damage  # Increase damage by 10%
                     self.damage_potion_active = True
                     self.damage_potion_timer = 10000  # Set the timer for 10 seconds
+                    gSounds["mc_potion"].play()
                 
                 # Activate the health potion by Press S
                 if event.key == pygame.K_s and self.health_potions > 0:
@@ -184,6 +196,7 @@ class PlayState:
                     self.player.health += power_scale_health * self.max_health  # Increase health by 10% of max hp
                     if self.player.health > self.max_health:
                         self.player.health = self.max_health
+                    gSounds["mc_potion"].play()
                 
                 # Activate the health potion by Press D
                 if event.key == pygame.K_d and self.swiftness_potions > 0 and not self.swiftness_potion_active:
@@ -194,6 +207,7 @@ class PlayState:
                     self.player.default_move_speed *= self.power_scale_swiftness
                     self.swiftness_potion_active = True
                     self.swiftness_potion_timer = 10000  # Set the timer for 10 seconds
+                    gSounds["mc_potion"].play()
 
     def Exit(self):
         pass

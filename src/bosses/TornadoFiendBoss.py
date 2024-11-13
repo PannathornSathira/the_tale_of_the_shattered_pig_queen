@@ -73,7 +73,8 @@ class TornadoFiendBoss(BaseBoss):
         elif attack_choice == "tornado_judgement":
             self.current_attack = self.tornado_judgement  
         elif attack_choice == "tornado_frenzy":
-            self.current_attack = self.tornado_frenzy  
+            self.current_attack = self.tornado_frenzy 
+            gSounds["tornado_sound"].play(-1)
 
     def cyclone_barrage(self, dt, player):
         """
@@ -102,6 +103,7 @@ class TornadoFiendBoss(BaseBoss):
                 img = sprite_collection["tornado_bullet"].image
             bullet.set_image(img)
             self.bullets.append(bullet)
+            gSounds["tornado_bullet"].play()
             
             self.barrage_isFromLeft = not self.barrage_isFromLeft
             self.barrage_previeous_row = row_y
@@ -120,6 +122,7 @@ class TornadoFiendBoss(BaseBoss):
         fiendling = Fiendling(spawn_x, spawn_y, damage=self.damage//2, health=self.max_health // 10)
         self.fiendlings.append(fiendling)
         self.end_attack()
+        gSounds["tornado_sound"].play(maxtime=1000)
         
     def tornado_judgement(self, dt, player):
         """
@@ -140,6 +143,7 @@ class TornadoFiendBoss(BaseBoss):
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
         if len(self.bullets) < beam_index and beam_index <= 5:
             self.bullets.append(self.beams[beam_index - 1])
+            gSounds["tornado_beam"].play()
                 
         if len(self.bullets) == 0:
             self.x = self.original_x
@@ -176,6 +180,7 @@ class TornadoFiendBoss(BaseBoss):
             self.end_attack()
             self.x = self.original_x
             self.y = self.original_y
+            gSounds["tornado_sound"].fadeout(1000)
 
 
     def render(self, screen):

@@ -104,6 +104,7 @@ class BlueDragonBoss(BaseBoss):
         self.stomp_duration_time += dt
         self.animation = sprite_collection["blue_dragon_boss_stomp"].animation
         if self.stomp_duration_time >= self.stomp_duration_gap:
+            gSounds["dragon_stomp"].play()
             self.stomp_duration_time = 0
 
             # Calculate distance from player
@@ -155,6 +156,8 @@ class BlueDragonBoss(BaseBoss):
                     )
                 beam.set_image(sprite_collection["blue_dragon_ice_pillar"].image)
                 self.beams.append(beam)
+            
+            gSounds["dragon_ice_pillar"].play(-1)
 
         # Add beams to the bullets list at intervals of 0.25 seconds
         beam_index = int(self.attack_elapsed_time // self.beam_delay) + 1
@@ -164,6 +167,7 @@ class BlueDragonBoss(BaseBoss):
         if len(self.bullets) == 0:
             self.end_attack()
             self.beams = []
+            gSounds["dragon_ice_pillar"].fadeout(1000)
 
     def frostbite_ring(self, dt, player):
         """
@@ -193,6 +197,7 @@ class BlueDragonBoss(BaseBoss):
                 )  # Create a bullet
                 bullet.set_image(sprite_collection["blue_dragon_bullet"].image)
                 self.bullets.append(bullet)  # Add bullet to the list
+            gSounds["dragon_bullet"].play()
 
         # End the bullet attack if the duration is over
         if self.attack_elapsed_time >= self.frostbite_barrage_duration:
@@ -258,6 +263,8 @@ class IceShard:
         self.life_time = 10
         self.active = True
         self.damage_speed_scaling = damage_speed_scaling
+        
+        gSounds['dragon_ice'].play(-1)
 
         # Starting direction (facing down initially)
         self.direction = math.radians(180)  # Facing downwards
@@ -301,6 +308,8 @@ class IceShard:
                 self.hit_player = True
 
             if self.life_time <= 0:
+                gSounds['dragon_ice'].stop()
+                gSounds['dragon_ice_explode'].play()
                 self.active = False
                 self.explode(boss)
 

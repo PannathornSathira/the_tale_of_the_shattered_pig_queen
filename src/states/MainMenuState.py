@@ -25,7 +25,7 @@ class MainMenuState:
                 g_state_manager.Change("SHOP", {})
                 
     def Exit(self):
-        pass
+        gMusic["main"].fadeout(1000)
 
     def render(self, screen):
         screen.blit(self.bg_image, (0, 0))

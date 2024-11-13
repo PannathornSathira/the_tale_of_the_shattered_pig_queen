@@ -56,7 +56,6 @@ class Player:
         self.defense_scale = 1
         self.jump_ability= False
         self.jump_count = 0  # Track the number of jumps performed
-        self.count_test = 0
         self.jump_scaling = 1
         
     def update(self, dt, events, platforms, boss):
@@ -101,15 +100,16 @@ class Player:
                     self.velocity_y = self.jump_force * self.jump_scaling
                     self.on_ground = False
                     self.jump_count = 1
+                    gSounds["mc_jump"].play()
                 elif self.jump_count == 1 and self.velocity_y > 0 and self.jump_ability:
                     # Double jump
-                    self.count_test +=1
                     self.is_jumping = True
                     self.velocity_y = self.jump_force * self.jump_scaling
                     self.jump_count += 1
-                    print(self.jump_ability)
-                    print("Double Jump:", self.count_test)
-                    print("----------")
+                    gSounds["mc_jump"].play()
+                    # print(self.jump_ability)
+                    # print("Double Jump:", self.count_test)
+                    # print("----------")
             """
             if pressedKeys[pygame.K_z] and pressedKeys[pygame.K_RIGHT] and self.on_ground:
                 self.is_jumping = True
@@ -150,9 +150,13 @@ class Player:
             if pressedKeys[pygame.K_1]:
                 self.active_weapon = "pistol"
                 self.animation = sprite_collection["king_fire_gun"].animation
+                gSounds["mc_change_gun"].stop()
+                gSounds["mc_change_gun"].play()
             elif pressedKeys[pygame.K_2] and self.shotgun_ability:
                 self.active_weapon = "shotgun"
                 self.animation = sprite_collection["king_fire_shotgun"].animation
+                gSounds["mc_change_gun"].stop()
+                gSounds["mc_change_gun"].play()
             
         for bullet in self.bullets:
             bullet.update(dt)
@@ -260,6 +264,7 @@ class Player:
         if self.active_weapon == "pistol":
             # Pistol fires a single bullet
             bullet = Bullet(bullet_x, bullet_y, bullet_direction, damage=self.bullet_damage)
+            gSounds["mc_gun"].play()
             self.bullets.append(bullet)
         elif self.active_weapon == "shotgun":
             # Shotgun fires multiple bullets in a spread
@@ -267,6 +272,7 @@ class Player:
                 angle_offset = (i - self.shotgun_spread // 2) * self.shotgun_angle
                 bullet = Bullet(bullet_x, bullet_y, bullet_direction, angle_offset=angle_offset, bullet_type = "shotgun", damage=self.bullet_damage * self.shotgun_damage_scale)
                 self.bullets.append(bullet)
+            gSounds["mc_shotgun"].play()
                 
         
     def render(self, screen):

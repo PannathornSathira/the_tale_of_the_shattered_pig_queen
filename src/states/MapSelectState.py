@@ -39,7 +39,7 @@ class MapSelectState:
         self.swifness_potion_image = potion_dict["swiftness"]
     
     def Exit(self):
-        pass
+        gMusic["map"].fadeout(1000)
 
     def Enter(self, params):
         self.saved_values = read_saveFile()
@@ -78,8 +78,7 @@ class MapSelectState:
             self.completed_levels = []
             self.difficulty = 1
         
-        if not pygame.mixer.music.get_busy():
-            gMusic["main"].play(-1)
+        gMusic["map"].play(-1)
 
     def update(self, dt, events):
         # Update character position based on keypresses

@@ -61,12 +61,14 @@ class ShopState:
         }
 
     def Exit(self):
-        pass
+        gMusic["shop"].fadeout(1000)
 
     def Enter(self, params):
         saved_values = read_saveFile()
         if saved_values:
             self.saved_values = saved_values
+            
+        gMusic["shop"].play(-1)
 
     def purchase_item(self, item):
         if item == "Health Upgrade":
