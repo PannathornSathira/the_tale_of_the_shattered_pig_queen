@@ -91,15 +91,15 @@ class PlayState:
         self.total_coins = params["total_coins"]
         self.difficulty = params["difficulty"]
         if self.difficulty == 1:
-            self.coin_scaling = 2
+            self.coin_scaling = 0.1
         elif self.difficulty == 2:
-            self.coin_scaling = 4
+            self.coin_scaling = 0.2
         elif self.difficulty == 3:
-            self.coin_scaling = 6
+            self.coin_scaling = 0.3
         elif self.difficulty == 4:
-            self.coin_scaling = 8
+            self.coin_scaling = 0.4
         elif self.difficulty == 5:
-            self.coin_scaling = 10
+            self.coin_scaling = 0.5
         self.boss_health = self.boss.health
         self.max_health = self.player.max_health
         self.max_boss_health = self.boss.health # For boss health bar
@@ -139,13 +139,12 @@ class PlayState:
                 g_state_manager.Change("END", {
                     "play_check": True,
                   })
-                gMusic["victory"].play(-1)
             else:
                 g_state_manager.Change("WORLD_MAP", {
                     "player": self.player,
                     "completed_level": self.level.area
                 })
-                gMusic["victory"].play(maxtime=1800)
+            gMusic["victory"].play(maxtime=1800)
             
         if self.damage_potion_active:
             self.damage_potion_timer -= dt * 1000  # Decrease timer
@@ -243,7 +242,7 @@ class PlayState:
             pygame.draw.rect(screen, (0, 0, 255), (150, 40, boss_health_bar_width, 20)) 
             pygame.draw.rect(screen, (255, 255, 255), (150, 40, 200, 20), 2)
             
-        render_text(f"Coins: {self.total_coins}", 20, 80, self.font, screen)
+        render_text(f"Coins: {int(self.total_coins)}", 20, 80, self.font, screen)
         
         remaining_time_damage = int(self.damage_potion_timer / 1000)  # Convert to seconds
         render_text(f": {remaining_time_damage}", 55, 130, self.font, screen)

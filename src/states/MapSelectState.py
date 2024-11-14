@@ -65,6 +65,9 @@ class MapSelectState:
             self.player.default_move_speed = self.saved_values["movement_speed"] * CHARACTER_MOVE_SPEED
             self.player.bullet_damage = self.saved_values["bullet_damage"]
             
+            self.character.x = 100
+            self.character.y = 100
+            
         self.slow_damage_boss = self.saved_values["boss_damage_speed"]
         self.player.revert_to_default()
         self.player.reset_position()
@@ -88,14 +91,22 @@ class MapSelectState:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.character.y -= self.character_speed
+            if self.character.y <= 0:
+                self.character.y = 0
         if keys[pygame.K_DOWN]:
             self.character.y += self.character_speed
+            if self.character.y + self.character.height >= HEIGHT:
+                self.character.y = HEIGHT - self.character.height
         if keys[pygame.K_LEFT]:
             self.character.x -= self.character_speed
             self.character_direction = "left"
+            if self.character.x <= 0:
+                self.character.x = 0
         if keys[pygame.K_RIGHT]:
             self.character.x += self.character_speed
             self.character_direction = "right"
+            if self.character.x + self.character.width >= WIDTH:
+                self.character.x = WIDTH - self.character.width
 
         # Check if player character collides with any map area
         for index, area in enumerate(self.map_areas):
@@ -106,7 +117,7 @@ class MapSelectState:
                         # Trigger area selection based on the current index
                         if index < 4 and index + 1 not in self.completed_levels:
                             self.start_level(index + 1, area)
-                        elif index == 4 and all(lvl in self.completed_levels for lvl in range(1, 5)):
+                        elif index == 4: #and all(lvl in self.completed_levels for lvl in range(1, 5)):
                             self.start_level(5, area)  # Start the final boss level
                         elif index == 5:
                             g_state_manager.Change("PAUSE", {
@@ -139,20 +150,20 @@ class MapSelectState:
         
     def spawn_boss(self, area):
         if self.difficulty == 1:
-            health = 100
-            damage = 10
-        elif self.difficulty == 2:
-            health = 250
-            damage = 15
-        elif self.difficulty == 3:
-            health = 500
-            damage = 25
-        elif self.difficulty == 4:
-            health = 1000
-            damage = 35
-        elif self.difficulty == 5:
             health = 2000
-            damage = 50
+            damage = 12
+        elif self.difficulty == 2:
+            health = 2500
+            damage = 14
+        elif self.difficulty == 3:
+            health = 3000
+            damage = 16
+        elif self.difficulty == 4:
+            health = 3500
+            damage = 18
+        elif self.difficulty == 5:
+            health = 4000
+            damage = 20
             
         if area == 1:
             return random.choice([KrakenBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), GreatSharkBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
@@ -212,4 +223,4 @@ class MapSelectState:
             text_rect = text_surface.get_rect(center=area.center)
             screen.blit(text_surface, text_rect)
 
-        render_text(f"Total Coins: {self.saved_values['total_coins']}", 20, 20, self.font, screen)
+        render_text(f"Total Coins: {int(self.saved_values['total_coins'])}", 20, 20, self.font, screen)

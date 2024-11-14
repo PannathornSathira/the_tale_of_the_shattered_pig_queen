@@ -31,16 +31,16 @@ class ShopState:
         self.text_color = (255, 255, 255)
         self.item_images = {}
         # Define upgrade costs and levels
-        self.hp_levels = [50, 100, 200, 350, 500, 750]
+        self.hp_levels = [50, 60, 70, 80, 90, 100]
         self.hp_costs = [0, 50, 150, 400, 800, 1500]
-        self.dmg_levels = [10, 15, 25, 45, 80, 130]
+        self.dmg_levels = [10, 12, 14, 16, 18, 20]
         self.dmg_costs = [0, 100, 250, 600, 1200, 2000]
-        self.speed_levels = [1.0, 1.05, 1.10, 1.15, 1.20, 1.30]
+        self.speed_levels = [1.0, 1.05, 1.10, 1.15, 1.20, 1.25]
         self.speed_costs = [0, 80, 200, 500, 1000, 1800]
-        self.defense_levels = [1.0, 1.10, 1.20, 1.35, 1.50, 1.70]
+        self.defense_levels = [1.0, 1.05, 1.10, 1.15, 1.20, 1.25]
         self.defense_costs = [0, 120, 300, 700, 1400, 2500]
         self.shop_dict1 = shop_dict
-        self.jump_levels = [0.0, 1, 1.10, 1.20, 1.30, 1.40]
+        self.jump_levels = [0.0, 1, 1.05, 1.10, 1.15, 1.20]
         self.jump_costs = [0, 150, 300, 600, 1200, 2000]
         
         self.shotgun_levels = [0.0, 0.6, 0.54, 0.47, 0.4, 0.34]
@@ -51,15 +51,15 @@ class ShopState:
         # Potion levels and costs
         self.potion_levels = {
             "Health Potion": {
-                "levels": [0, 10, 20, 30, 40, 50],
+                "levels": [0, 30, 35, 40, 45, 50],
                 "costs": [0, 50, 120, 250, 400, 600]
             },
             "Damage Potion": {
-                "levels": [0, 10, 15, 20, 25, 30],
+                "levels": [0, 5, 10, 15, 20, 25],
                 "costs": [0, 50, 120, 250, 400, 600]
             },
             "Swiftness Potion": {
-                "levels": [0, 10, 15, 20, 25, 30],
+                "levels": [0, 5, 10, 15, 20, 25],
                 "costs": [0, 50, 120, 250, 400, 600]
             }
         }
@@ -82,10 +82,10 @@ class ShopState:
         }
         
     def Exit(self):
-        pass
+        gMusic["shop"].fadeout(1000)
 
     def Enter(self, params):
-        gMusic["main"].play(-1)
+        gMusic["shop"].play(-1)
         saved_values = read_saveFile()
         if saved_values:
             self.saved_values = saved_values
@@ -379,7 +379,7 @@ class ShopState:
             
         
         
-        coins_text = f"Coins: {self.saved_values["total_coins"]}"
+        coins_text = f"Coins: {int(self.saved_values["total_coins"])}"
         """ 
         potions_text = f"Damage Potions: {self.saved_values["damage_potions"]} and LV: {self.saved_values["damage_potion_upgrade_level"]}"
         health_potions_text = f"Health Potions: {self.saved_values["health_potions"]} and LV: {self.saved_values["health_potion_upgrade_level"]}"

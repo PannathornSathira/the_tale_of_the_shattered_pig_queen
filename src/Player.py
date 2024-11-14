@@ -277,12 +277,12 @@ class Player:
         
     def render(self, screen):
         char_img = self.animation.image
-        char_img = pygame.transform.scale(char_img, (self.rect.width, self.rect.height))
+        char_img = pygame.transform.scale(char_img, (self.rect.width + 5, self.rect.height + 6))
         if self.shooting_direction == "left":
             char_img = pygame.transform.flip(char_img, True, False)
         if self.alive:
              if int(self.flash_timer * 10) % 2 == 0:
-                    screen.blit(char_img, (self.character_x, self.character_y))
+                    screen.blit(char_img, (self.character_x - 2.5, self.character_y - 3))
         
         for bullet in self.bullets:
             bullet.render(screen)

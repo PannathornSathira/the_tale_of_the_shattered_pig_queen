@@ -54,7 +54,7 @@ class WraithBoss(BaseBoss):
         self.illusions_minibosses = []
         self.illusion_speed = 75
         self.illusion_damage = 15
-        self.illusion_health = self.health // 4
+        self.illusion_health = self.health // 20
         
 
     def update(self, dt, player, platforms):
@@ -329,7 +329,7 @@ class HomingBullet:
         
 class IllusionBoss(BaseBoss):
     def __init__(self, x, y, width, height, speed=75, damage=15, health=500):
-        super().__init__(x, y, width=200, height=280, health=health)
+        super().__init__(x, y, width=160, height=220, health=health)
         self.speed = speed
         self.damage = damage
         self.animation = sprite_collection["wraith_boss_illusion"].animation

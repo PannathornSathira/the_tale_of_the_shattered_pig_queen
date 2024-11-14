@@ -27,6 +27,13 @@ class StartStoryState:
         # Get video properties
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.clock = pygame.time.Clock()  # Control frame rate
+        
+        self.ask_skip_popup = False
+        self.ask_skip_timer = 0
+        self.ask_skip_time = 5
+        self.dt = 0
+        
+        self.font = font
     def Enter(self, params):
         self.play_check = params.get("play_check")
 
@@ -50,7 +57,17 @@ class StartStoryState:
                 # Clear the screen and display the current frame
                 self.screen.fill((0, 0, 0))
                 self.screen.blit(frame_surface, (0, 0))
+
+                if self.ask_skip_popup:
+                    render_text("Press Enter to skip", 900, 600, self.font, screen)
+                    
                 pygame.display.update()
+
+                if self.ask_skip_popup:
+                    self.ask_skip_timer += self.dt
+                    if self.ask_skip_timer >= self.ask_skip_time:
+                        self.ask_skip_timer = 0
+                        self.ask_skip_popup = False
 
                 # Handle events
                 for event in pygame.event.get():
@@ -58,14 +75,18 @@ class StartStoryState:
                         self.cleanup()
                         return
                     elif event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
+                        if self.ask_skip_popup and event.key == pygame.K_RETURN:
                             # Stop the video and show end screen
                             pygame.mixer.music.stop()
                             self.cap.release()
                             self.show_end_screen(screen)
                             return
+                        
+                        if not self.ask_skip_popup:
+                            self.ask_skip_popup = True
+                            self.ask_skip_timer = 0
 
-                self.clock.tick(self.fps)  # Control frame rate to match the video's fps
+                self.dt = self.clock.tick(self.fps) / 1000  # Control frame rate to match the video's fps
 
             self.show_end_screen(screen)  # Show end screen when the video is finished
 

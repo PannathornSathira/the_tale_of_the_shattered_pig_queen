@@ -7,7 +7,7 @@ class TutorialState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
-        # self.boss = BaseBoss()
+        self.boss = BaseBoss(x=-100, y=-100, width=0, height=0)
         self.player = Player()
         self.level_tutor = Level(area=3)
         self.level_tutor.CreateMap()
