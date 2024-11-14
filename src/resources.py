@@ -29,6 +29,34 @@ potion_dict = {
     "swiftness": pygame.transform.scale(pygame.image.load("./graphics/shop/swifness_potion.PNG"), (30, 35)),
 }
 
+tile_dict = {
+    "sea": pygame.image.load("./graphics/platform/Sea Level.PNG"),
+    "forest": pygame.image.load("./graphics/platform/Forest Level.PNG"),
+    "sky": pygame.image.load("./graphics/platform/Sky Level.PNG"),
+    "sand": pygame.image.load("./graphics/platform/Sand Level.PNG"),
+    "castle": pygame.image.load("./graphics/platform/Last Level.PNG"),
+    "special": pygame.image.load("./graphics/platform/Common.PNG"),
+}
+
+potion_dict = {
+    "health": pygame.transform.scale(pygame.image.load("./graphics/shop/HP_potion2.PNG"), (30, 35)),
+    "damage": pygame.transform.scale(pygame.image.load("./graphics/shop/damage_potion.PNG"), (30, 35)),
+    "swiftness": pygame.transform.scale(pygame.image.load("./graphics/shop/swifness_potion.PNG"), (30, 35)),
+}
+
+shop_dict = {
+    "health_potion": pygame.transform.scale(pygame.image.load("./graphics/shop/HP_potion2.PNG"), (50, 60)),
+    "damage_potion": pygame.transform.scale(pygame.image.load("./graphics/shop/damage_potion.PNG"), (50, 60)),
+    "swiftness_potion": pygame.transform.scale(pygame.image.load("./graphics/shop/swifness_potion.PNG"), (50, 60)),
+    "hp_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_HP.png"), (50, 50)),
+    "def_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_DEF.png"), (50, 50)),
+    "shotgun_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_Shotgun.png"), (50, 50)),
+    "slow_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_Slow.png"), (50, 50)),
+    "speed_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_SPD.png"), (50, 50)),
+    "damage_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_ATK.png"), (50, 50)),
+    "2jump_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_2Jump.png"), (50, 50)),
+    "shop_continue": pygame.transform.scale(pygame.image.load("./graphics/shop/shop_continue.PNG"), (50, 50)),
+}
 gSounds = {
     'confirm': pygame.mixer.Sound('sounds/common/confirm.wav'),
     'pause': pygame.mixer.Sound('sounds/common/pause.wav'),

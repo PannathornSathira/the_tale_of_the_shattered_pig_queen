@@ -1,4 +1,5 @@
 import pygame
+import pygame
 from src.constants import *
 
 pygame.mixer.pre_init(44100, -16, 4, 4096)
@@ -19,8 +20,18 @@ class GameMain:
         self.boss = WraithBoss(x=1100, y=100)
         
         self.font = pygame.font.Font(None, 36)
+        self.max_frame_rate = MAX_FRAME_RATE
+        self.screen = screen
+        self.player = Player()
+        self.level = Level(area=3)
+        self.level.CreateMap()
+        self.boss = WraithBoss(x=1100, y=100)
+        
+        self.font = pygame.font.Font(None, 36)
 
         g_state_manager.SetScreen(self.screen)
+        
+        # Define all states and set in StateMachine
         
         # Define all states and set in StateMachine
         states = {
@@ -30,6 +41,8 @@ class GameMain:
             "SHOP": ShopState(self.screen, self.font),
             "PAUSE": PauseState(self.screen, self.font),
             "END": EndState(self.screen, self.font),
+            "START_STORY": StartStoryState(self.screen, self.font),
+            "Tutorial": TutorialState(self.screen, self.font)
         }
         g_state_manager.SetStates(states)
         
@@ -42,7 +55,7 @@ class GameMain:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        
+        #dd
         # Update current state
         g_state_manager.update(dt, events)
         
@@ -55,7 +68,7 @@ class GameMain:
 
     def render(self):
         self.screen.fill((255, 255, 255))
-        
+        #dd
         # Render current state
         g_state_manager.render()
         

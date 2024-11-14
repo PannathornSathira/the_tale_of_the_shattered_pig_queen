@@ -14,8 +14,12 @@ class ShopState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
+        self.item_font = pygame.font.Font(None, 20)
         self.items_left = ["Health Upgrade", "Damage Upgrade", "Movement Speed", "Defense Upgrade","Jump Upgrade","Slow Motion Upgrade", "Shotgun Upgrade", "Start Journey"]
-        self.items_right = ["Health Potion", "Damage Potion", "Swiftness Potion", "Health Potion Upgrade", "Damage Potion Upgrade", "Swiftness Potion Upgrade"]
+        self.items_right = [
+                            #"Health Potion", "Damage Potion", "Swiftness Potion"
+                             "Health Potion Upgrade", "Damage Potion Upgrade", "Swiftness Potion Upgrade"
+                            ]
         self.side = 'left' 
         self.selected_item_index = 0
         self.total_coins = 0
@@ -25,7 +29,7 @@ class ShopState:
         self.bg_image = pygame.image.load("./graphics/Backgrounds/Shop.png")
         self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH + 5, HEIGHT + 5))
         self.text_color = (255, 255, 255)
-        
+        self.item_images = {}
         # Define upgrade costs and levels
         self.hp_levels = [50, 100, 200, 350, 500, 750]
         self.hp_costs = [0, 50, 150, 400, 800, 1500]
@@ -35,7 +39,7 @@ class ShopState:
         self.speed_costs = [0, 80, 200, 500, 1000, 1800]
         self.defense_levels = [1.0, 1.10, 1.20, 1.35, 1.50, 1.70]
         self.defense_costs = [0, 120, 300, 700, 1400, 2500]
-        
+        self.shop_dict1 = shop_dict
         self.jump_levels = [0.0, 1, 1.10, 1.20, 1.30, 1.40]
         self.jump_costs = [0, 150, 300, 600, 1200, 2000]
         
@@ -60,15 +64,31 @@ class ShopState:
             }
         }
 
+        self.item_images = {
+            "Health Upgrade": shop_dict["hp_upgrade"],
+            "Damage Upgrade": shop_dict["damage_upgrade"],
+            "Movement Speed": shop_dict["speed_upgrade"],
+            "Defense Upgrade": shop_dict["def_upgrade"],
+            "Jump Upgrade": shop_dict["2jump_upgrade"],
+            "Slow Motion Upgrade": shop_dict["slow_upgrade"],
+            "Shotgun Upgrade": shop_dict["shotgun_upgrade"],
+            "Health Potion": shop_dict["health_potion"],
+            "Damage Potion": shop_dict["damage_potion"],
+            "Swiftness Potion": shop_dict["swiftness_potion"],
+            "Health Potion Upgrade": shop_dict["hp_upgrade"],
+            "Damage Potion Upgrade": shop_dict["damage_upgrade"],
+            "Swiftness Potion Upgrade": shop_dict["swiftness_potion"],
+            "Start Journey": shop_dict["shop_continue"],
+        }
+        
     def Exit(self):
-        gMusic["shop"].fadeout(1000)
+        pass
 
     def Enter(self, params):
+        gMusic["main"].play(-1)
         saved_values = read_saveFile()
         if saved_values:
             self.saved_values = saved_values
-            
-        gMusic["shop"].play(-1)
 
     def purchase_item(self, item):
         if item == "Health Upgrade":
@@ -230,41 +250,61 @@ class ShopState:
 
     def update(self, dt, events):
         # Handle player input for selecting items and purchasing
+        items_left_count = len(self.items_left)
+        items_right_count = len(self.items_right)
+        total_items = items_left_count + items_right_count
+        items_per_row = 3
+
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    if self.side == 'left':
-                        self.selected_item_index = (self.selected_item_index + 1) % len(self.items_left)
-                    elif self.side == 'right':
-                        self.selected_item_index = (self.selected_item_index + 1) % len(self.items_right)
+                    # Move down by items_per_row positions
+                    self.selected_item_index = (self.selected_item_index + items_per_row) % total_items
+
                 elif event.key == pygame.K_UP:
-                    if self.side == 'left':
-                        self.selected_item_index = (self.selected_item_index - 1) % len(self.items_left)
-                    elif self.side == 'right':
-                        self.selected_item_index = (self.selected_item_index - 1) % len(self.items_right)
+                    # Move up by items_per_row positions
+                    self.selected_item_index = (self.selected_item_index - items_per_row) % total_items
+
                 elif event.key == pygame.K_LEFT:
-                    if self.side == 'right':
-                        self.side = 'left'
-                        self.selected_item_index = min(self.selected_item_index, len(self.items_left) - 1)
+                    # Move left within the grid or wrap to the rightmost item in the previous row
+                    if self.selected_item_index % items_per_row > 0:
+                        self.selected_item_index -= 1
+                    else:
+                        self.selected_item_index = (self.selected_item_index - 1) % total_items
+
                 elif event.key == pygame.K_RIGHT:
-                    if self.side == 'left':
-                        self.side = 'right'
-                        self.selected_item_index = min(self.selected_item_index, len(self.items_right) - 1)
+                    # Move right within the grid or wrap to the leftmost item in the next row
+                    if (self.selected_item_index + 1) % items_per_row != 0:
+                        self.selected_item_index = (self.selected_item_index + 1) % total_items
+                    else:
+                        self.selected_item_index = (self.selected_item_index + 1) % total_items
+
                 elif event.key == pygame.K_RETURN:
-                    if self.side == 'left':
+                    # Purchase the selected item
+                    if self.selected_item_index < items_left_count:
                         self.purchase_item(self.items_left[self.selected_item_index])
-                    elif self.side == 'right':
-                        self.purchase_item(self.items_right[self.selected_item_index])
+                    else:
+                        self.purchase_item(self.items_right[self.selected_item_index - items_left_count])
 
     def render(self, screen):
         screen.blit(self.bg_image, (0, 0))
         title_left = "Player Status"
         title_right = "Consumable Items"
+        
+        
+        menu_bg_width = screen.get_width() - 80  # Width to cover both left and right item sections
+        menu_bg_height = 550  # Height to cover both item sections
+        menu_bg_surface = pygame.Surface((menu_bg_width, menu_bg_height), pygame.SRCALPHA)
+        menu_bg_surface.fill((96, 96, 96, 200))  # RGBA, 128 is the alpha value for 50% transparency
+
+        # Blit the transparent background at the desired position
+        screen.blit(menu_bg_surface, (40, 90))
         title_left_surface = self.font.render(title_left, True, self.text_color)
         title_right_surface = self.font.render(title_right, True, self.text_color)
         screen.blit(title_left_surface, (50, 100))
         screen.blit(title_right_surface, (screen.get_width() // 2 + 50, 100))
-
+        """
+        #Old display
         # Render left-side shop items
         for index, item in enumerate(self.items_left):
             color = (0, 255, 0) if self.side == 'left' and index == self.selected_item_index else self.text_color
@@ -276,12 +316,79 @@ class ShopState:
             color = (0, 255, 0) if self.side == 'right' and index == self.selected_item_index else self.text_color
             text_surface = self.font.render(item, True, color)
             screen.blit(text_surface, (screen.get_width() // 2 + 50, 150 + index * 50))
+            
+        """
+        items_left_count = len(self.items_left)
+        
+        # Draw grid layout for left items
+        for index, item in enumerate(self.items_left):
+            x = 100 + (index % 3) * 150 + 50 # Adjust x position for columns
+            y = 150 + (index // 3) * 150  # Adjust y position for rows
+            icon = self.get_item_icon(item)
+            
+            # Check if the current item is selected and apply green hover effect
+            if self.selected_item_index == index:
+                # Draw a green border around the icon
+                pygame.draw.rect(screen, (0, 255, 0), (x - 5, y - 5, icon.get_width() + 10, icon.get_height() + 10), 3)
+            
+            screen.blit(icon, (x, y))
+            text_surface = self.item_font.render(item, True, self.text_color)
+            screen.blit(text_surface, (x - 25, y - 15))
+            
+            # Draw level bar below the item icon
+            level = self.get_current_level(item)  # Implement this function to get the level of each item
+            max_level = 5  # Implement this function to get the max level of each item
+            square_size = 8  # Size of each level square
+            spacing = 4
+            if item != "Start Journey":
+                for lvl in range(max_level):
+                    square_x = x + lvl * (square_size + spacing)  # Horizontal position
+                    square_y = y + icon.get_height() + 15  # Position below icon
+
+                    # Draw filled or unfilled square based on the current level
+                    color = (255, 0, 0) if lvl < level else (128, 128, 128)
+                    pygame.draw.rect(screen, color, (square_x, square_y, square_size, square_size))
+            
+        # Draw grid layout for right items
+        for index, item in enumerate(self.items_right):
+            x = screen.get_width() // 2 + 50 + (index % 3) * 180 + 50
+            y = 150 + (index // 3) * 150
+            icon = self.get_item_icon(item)
+
+            # Calculate the global index of the item in the right grid
+            global_index = items_left_count + index
+            if self.selected_item_index == global_index:
+                pygame.draw.rect(screen, (0, 255, 0), (x - 5, y - 5, icon.get_width() + 30, icon.get_height() + 30), 3)
+            
+            screen.blit(icon, (x, y))
+            text_surface = self.item_font.render(item, True, self.text_color)
+            screen.blit(text_surface, (x - 25, y - 15))
+            
+             # Draw level bar below the item icon
+            level = self.get_current_level(item)  # Implement this function to get the level of each item
+            max_level = 5  # Implement this function to get the max level of each item
+            square_size = 8  # Size of each level square
+            spacing = 4
+            for lvl in range(max_level):
+                    square_x = x + lvl * (square_size + spacing)  # Horizontal position
+                    square_y = y + icon.get_height() + 15  # Position below icon
+
+                    # Draw filled or unfilled square based on the current level
+                    color = (255, 0, 0) if lvl < level else (128, 128, 128)
+                    pygame.draw.rect(screen, color, (square_x, square_y, square_size, square_size))
+            
+        
         
         coins_text = f"Coins: {self.saved_values["total_coins"]}"
+        """ 
         potions_text = f"Damage Potions: {self.saved_values["damage_potions"]} and LV: {self.saved_values["damage_potion_upgrade_level"]}"
         health_potions_text = f"Health Potions: {self.saved_values["health_potions"]} and LV: {self.saved_values["health_potion_upgrade_level"]}"
         swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]} and LV: {self.saved_values["swiftness_potion_upgrade_level"]}"
-
+        """
+        potions_text = f"Damage Potions: {self.saved_values["damage_potions"]}"
+        health_potions_text = f"Health Potions: {self.saved_values["health_potions"]}"
+        swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]}"
+        
         # Render the potion counts
         coins_surface = self.font.render(coins_text, True, self.text_color)
         potions_surface = self.font.render(potions_text, True, self.text_color)
@@ -301,6 +408,71 @@ class ShopState:
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error reading save file: {e}")
             return {}
+    
+    
+    def get_item_icon(self, item):
+        return self.item_images.get(item, pygame.Surface((50, 50)))
 
-# Ensure to initialize pygame and create an instance of ShopState
-# Then manage the state transitions as per your game's flow.
+    def get_current_level(self, item):
+    # Retrieve the current level for the item based on saved values
+        if item == "Health Upgrade":
+            return self.hp_levels.index(self.saved_values["health"])
+        elif item == "Damage Upgrade":
+            return self.dmg_levels.index(self.saved_values["bullet_damage"])
+        elif item == "Movement Speed":
+            return self.speed_levels.index(self.saved_values["movement_speed"])
+        elif item == "Defense Upgrade":
+            return self.defense_levels.index(self.saved_values["defense"])
+        elif item == "Jump Upgrade":
+            return self.jump_levels.index(self.saved_values["jump"])
+        elif item == "Slow Motion Upgrade":
+            return self.slowmo_levels.index(self.saved_values["boss_damage_speed"])
+        elif item == "Shotgun Upgrade":
+            return self.shotgun_levels.index(self.saved_values["shotgun"])
+        elif item == "Health Potion":
+            return self.saved_values.get("health_potion_upgrade_level", 0)
+        elif item == "Damage Potion":
+            return self.saved_values.get("damage_potion_upgrade_level", 0)
+        elif item == "Swiftness Potion":
+            return self.saved_values.get("swiftness_potion_upgrade_level", 0)
+        elif item == "Health Potion Upgrade":
+            return self.saved_values.get("health_potion_upgrade_level", 0)
+        elif item == "Damage Potion Upgrade":
+            return self.saved_values.get("damage_potion_upgrade_level", 0)
+        elif item == "Swiftness Potion Upgrade":
+            return self.saved_values.get("swiftness_potion_upgrade_level", 0)
+        return 0  # Default if item has no level
+
+    def get_max_level(self, item):
+        # Define the max level for each item
+        if item == "Health Upgrade":
+            return len(self.hp_levels) - 1
+        elif item == "Damage Upgrade":
+            return len(self.dmg_levels) - 1
+        elif item == "Movement Speed":
+            return len(self.speed_levels) - 1
+        elif item == "Defense Upgrade":
+            return len(self.defense_levels) - 1
+        elif item == "Jump Upgrade":
+            return len(self.jump_levels) - 1
+        elif item == "Slow Motion Upgrade":
+            return len(self.slowmo_levels) - 1
+        elif item == "Shotgun Upgrade":
+            return len(self.shotgun_levels) - 1
+        elif item == "Health Potion":
+            return len(self.potion_levels["Health Potion"]["levels"]) - 1
+        elif item == "Damage Potion":
+            return len(self.potion_levels["Damage Potion"]["levels"]) - 1
+        elif item == "Swiftness Potion":
+            return len(self.potion_levels["Swiftness Potion"]["levels"]) - 1
+        elif item == "Health Potion Upgrade":
+            return len(self.potion_levels["Health Potion"]["levels"]) - 1
+        elif item == "Damage Potion Upgrade":
+            return len(self.potion_levels["Damage Potion"]["levels"]) - 1
+        elif item == "Swiftness Potion Upgrade":
+            return len(self.potion_levels["Swiftness Potion"]["levels"]) - 1
+        return 1
+
+
+    # Ensure to initialize pygame and create an instance of ShopState
+    # Then manage the state transitions as per your game's flow.

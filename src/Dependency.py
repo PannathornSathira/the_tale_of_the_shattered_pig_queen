@@ -20,6 +20,8 @@ from src.bosses.TornadoFiendBoss import TornadoFiendBoss
 from src.bosses.KingMummyBoss import KingMummyBoss
 from src.bosses.SandWormBoss import SandWormBoss
 from src.bosses.WraithBoss import WraithBoss
+from src.bosses.BaseBoss import BaseBoss
+
 
 from src.states.MapSelectState import MapSelectState
 from src.states.MainMenuState import MainMenuState
@@ -27,4 +29,6 @@ from src.states.PlayState import PlayState
 from src.states.ShopState import ShopState
 from src.states.PauseState import PauseState
 from src.states.EndState import EndState
+from src.states.StartStoryState import StartStoryState
+from src.states.TutorialState import TutorialState
 

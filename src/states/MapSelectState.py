@@ -7,7 +7,7 @@ class MapSelectState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
-        self.bg_image = pygame.image.load("./graphics/Backgrounds/worldmap.png")
+        self.bg_image = pygame.image.load("./graphics/Backgrounds/main_map.PNG")
         self.map_areas = [
             pygame.Rect(400, 70, 200, 150),  # Area 1
             pygame.Rect(850, 130, 200, 150),  # Area 2
@@ -106,7 +106,7 @@ class MapSelectState:
                         # Trigger area selection based on the current index
                         if index < 4 and index + 1 not in self.completed_levels:
                             self.start_level(index + 1, area)
-                        elif index == 4: # and all(lvl in self.completed_levels for lvl in range(1, 5)):
+                        elif index == 4 and all(lvl in self.completed_levels for lvl in range(1, 5)):
                             self.start_level(5, area)  # Start the final boss level
                         elif index == 5:
                             g_state_manager.Change("PAUSE", {
