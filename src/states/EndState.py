@@ -26,7 +26,7 @@ class EndState:
                 g_state_manager.Change("MAIN_MENU", {})
 
     def Exit(self):
-        gSounds["victory"].fadeout(1000)
+        gMusic["victory"].fadeout(1000)
 
     def render(self, screen):
         screen.blit(self.bg_image, (0, 0))

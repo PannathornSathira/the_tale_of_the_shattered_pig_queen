@@ -34,10 +34,11 @@ class PauseState:
             self.swiftness_potions = params.get("swiftness_potions")
         elif self.prev_state == "map":
             self.player = params["player"]
-            self.total_coins = params["total_coins"]
-            self.damage_potions = params['damage_potions']
+            self.total_coins = params.get("total_coins")
+            self.damage_potions = params.get('damage_potions')
             self.health_potions = params.get("health_potions")
             self.swiftness_potions = params.get("swiftness_potions")
+            self.completed_levels = params.get("completed_levels")
 
     def update(self, dt, events):
         # Handle player input for selecting options
@@ -68,6 +69,7 @@ class PauseState:
                             pygame.mixer.stop()
                             g_state_manager.Change("WORLD_MAP", {
                                 "player": self.player,
+                                "completed_levels": self.completed_levels,
                             })
                     elif self.selected_option_index == 1:
                         save_values({

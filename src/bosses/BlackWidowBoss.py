@@ -64,6 +64,8 @@ class BlackWidowBoss(BaseBoss):
             self.is_poisoned = True
             self.poison_timer = 0
             self.poison_tick_timer = 0
+        else:
+            self.poison_timer = 0
 
     def update_poison_effect(self, dt, player):
         """Manage poison damage over time if the player is poisoned."""
@@ -138,10 +140,10 @@ class BlackWidowBoss(BaseBoss):
 
         # Slow by web logic
         if self.web_is_slow:
-            player.movement_speed = CHARACTER_MOVE_SPEED / 2
+            player.movement_speed = player.default_move_speed / 2
             self.web_slow_timer += dt
             if self.web_slow_timer >= self.web_slow_duration:
-                player.movement_speed = CHARACTER_MOVE_SPEED
+                player.movement_speed = player.default_move_speed
                 self.web_is_slow = False
 
         # Update spiderlings

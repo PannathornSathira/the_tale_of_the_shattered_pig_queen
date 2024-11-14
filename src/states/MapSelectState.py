@@ -71,12 +71,15 @@ class MapSelectState:
 
         # Update completed levels
         self.complete_level = params.get("completed_level")
+        completed_levels = params.get("completed_levels")
         if self.complete_level:
             self.completed_levels.append(self.complete_level)
             self.difficulty = len(self.completed_levels) + 1
-        else:
+        elif not completed_levels:
             self.completed_levels = []
             self.difficulty = 1
+        else:
+            self.completed_levels = completed_levels
         
         gMusic["map"].play(-1)
 
@@ -113,6 +116,7 @@ class MapSelectState:
                                 "damage_potions": self.saved_values["damage_potions"],
                                 "health_potions": self.saved_values["health_potions"],
                                 "swiftness_potions": self.saved_values["swiftness_potions"],
+                                "completed_levels": self.completed_levels
                             })
                 break
         else:
