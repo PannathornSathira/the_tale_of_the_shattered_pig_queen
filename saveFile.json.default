@@ -8,7 +8,7 @@
     "jump": 0,
     "shotgun": 0,
     "movement_speed": 1,
-    "bullet_damage": 1,
+    "bullet_damage": 10,
     "boss_damage_speed": 1,
     "health_potion_upgrade_level": 0,
     "damage_potion_upgrade_level": 0,

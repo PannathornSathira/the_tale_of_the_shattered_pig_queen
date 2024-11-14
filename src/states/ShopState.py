@@ -415,33 +415,35 @@ class ShopState:
 
     def get_current_level(self, item):
     # Retrieve the current level for the item based on saved values
-        if item == "Health Upgrade":
-            return self.hp_levels.index(self.saved_values["health"])
-        elif item == "Damage Upgrade":
-            return self.dmg_levels.index(self.saved_values["bullet_damage"])
-        elif item == "Movement Speed":
-            return self.speed_levels.index(self.saved_values["movement_speed"])
-        elif item == "Defense Upgrade":
-            return self.defense_levels.index(self.saved_values["defense"])
-        elif item == "Jump Upgrade":
-            return self.jump_levels.index(self.saved_values["jump"])
-        elif item == "Slow Motion Upgrade":
-            return self.slowmo_levels.index(self.saved_values["boss_damage_speed"])
-        elif item == "Shotgun Upgrade":
-            return self.shotgun_levels.index(self.saved_values["shotgun"])
-        elif item == "Health Potion":
-            return self.saved_values.get("health_potion_upgrade_level", 0)
-        elif item == "Damage Potion":
-            return self.saved_values.get("damage_potion_upgrade_level", 0)
-        elif item == "Swiftness Potion":
-            return self.saved_values.get("swiftness_potion_upgrade_level", 0)
-        elif item == "Health Potion Upgrade":
-            return self.saved_values.get("health_potion_upgrade_level", 0)
-        elif item == "Damage Potion Upgrade":
-            return self.saved_values.get("damage_potion_upgrade_level", 0)
-        elif item == "Swiftness Potion Upgrade":
-            return self.saved_values.get("swiftness_potion_upgrade_level", 0)
-        return 0  # Default if item has no level
+        try:
+            if item == "Health Upgrade":
+                return self.hp_levels.index(self.saved_values["health"])
+            elif item == "Damage Upgrade":
+                return self.dmg_levels.index(self.saved_values["bullet_damage"])
+            elif item == "Movement Speed":
+                return self.speed_levels.index(self.saved_values["movement_speed"])
+            elif item == "Defense Upgrade":
+                return self.defense_levels.index(self.saved_values["defense"])
+            elif item == "Jump Upgrade":
+                return self.jump_levels.index(self.saved_values["jump"])
+            elif item == "Slow Motion Upgrade":
+                return self.slowmo_levels.index(self.saved_values["boss_damage_speed"])
+            elif item == "Shotgun Upgrade":
+                return self.shotgun_levels.index(self.saved_values["shotgun"])
+            elif item == "Health Potion":
+                return self.saved_values.get("health_potion_upgrade_level", 0)
+            elif item == "Damage Potion":
+                return self.saved_values.get("damage_potion_upgrade_level", 0)
+            elif item == "Swiftness Potion":
+                return self.saved_values.get("swiftness_potion_upgrade_level", 0)
+            elif item == "Health Potion Upgrade":
+                return self.saved_values.get("health_potion_upgrade_level", 0)
+            elif item == "Damage Potion Upgrade":
+                return self.saved_values.get("damage_potion_upgrade_level", 0)
+            elif item == "Swiftness Potion Upgrade":
+                return self.saved_values.get("swiftness_potion_upgrade_level", 0)
+        except:
+            return 0  # Default if item has no level
 
     def get_max_level(self, item):
         # Define the max level for each item
