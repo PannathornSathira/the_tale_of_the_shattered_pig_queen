@@ -30,6 +30,8 @@ class GameMain:
             "SHOP": ShopState(self.screen, self.font),
             "PAUSE": PauseState(self.screen, self.font),
             "END": EndState(self.screen, self.font),
+            "START_STORY": StartStoryState(self.screen, self.font),
+            "Tutorial": TutorialState(self.screen, self.font)
         }
         g_state_manager.SetStates(states)
         
