@@ -20,7 +20,7 @@ class StartStoryState:
         pygame.display.set_caption("Start Story")
 
         # Set up video capture and audio
-        self.cap = cv2.VideoCapture("./video/My_Movie_1.mov")
+        self.cap = cv2.VideoCapture("./video/My_Movie_11.mov")
         self.audio_path = "./video/My_Movie_1_audio.wav"
         pygame.mixer.music.load(self.audio_path)
 
