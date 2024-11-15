@@ -1,5 +1,4 @@
 import pygame
-import pygame
 from src.constants import *
 
 pygame.mixer.pre_init(44100, -16, 4, 4096)
@@ -12,14 +11,6 @@ from src.Util import *
 
 class GameMain:
     def __init__(self):
-        self.max_frame_rate = MAX_FRAME_RATE
-        self.screen = screen
-        self.player = Player()
-        self.level = Level(area=3)
-        self.level.CreateMap()
-        self.boss = WraithBoss(x=1100, y=100)
-        
-        self.font = pygame.font.Font(None, 36)
         self.max_frame_rate = MAX_FRAME_RATE
         self.screen = screen
         self.player = Player()

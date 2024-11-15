@@ -11,11 +11,11 @@ class BasePlatform:
     self.platform_length = WIDTH // (NUM_COL)  # Platform length in pixels
     self.platform_height = TILE_SIZE * 0.5  # Platform height in pixels
     
-    if area == 1:
+    if area == 3:
         self.image = tile_dict["sea"]
     elif area == 2:
         self.image = tile_dict["forest"]
-    elif area == 3:
+    elif area == 1:
         self.image = tile_dict["sky"]
     elif area == 4:
         self.image = tile_dict["sand"]

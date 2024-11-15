@@ -77,6 +77,7 @@ class EndState:
                         if self.ask_skip_popup and event.key == pygame.K_RETURN:
                             # Stop the video and show end screen
                             pygame.mixer.music.stop()
+                            self.audio.stop()
                             self.cap.release()
                             self.show_end_screen(screen)
                             return

@@ -11,7 +11,8 @@ background_dict = {
     "forest": pygame.image.load("./graphics/Backgrounds/Bg_forest.JPG"),
     "sky": pygame.image.load("./graphics/Backgrounds/Bg_Sky.JPG"),
     "desert": pygame.image.load("./graphics/Backgrounds/Bg_Desert_New.PNG"),
-    "castle": pygame.image.load("./graphics/Backgrounds/Bg_Last Level.PNG")
+    "castle": pygame.image.load("./graphics/Backgrounds/Bg_Last Level.PNG"),
+    "sky_tutorial": pygame.image.load("./graphics/Backgrounds/sky_tutorial.png")
 }
 
 tile_dict = {

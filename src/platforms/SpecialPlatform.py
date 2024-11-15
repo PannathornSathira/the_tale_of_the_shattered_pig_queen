@@ -59,11 +59,11 @@ class SpecialPlatform(BasePlatform):
 
     def trigger_effect(self, player):
         """Apply a special effect to the player based on the platform's area."""
-        if self.area == 1:
+        if self.area == 3:
                 player.movement_speed = player.default_move_speed * 1.25
         elif self.area == 2:
                 pass
-        elif self.area == 3:
+        elif self.area == 1:
             # When player steps on a blue platform, make it disappear with flickering
             if not self.disappearing and self.visible:
                 self.disappearing = True

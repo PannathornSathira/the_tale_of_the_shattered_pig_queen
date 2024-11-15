@@ -15,7 +15,9 @@ class ShopState:
         self.screen = screen
         self.font = font
         self.item_font = pygame.font.Font(None, 20)
-        self.items_left = ["Health Upgrade", "Damage Upgrade", "Movement Speed", "Defense Upgrade","Jump Upgrade","Slow Motion Upgrade", "Shotgun Upgrade", "Start Journey"]
+        self.items_left = ["Health Upgrade", "Damage Upgrade", "Movement Speed", "Defense Upgrade","Jump Upgrade", "Shotgun Upgrade", "Start Journey"
+                           #"Slow Motion Upgrade"
+                           ]
         self.items_right = [
                             #"Health Potion", "Damage Potion", "Swiftness Potion"
                              "Health Potion Upgrade", "Damage Potion Upgrade", "Swiftness Potion Upgrade"

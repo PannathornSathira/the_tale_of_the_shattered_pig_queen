@@ -165,11 +165,11 @@ class MapSelectState:
             health = 4000
             damage = 20
             
-        if area == 1:
+        if area == 3:
             return random.choice([KrakenBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), GreatSharkBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
         elif area == 2:
             return random.choice([BlackWidowBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), MedusaBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
-        elif area == 3:
+        elif area == 1:
             return random.choice([BlueDragonBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), TornadoFiendBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])
         elif area == 4:
             return random.choice([KingMummyBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss), SandWormBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)])

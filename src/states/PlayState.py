@@ -51,11 +51,11 @@ class PlayState:
         self.level = params["level"]
         self.saved_values = read_saveFile()
         
-        if self.level.area == 1:
+        if self.level.area == 3:
             self.bg_image = background_dict["sea"]
         elif self.level.area == 2:
             self.bg_image = background_dict["forest"]
-        elif self.level.area == 3:
+        elif self.level.area == 1:
             self.bg_image = background_dict["sky"]
         elif self.level.area == 4:
             self.bg_image = background_dict["desert"]
