@@ -32,7 +32,7 @@ class PlayState:
         
         self.damage_potion_image = potion_dict["damage"]
         
-        self.swifness_potion_image = potion_dict["swiftness"]
+        self.swiftness_potion_image = potion_dict["swiftness"]
         # Potion levels and costs
         self.potion_levels = {
             "Health Potion": {
@@ -187,38 +187,40 @@ class PlayState:
                         "health_potions": self.health_potions,
                         "swiftness_potions": self.swiftness_potions
                     })
-                # Activate the damage potion by Press A
-                if event.key == pygame.K_a and self.damage_potions > 0 and not self.damage_potion_active:
-                    current_potion_level = self.saved_values["damage_potion_upgrade_level"]
-                    self.power_scale_damage = self.potion_levels["Damage Potion"]["power"][current_potion_level]
-                    #self.damage_potions -= 1
-                    self.player.bullet_damage *= self.power_scale_damage  # Increase damage by 10%
-                    self.damage_potion_active = True
-                    self.damage_potion_timer = 60000  # Set the timer for 10 seconds
-                    gSounds["mc_potion"].play()
-                
-                # Activate the health potion by Press S
-                if event.key == pygame.K_s and self.health_potions > 0 and not self.health_potion_active:
-                    current_potion_level = self.saved_values["health_potion_upgrade_level"]
-                    power_scale_health = self.potion_levels["Health Potion"]["power"][current_potion_level]
-                    #self.health_potions -= 1
-                    self.player.health += power_scale_health * self.max_health  # Increase health by 10% of max hp
-                    self.health_potion_active = True
-                    self.health_potion_timer = 60000
-                    if self.player.health > self.max_health:
-                        self.player.health = self.max_health
-                    gSounds["mc_potion"].play()
-                
-                # Activate the health potion by Press D
-                if event.key == pygame.K_d and self.swiftness_potions > 0 and not self.swiftness_potion_active:
-                    current_potion_level = self.saved_values["swiftness_potion_upgrade_level"]
-                    self.power_scale_swiftness = self.potion_levels["Swiftness Potion"]["power"][current_potion_level]
-                    #self.swiftness_potions -= 1
-                    self.player.movement_speed *= self.power_scale_swiftness
-                    self.player.default_move_speed *= self.power_scale_swiftness
-                    self.swiftness_potion_active = True
-                    self.swiftness_potion_timer = 60000  # Set the timer for 10 seconds
-                    gSounds["mc_potion"].play()
+
+                    # Use health potion by pressing 'A'
+                    if event.key == pygame.K_a and self.damage_potions > 0 and not self.damage_potion_active:
+                        level = self.saved_values["health_potion_upgrade_level"]
+                        power_scale_health = self.potion_levels["Health Potion"]["power"][level]
+                        #self.health_potions -= 1
+                        self.player.health += power_scale_health * self.max_health
+                        if self.player.health > self.max_health:
+                            self.player.health = self.max_health
+                        self.health_potion_active = True
+                        self.health_potion_timer = 10000
+                        gSounds["mc_potion"].play()
+
+                    # Use health potion by pressing 'S'
+                    if event.key == pygame.K_s and self.health_potions > 0 and not self.health_potion_active:
+                        level = self.saved_values["damage_potion_upgrade_level"]
+                        self.power_scale_damage = self.potion_levels["Damage Potion"]["power"][level]
+                        #self.damage_potions -= 1
+                        self.player.bullet_damage *= self.power_scale_damage
+                        self.damage_potion_active = True
+                        self.damage_potion_timer = 60000
+                        gSounds["mc_potion"].play()
+
+
+                    # Use swiftness potion by pressing 'D'
+                    if event.key == pygame.K_d and self.swiftness_potions > 0 and not self.swiftness_potion_active:
+                        level = self.saved_values["swiftness_potion_upgrade_level"]
+                        self.power_scale_swiftness = self.potion_levels["Swiftness Potion"]["power"][level]
+                        # self.swiftness_potions -= 1
+                        self.player.movement_speed *= self.power_scale_swiftness
+                        self.player.default_move_speed *= self.power_scale_swiftness
+                        self.swiftness_potion_active = True
+                        self.swiftness_potion_timer = 30000
+                        gSounds["mc_potion"].play()
 
     def Exit(self):
         pass
@@ -244,18 +246,23 @@ class PlayState:
             
         render_text(f"Coins: {int(self.total_coins)}", 20, 80, self.font, screen)
         
-        remaining_time_damage = int(self.damage_potion_timer / 1000)  # Convert to seconds
-        render_text(f": {remaining_time_damage}", 55, 130, self.font, screen)
-        screen.blit(self.damage_potion_image, (20, 120))
-        #render_text(f"Health Potions: {self.health_potions}", 320, 120, self.font, screen)
+        remaining_time_health = int(self.health_potion_timer / 1000)
+        if remaining_time_health == 0:
+            remaining_time_health = "Ready"
+        render_text(f": {remaining_time_health}", 55, 110, self.font, screen)
+        screen.blit(self.health_potion_image, (20, 100))
         
-        remaining_time_health = int(self.health_potion_timer / 1000) 
-        render_text(f": {remaining_time_health}", 130, 130, self.font, screen)
-        screen.blit(self.health_potion_image, (100, 120))
+        remaining_time_damage = int(self.damage_potion_timer / 1000)  # Convert to seconds
+        if remaining_time_damage == 0:
+            remaining_time_damage = "Ready"
+        render_text(f": {remaining_time_damage}", 180, 110, self.font, screen)
+        screen.blit(self.damage_potion_image, (145, 100))
         
         remaining_time_swiftness = int(self.swiftness_potion_timer / 1000)
-        render_text(f": {remaining_time_swiftness}", 210, 130, self.font, screen)
-        screen.blit(self.swifness_potion_image, (180, 120))
+        if remaining_time_swiftness == 0:
+            remaining_time_swiftness = "Ready"
+        render_text(f": {remaining_time_swiftness}", 305, 110, self.font, screen)
+        screen.blit(self.swiftness_potion_image, (270, 100))
         
         
     def CheckVictory(self):

@@ -29,8 +29,8 @@ class WraithBoss(BaseBoss):
         self.spotlight_radius = 500  # Radius around player that remains visible
 
         #Homing Bullet attack prop
-        self.homing_bullet_duration = 3
-        self.bullet_gap_cooldown = 0.5
+        self.homing_bullet_duration = 5
+        self.bullet_gap_cooldown = 0.8
         self.bullet_gap_time = 0
         self.bullet_layer_num = 3
         self.bullet_angle = 90
@@ -266,7 +266,7 @@ class WraithBoss(BaseBoss):
     
 
 class HomingBullet:
-    def __init__(self, x, y, speed=125, damage=10, turn_rate=50, scaling=1):
+    def __init__(self, x, y, speed=160, damage=10, turn_rate=30, scaling=1):
         self.x = x
         self.y = y
         self.speed = speed
@@ -278,7 +278,7 @@ class HomingBullet:
         self.original_image = self.image.copy()
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.hit_player = False
-        self.life_time = 10
+        self.life_time = 8
         self.active = True
 
         # Starting direction

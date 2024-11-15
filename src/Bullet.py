@@ -24,9 +24,9 @@ class Bullet:
         # Set bullet dimensions and color based on bullet type
         self.travelled_distance = 0
         if self.bullet_type == "shotgun":
-            self.max_distance = 150
-            self.width = BULLET_LENGTH // 2
-            self.height = BULLET_WIDTH // 2
+            self.max_distance = 300
+            self.width = BULLET_LENGTH
+            self.height = BULLET_WIDTH
             self.color = (255, 165, 0)  # Orange color for shotgun bullets
         else:
             self.max_distance = None

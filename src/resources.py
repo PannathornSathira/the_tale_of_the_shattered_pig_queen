@@ -132,6 +132,9 @@ gMusic = {
     'wraith': pygame.mixer.Sound('sounds/music/Wraith-music.mp3'),
 }
 
+gSounds["kraken_charge"].set_volume(0.7)
+gSounds["shark_vortex"].set_volume(0.7)
+
 # s_paddle_image_list = [sprite_collection["p_blue_1"].image, sprite_collection["p_green_1"].image,
 #                      sprite_collection["p_red_1"].image, sprite_collection["p_purple_1"].image]
 

@@ -216,7 +216,18 @@ class MapSelectState:
             screen.blit(s, (area.x, area.y))
 
             # Display area names
-            area_name = f"Area {index + 1}" if index < 5 else "Shop"
+            if index == 0:
+                area_name = "Sky"
+            elif index == 1:
+                area_name = "Forest"
+            elif index == 2:
+                area_name = "Sea"
+            elif index == 3:
+                area_name = "Desert"
+            elif index == 4:
+                area_name = "Castle"
+            else:
+                area_name = "Shop"
             if index == 4 and not all(lvl in self.completed_levels for lvl in range(1, 5)):
                 area_name += " (Locked)"
             text_surface = self.font.render(area_name, True, (0, 0, 0))
