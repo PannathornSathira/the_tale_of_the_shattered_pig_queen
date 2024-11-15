@@ -20,7 +20,8 @@ class KingMummyBoss(BaseBoss):
         self.blink_timer = 0
         self.blink_interval = 0.25
         self.revive_duration = 3
-        self.original_health = self.health
+        self.original_health = self.health * 0.7
+        self.health = self.original_health
         self.revive_image = sprite_collection["king_mummy_dead"].image
         
         # Attack properties
@@ -124,7 +125,8 @@ class KingMummyBoss(BaseBoss):
             self.current_attack = self.cursed_wrappings
         elif attack_choice == "cursed_speed":
             self.current_attack = self.cursed_speed
-            gSounds["mummy_speed"].play()
+            if not self.reviving:
+                gSounds["mummy_speed"].play()
 
     def die(self):
         """Handle boss death."""

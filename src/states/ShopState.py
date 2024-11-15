@@ -35,7 +35,7 @@ class ShopState:
         # Define upgrade costs and levels
         self.hp_levels = [50, 60, 70, 80, 90, 100]
         self.hp_costs = [0, 50, 150, 400, 800, 1500]
-        self.dmg_levels = [10, 12, 14, 16, 18, 20]
+        self.dmg_levels = [10, 13, 16, 19, 22, 25]
         self.dmg_costs = [0, 100, 250, 600, 1200, 2000]
         self.speed_levels = [1.0, 1.05, 1.10, 1.15, 1.20, 1.25]
         self.speed_costs = [0, 80, 200, 500, 1000, 1800]
@@ -45,7 +45,7 @@ class ShopState:
         self.jump_levels = [0.0, 1, 1.05, 1.10, 1.15, 1.20]
         self.jump_costs = [0, 150, 300, 600, 1200, 2000]
         
-        self.shotgun_levels = [0.0, 0.6, 0.54, 0.47, 0.4, 0.34]
+        self.shotgun_levels = [0.0, 0.40, 0.46, 0.53, 0.6, 0.66]
         self.shotgun_costs = [0, 100, 300, 600, 1200, 2000]
         
         self.slowmo_levels = [1, 0.9, 0.85, 0.8, 0.75, 0.7]
@@ -53,15 +53,12 @@ class ShopState:
         # Potion levels and costs
         self.potion_levels = {
             "Health Potion": {
-                "levels": [0, 30, 35, 40, 45, 50],
                 "costs": [0, 50, 120, 250, 400, 600]
             },
             "Damage Potion": {
-                "levels": [0, 5, 10, 15, 20, 25],
                 "costs": [0, 50, 120, 250, 400, 600]
             },
             "Swiftness Potion": {
-                "levels": [0, 5, 10, 15, 20, 25],
                 "costs": [0, 50, 120, 250, 400, 600]
             }
         }
@@ -387,20 +384,20 @@ class ShopState:
         health_potions_text = f"Health Potions: {self.saved_values["health_potions"]} and LV: {self.saved_values["health_potion_upgrade_level"]}"
         swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]} and LV: {self.saved_values["swiftness_potion_upgrade_level"]}"
         """
-        potions_text = f"Damage Potions: {self.saved_values["damage_potions"]}"
-        health_potions_text = f"Health Potions: {self.saved_values["health_potions"]}"
-        swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]}"
+        # potions_text = f"Damage Potions: {self.saved_values["damage_potions"]}"
+        # health_potions_text = f"Health Potions: {self.saved_values["health_potions"]}"
+        # swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]}"
         
-        # Render the potion counts
+        # # Render the potion counts
         coins_surface = self.font.render(coins_text, True, self.text_color)
-        potions_surface = self.font.render(potions_text, True, self.text_color)
-        health_potions_surface = self.font.render(health_potions_text, True, self.text_color)
-        swiftness_potions_surface = self.font.render(swiftness_potions_text, True, self.text_color)
+        # potions_surface = self.font.render(potions_text, True, self.text_color)
+        # health_potions_surface = self.font.render(health_potions_text, True, self.text_color)
+        # swiftness_potions_surface = self.font.render(swiftness_potions_text, True, self.text_color)
 
         screen.blit(coins_surface, (50, 600))
-        screen.blit(potions_surface, (screen.get_width() // 2 + 50, 450))
-        screen.blit(health_potions_surface, (screen.get_width() // 2 + 50, 500))
-        screen.blit(swiftness_potions_surface, (screen.get_width() // 2 + 50, 550))
+        # screen.blit(potions_surface, (screen.get_width() // 2 + 50, 450))
+        # screen.blit(health_potions_surface, (screen.get_width() // 2 + 50, 500))
+        # screen.blit(swiftness_potions_surface, (screen.get_width() // 2 + 50, 550))
 
     def read_saveFile(self):
         """Read the save file and return the data as a dictionary."""

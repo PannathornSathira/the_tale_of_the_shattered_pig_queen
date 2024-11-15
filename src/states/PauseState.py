@@ -29,15 +29,9 @@ class PauseState:
             self.player = params["player"]
             self.total_coins = params["total_coins"]
             self.difficulty = params["difficulty"]
-            self.damage_potions = params['damage_potions']
-            self.health_potions = params.get("health_potions")
-            self.swiftness_potions = params.get("swiftness_potions")
         elif self.prev_state == "map":
             self.player = params["player"]
             self.total_coins = params.get("total_coins")
-            self.damage_potions = params.get('damage_potions')
-            self.health_potions = params.get("health_potions")
-            self.swiftness_potions = params.get("swiftness_potions")
             self.completed_levels = params.get("completed_levels")
 
     def update(self, dt, events):
@@ -60,10 +54,6 @@ class PauseState:
                                 "player": self.player,
                                 "total_coins": self.total_coins,
                                 "difficulty": self.difficulty,
-                                "damage_potions": self.damage_potions,
-                                "health_potions": self.health_potions,
-                                "swiftness_potions": self.swiftness_potions
-                                
                             })
                         elif self.prev_state == "map":
                             pygame.mixer.stop()
@@ -74,9 +64,6 @@ class PauseState:
                     elif self.selected_option_index == 1:
                         save_values({
                             "total_coins": self.total_coins,
-                            "damage_potions": self.damage_potions,
-                            "health_potions": self.health_potions,
-                            "swiftness_potions": self.swiftness_potions
                         })
                         g_state_manager.Change("SHOP", {})
         return None, None

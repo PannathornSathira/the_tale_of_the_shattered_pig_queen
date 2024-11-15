@@ -46,7 +46,7 @@ class SandWormBoss(BaseBoss):
         super().update(dt, player, platforms)
         
         if self.first_trigger:
-            player.default_move_speed = CHARACTER_MOVE_SPEED / 2
+            player.default_move_speed = player.default_move_speed / 2
             player.movement_speed = player.default_move_speed
             self.first_trigger = False
         
