@@ -22,7 +22,6 @@ class GameMain:
 
         g_state_manager.SetScreen(self.screen)
         
-        # Define all states and set in StateMachine
         
         # Define all states and set in StateMachine
         states = {
@@ -46,17 +45,11 @@ class GameMain:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        #dd
+
         # Update current state
         g_state_manager.update(dt, events)
         
-        # if self.player.alive:
-        #     self.player.update(dt, events, self.level.platforms, self.boss)  
-        # self.level.update(dt, events)
         
-        # if self.boss.alive:
-        #     self.boss.update(dt, self.player, self.level.platforms) 
-
     def render(self):
         self.screen.fill((255, 255, 255))
         #dd
