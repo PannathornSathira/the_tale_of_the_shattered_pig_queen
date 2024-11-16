@@ -1,10 +1,13 @@
-# the_tale_of_the_shattered_pig_queen
+# The Tale of the Shattered Queen
 ## Concept statement
 The Tale of the Shattered Pig Queen is a 2D Platform Shooter game with elements of Rogue-like progression, fighting against multiple bosses and upgrading their character to slay the final boss and save the pig queen.
 
 ## Genre(s)
 + 2D Platform Shooter
++ Run and Gun
 + Rogue-like
++ Single-player
++ Boss battle
 
 ## Main Story
 In the heart of the Pig Kingdom lies the Pig Queen, a powerful and benevolent ruler whose magic keeps the land in harmony. But one fateful day, the Final Boss (Temp name), a malevolent entity from a dark realm, strikes the Pig Queen with a devastating blow. As the Queen falls, her soul is shattered into four fragments, each representing a piece of her power and essence.
@@ -17,4 +20,8 @@ But the journey doesn’t end there. Once you’ve collected the four soul fragm
 
 The fate of the kingdom rests in your hands. Will you be able to conquer the darkness, restore the Queen, and bring light back to the land?
 
+## Installation
+On first installation, please make sure that you have python3 installed and run ```pip install -r requirements.txt``` in the main directory.
 
+## Play
+Run ```python main.py```. Make sure that your directory is in the main directory.
