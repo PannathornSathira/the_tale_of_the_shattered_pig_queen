@@ -94,7 +94,6 @@ class BaseBoss:
 
     def die(self):
         """Handle boss death."""
-        print("Boss defeated!")  # Placeholder for boss defeat logic
         self.alive = False
 
     def render(self, screen):

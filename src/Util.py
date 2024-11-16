@@ -71,7 +71,6 @@ class Animation:
             self.timer = self.timer % self.interval_time
 
             self.index = (self.index+1) % len(self.images)
-            #print(self.index)
 
             if self.index == 0:
                 self.times_played += 1
@@ -189,7 +188,6 @@ class SpriteSheet(object):
             if not self.sheet.get_alpha():
                 self.sheet.set_colorkey((0, 0, 0))
         except pygame.error:
-            print("Unable to load spritesheet image:", filename)
             raise SystemExit
 
     def image_at(self, x, y, scalingfactor, colorkey=None,
@@ -216,7 +214,6 @@ def read_saveFile():
         with open(SAVE_FILE_NAME, 'r') as file:
             return json.load(file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error reading save file: {e}")
         return {}
     
 def save_values(updated_values):
@@ -232,7 +229,6 @@ def save_values(updated_values):
         # Save the updated data back to the file
         with open(SAVE_FILE_NAME, 'w') as file:
             json.dump(data, file, indent=4)
-            print("Save file updated successfully.")
     
     except (IOError, json.JSONDecodeError) as e:
-        print(f"Error updating save file: {e}")
+        pass

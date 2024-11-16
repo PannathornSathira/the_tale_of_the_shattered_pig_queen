@@ -1,13 +1,13 @@
 {
-    "total_coins": 992192.9200000021,
+    "total_coins": 0,
     "health": 50,
-    "defense": 1.1,
-    "jump": 1.1,
-    "shotgun": 0.66,
+    "defense": 1,
+    "jump": 0,
+    "shotgun": 0,
     "movement_speed": 1,
-    "bullet_damage": 13,
+    "bullet_damage": 10,
     "boss_damage_speed": 1,
-    "health_potion_upgrade_level": 1,
-    "damage_potion_upgrade_level": 1,
-    "swiftness_potion_upgrade_level": 1
+    "health_potion_upgrade_level": 0,
+    "damage_potion_upgrade_level": 0,
+    "swiftness_potion_upgrade_level": 0
 }
