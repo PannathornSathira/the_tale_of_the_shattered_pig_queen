@@ -9,7 +9,7 @@ from src.bosses.BeamAttack import BeamAttack
 
 class TornadoFiendBoss(BaseBoss):
     def __init__(self, x, y, health=300, damage=10, damage_speed_scaling=1):
-        super().__init__(x, y, height=300, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
+        super().__init__(x, y, width=170, height=250, health=health, damage=damage, damage_speed_scaling=damage_speed_scaling)
         self.max_health = health
         self.damage_speed_scaling = damage_speed_scaling
         # Customizing the appearance
@@ -30,8 +30,8 @@ class TornadoFiendBoss(BaseBoss):
         
         # Tornado judgement attack prop
         self.beam_count = 5
-        self.beam_width = 100
-        self.beam_gap = 100
+        self.beam_width = 70
+        self.beam_gap = 160
         self.beam_height = 500
         self.beam_delay = 0.25
         self.beams = []
@@ -64,7 +64,7 @@ class TornadoFiendBoss(BaseBoss):
 
     def select_attack(self, player):
         attack_choice = random.choice(["cyclone_barrage", "tornado_swarm", "tornado_judgement", "tornado_frenzy"])
-        # attack_choice = random.choice(["tornado_frenzy"])
+        # attack_choice = random.choice(["tornado_judgement"])
 
         if attack_choice == "cyclone_barrage":
             self.current_attack = self.cyclone_barrage
@@ -135,7 +135,7 @@ class TornadoFiendBoss(BaseBoss):
             self.x = WIDTH / 2 - self.width / 2
             beam_x_positions = random.sample(range(WIDTH // (self.beam_width+self.beam_gap)), self.beam_count)
             for i in range(self.beam_count):
-                beam = BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling)
+                beam = BeamAttack(beam_x_positions[i] * (self.beam_width+self.beam_gap), 0 - self.beam_height, beam_direction, self.beam_width, self.beam_height, damage=self.damage, scaling=self.damage_speed_scaling, offset=10)
                 beam.set_image(sprite_collection["tornado_lightning"].image)
                 self.beams.append(beam)
 

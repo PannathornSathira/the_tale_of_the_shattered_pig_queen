@@ -7,7 +7,7 @@ import math
 
 class BossBullet(Bullet):
 
-    def __init__(self, x, y, direction, dy=0, general_speed=(0, 0), damage=10, scaling=1):
+    def __init__(self, x, y, direction, dy=0, general_speed=(0, 0), damage=10, scaling=1, offset=0):
         super().__init__(x, y, direction, general_speed, damage=damage)
         self.width = 30
         self.height = 10
@@ -26,16 +26,17 @@ class BossBullet(Bullet):
         self.angle = self.calculate_angle()
         self.image = pygame.transform.rotate(self.original_image, -self.angle)
         self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.offset = offset
         
     def re_initialize(self):
         self.angle = self.calculate_angle()
-        self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), -self.angle)
+        self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width + self.offset, self.height)), -self.angle)
         self.rect = self.image.get_rect(center=(self.x, self.y))
     
     def set_image(self, image):
         self.original_image = image
         self.angle = self.calculate_angle()
-        self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width, self.height)), -self.angle)
+        self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (self.width + self.offset, self.height)), -self.angle)
         self.rect = self.image.get_rect(center=(self.x, self.y))
         
     def calculate_angle(self):
@@ -54,4 +55,4 @@ class BossBullet(Bullet):
             self.y += self.speed_y * dt
 
     def render(self, screen):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image, (self.rect.x - self.offset//2, self.rect.y))

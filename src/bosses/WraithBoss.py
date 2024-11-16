@@ -266,7 +266,7 @@ class WraithBoss(BaseBoss):
     
 
 class HomingBullet:
-    def __init__(self, x, y, speed=160, damage=10, turn_rate=30, scaling=1):
+    def __init__(self, x, y, speed=200, damage=10, turn_rate=50, scaling=1):
         self.x = x
         self.y = y
         self.speed = speed
@@ -328,7 +328,7 @@ class HomingBullet:
         
         
 class IllusionBoss(BaseBoss):
-    def __init__(self, x, y, width, height, speed=75, damage=15, health=500):
+    def __init__(self, x, y, width, height, speed=100, damage=15, health=500):
         super().__init__(x, y, width=160, height=220, health=health)
         self.speed = speed
         self.damage = damage

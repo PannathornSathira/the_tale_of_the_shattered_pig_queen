@@ -23,7 +23,7 @@ class PlayState:
         self.potion_effects = {
             "health": {
                 "active": False, "effect_timer": 0, "cooldown_timer": 0,
-                "duration": 0, "cooldown": 10000
+                "duration": 0, "cooldown": 15000
             },
             "damage": {
                 "active": False, "effect_timer": 0, "cooldown_timer": 0,

@@ -79,16 +79,21 @@ class KingMummyBoss(BaseBoss):
         
         if not self.reviving:  
             if self.on_ground and player.on_ground:
-                if player.character_y < self.y and self.jump_cooldown_timer >= self.jump_cooldown:
-                    self.velocity_y = self.jump_force
-                    self.on_ground = False
-                    self.jump_cooldown_timer = 0
-                elif player.character_y > self.y + self.height and self.jump_cooldown_timer >= self.jump_cooldown:
-                    self.on_ground = False
-                    self.y += self.height / 2
-                    self.rect.y = self.y
-                    self.velocity_y = self.gravity * dt
-                    self.jump_cooldown_timer = 0
+                if self.jump_cooldown_timer >= self.jump_cooldown:
+                    if player.character_y + player.height < (self.y + self.height) / 2:
+                        self.velocity_y = 1.6 * self.jump_force
+                        self.on_ground = False
+                        self.jump_cooldown_timer = 0
+                    elif player.character_y + player.height < self.y + self.height:
+                        self.velocity_y = self.jump_force
+                        self.on_ground = False
+                        self.jump_cooldown_timer = 0
+                    elif player.character_y + player.height > self.y + self.height:
+                        self.on_ground = False
+                        self.y += self.height / 2
+                        self.rect.y = self.y
+                        self.velocity_y = self.gravity * dt
+                        self.jump_cooldown_timer = 0
             
             if player.character_x + player.width <= self.x + 10:
                 self.x -= self.move_speed * dt

@@ -19,8 +19,8 @@ class BlueDragonBoss(BaseBoss):
         self.animation = sprite_collection["blue_dragon_boss_idle"].animation
 
         # Stomp attack properties
-        self.stomp_attack_duration = 5.5
-        self.stomp_duration_gap = 1
+        self.stomp_attack_duration = 2.5
+        self.stomp_duration_gap = 0.7
         self.stomp_duration_time = 0
         self.stomp_damage = self.damage
         self.stomp_stun_distance = 400
@@ -39,8 +39,8 @@ class BlueDragonBoss(BaseBoss):
 
         # Frozen pillars attack prop
         self.beam_count = 5
-        self.beam_width = 80
-        self.beam_gap = 150
+        self.beam_width = 70
+        self.beam_gap = 160
         self.beam_height = 400
         self.beam_delay = 0.25
         self.beams = []
@@ -152,7 +152,8 @@ class BlueDragonBoss(BaseBoss):
                         self.beam_width,
                         self.beam_height,
                         damage=self.damage,
-                        scaling=self.damage_speed_scaling
+                        scaling=self.damage_speed_scaling,
+                        offset=10
                     )
                 beam.set_image(sprite_collection["blue_dragon_ice_pillar"].image)
                 self.beams.append(beam)
@@ -249,7 +250,7 @@ class BlueDragonBoss(BaseBoss):
 
 
 class IceShard:
-    def __init__(self, x, y, speed=75, damage=5, turn_rate=50, damage_speed_scaling=1):
+    def __init__(self, x, y, speed=100, damage=5, turn_rate=50, damage_speed_scaling=1):
         self.x = x
         self.y = y
         self.speed = speed
@@ -260,7 +261,7 @@ class IceShard:
         self.image = self.original_image.copy()
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.hit_player = False
-        self.life_time = 10
+        self.life_time = random.randint(5,10)
         self.active = True
         self.damage_speed_scaling = damage_speed_scaling
         
