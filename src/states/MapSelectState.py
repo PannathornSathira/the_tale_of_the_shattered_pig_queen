@@ -180,17 +180,7 @@ class MapSelectState:
             char_img = pygame.transform.flip(char_img, True, False)
         screen.blit(char_img, (self.character.x, self.character.y))
 
-        # # Draw potion counts
-        # render_text(f": {self.saved_values['damage_potions']}", 330, 20, self.font, screen)
-        # screen.blit(self.damage_potion_image, (300, 10))
-        # #render_text(f"Health Potions: {self.health_potions}", 320, 120, self.font, screen)
         
-        # render_text(f": {self.saved_values['health_potions']}", 410, 20, self.font, screen)
-        # screen.blit(self.health_potion_image, (380, 10))
-        
-        
-        # render_text(f": {self.saved_values['swiftness_potions']}", 490, 20, self.font, screen)
-        # screen.blit(self.swifness_potion_image, (460, 10))
         
         # Draw each map area with color based on its status
         for index, area in enumerate(self.map_areas):

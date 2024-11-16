@@ -56,7 +56,7 @@ shop_dict = {
     "speed_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_SPD.png"), (50, 50)),
     "damage_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_ATK.png"), (50, 50)),
     "2jump_upgrade": pygame.transform.scale(pygame.image.load("./graphics/shop/Shop_2Jump.png"), (50, 50)),
-    "shop_continue": pygame.transform.scale(pygame.image.load("./graphics/shop/shop_continue.PNG"), (50, 50)),
+    "shop_continue": pygame.transform.scale(pygame.image.load("./graphics/shop/shop_continue.PNG"), (70, 70)),
 }
 gSounds = {
     'confirm': pygame.mixer.Sound('sounds/common/confirm.wav'),

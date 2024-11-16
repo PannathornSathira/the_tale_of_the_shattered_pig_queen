@@ -53,12 +53,15 @@ class ShopState:
         # Potion levels and costs
         self.potion_levels = {
             "Health Potion": {
+                "levels": [0, 30, 35, 40, 45, 50],
                 "costs": [0, 50, 120, 250, 400, 600]
             },
             "Damage Potion": {
+                "levels": [0, 5, 10, 15, 20, 25],
                 "costs": [0, 50, 120, 250, 400, 600]
             },
             "Swiftness Potion": {
+                "levels": [0, 5, 10, 15, 20, 25],
                 "costs": [0, 50, 120, 250, 400, 600]
             }
         }
@@ -74,8 +77,8 @@ class ShopState:
             "Health Potion": shop_dict["health_potion"],
             "Damage Potion": shop_dict["damage_potion"],
             "Swiftness Potion": shop_dict["swiftness_potion"],
-            "Health Potion Upgrade": shop_dict["hp_upgrade"],
-            "Damage Potion Upgrade": shop_dict["damage_upgrade"],
+            "Health Potion Upgrade": shop_dict["health_potion"],
+            "Damage Potion Upgrade": shop_dict["damage_potion"],
             "Swiftness Potion Upgrade": shop_dict["swiftness_potion"],
             "Start Journey": shop_dict["shop_continue"],
         }
@@ -302,37 +305,30 @@ class ShopState:
         title_right_surface = self.font.render(title_right, True, self.text_color)
         screen.blit(title_left_surface, (50, 100))
         screen.blit(title_right_surface, (screen.get_width() // 2 + 50, 100))
-        """
-        #Old display
-        # Render left-side shop items
-        for index, item in enumerate(self.items_left):
-            color = (0, 255, 0) if self.side == 'left' and index == self.selected_item_index else self.text_color
-            text_surface = self.font.render(item, True, color)
-            screen.blit(text_surface, (50, 150 + index * 50))
-
-        # Render right-side shop items
-        for index, item in enumerate(self.items_right):
-            color = (0, 255, 0) if self.side == 'right' and index == self.selected_item_index else self.text_color
-            text_surface = self.font.render(item, True, color)
-            screen.blit(text_surface, (screen.get_width() // 2 + 50, 150 + index * 50))
-            
-        """
         items_left_count = len(self.items_left)
         
         # Draw grid layout for left items
         for index, item in enumerate(self.items_left):
-            x = 100 + (index % 3) * 150 + 50 # Adjust x position for columns
-            y = 150 + (index // 3) * 150  # Adjust y position for rows
-            icon = self.get_item_icon(item)
-            
+            if item == "Start Journey":
+                icon = self.get_item_icon(item)
+                x = (screen.get_width() // 2) - (icon.get_width() // 2)
+                y = 150 + (index // 3) * 150
+                screen.blit(icon, (x, y))
+                text_surface = self.item_font.render(item, True, self.text_color)
+                screen.blit(text_surface, (x - 15, y - 15))
+            else:
+                x = 100 + (index % 3) * 150 + 50  # Adjust x position for columns
+                y = 150 + (index // 3) * 150
+                icon = self.get_item_icon(item)
+                screen.blit(icon, (x, y))
+                text_surface = self.item_font.render(item, True, self.text_color)
+                screen.blit(text_surface, (x - 25, y - 10))
             # Check if the current item is selected and apply green hover effect
             if self.selected_item_index == index:
                 # Draw a green border around the icon
                 pygame.draw.rect(screen, (0, 255, 0), (x - 5, y - 5, icon.get_width() + 10, icon.get_height() + 10), 3)
             
-            screen.blit(icon, (x, y))
-            text_surface = self.item_font.render(item, True, self.text_color)
-            screen.blit(text_surface, (x - 25, y - 15))
+            
             
             # Draw level bar below the item icon
             level = self.get_current_level(item)  # Implement this function to get the level of each item
@@ -347,6 +343,11 @@ class ShopState:
                     # Draw filled or unfilled square based on the current level
                     color = (255, 0, 0) if lvl < level else (128, 128, 128)
                     pygame.draw.rect(screen, color, (square_x, square_y, square_size, square_size))
+                     #Show each item's price
+                price = self.get_item_price(item)
+                price_text_surface = self.item_font.render(f"${price}", True, (255, 255, 255))
+                screen.blit(price_text_surface, (x, y + icon.get_height() + 30))
+           
             
         # Draw grid layout for right items
         for index, item in enumerate(self.items_right):
@@ -375,29 +376,18 @@ class ShopState:
                     # Draw filled or unfilled square based on the current level
                     color = (255, 0, 0) if lvl < level else (128, 128, 128)
                     pygame.draw.rect(screen, color, (square_x, square_y, square_size, square_size))
-            
+            #Show each item's price
+            price = self.get_item_price(item)
+            price_text_surface = self.item_font.render(f"${price}", True, (255, 255, 255))
+            screen.blit(price_text_surface, (x, y + icon.get_height() + 30))
         
         
         coins_text = f"Coins: {int(self.saved_values["total_coins"])}"
-        """ 
-        potions_text = f"Damage Potions: {self.saved_values["damage_potions"]} and LV: {self.saved_values["damage_potion_upgrade_level"]}"
-        health_potions_text = f"Health Potions: {self.saved_values["health_potions"]} and LV: {self.saved_values["health_potion_upgrade_level"]}"
-        swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]} and LV: {self.saved_values["swiftness_potion_upgrade_level"]}"
-        """
-        # potions_text = f"Damage Potions: {self.saved_values["damage_potions"]}"
-        # health_potions_text = f"Health Potions: {self.saved_values["health_potions"]}"
-        # swiftness_potions_text = f"Swiftness Potions: {self.saved_values["swiftness_potions"]}"
         
         # # Render the potion counts
         coins_surface = self.font.render(coins_text, True, self.text_color)
-        # potions_surface = self.font.render(potions_text, True, self.text_color)
-        # health_potions_surface = self.font.render(health_potions_text, True, self.text_color)
-        # swiftness_potions_surface = self.font.render(swiftness_potions_text, True, self.text_color)
 
         screen.blit(coins_surface, (50, 600))
-        # screen.blit(potions_surface, (screen.get_width() // 2 + 50, 450))
-        # screen.blit(health_potions_surface, (screen.get_width() // 2 + 50, 500))
-        # screen.blit(swiftness_potions_surface, (screen.get_width() // 2 + 50, 550))
 
     def read_saveFile(self):
         """Read the save file and return the data as a dictionary."""
@@ -473,6 +463,35 @@ class ShopState:
         elif item == "Swiftness Potion Upgrade":
             return len(self.potion_levels["Swiftness Potion"]["levels"]) - 1
         return 1
+    def get_item_price(self, item):
+        if item == "Health Upgrade":
+            level = self.get_current_level(item)
+            return self.hp_costs[level + 1] if level < len(self.hp_costs) - 1 else "MAX"
+        elif item == "Damage Upgrade":
+            level = self.get_current_level(item)
+            return self.dmg_costs[level + 1] if level < len(self.dmg_costs) - 1 else "MAX"
+        elif item == "Movement Speed":
+            level = self.get_current_level(item)
+            return self.speed_costs[level + 1] if level < len(self.speed_costs) - 1 else "MAX"
+        elif item == "Defense Upgrade":
+            level = self.get_current_level(item)
+            return self.defense_costs[level + 1] if level < len(self.defense_costs) - 1 else "MAX"
+        elif item == "Jump Upgrade":
+            level = self.get_current_level(item)
+            return self.jump_costs[level + 1] if level < len(self.jump_costs) - 1 else "MAX"
+        elif item == "Shotgun Upgrade":
+            level = self.get_current_level(item)
+            return self.shotgun_costs[level + 1] if level < len(self.shotgun_costs) - 1 else "MAX"
+        elif item == "Health Potion Upgrade":
+            level = self.saved_values.get("health_potion_upgrade_level", 0)
+            return self.potion_levels["Health Potion"]["costs"][level + 1] if level < len(self.potion_levels["Health Potion"]["costs"]) - 1 else "MAX"
+        elif item == "Damage Potion Upgrade":
+            level = self.saved_values.get("damage_potion_upgrade_level", 0)
+            return self.potion_levels["Damage Potion"]["costs"][level + 1] if level < len(self.potion_levels["Damage Potion"]["costs"]) - 1 else "MAX"
+        elif item == "Swiftness Potion Upgrade":
+            level = self.saved_values.get("swiftness_potion_upgrade_level", 0)
+            return self.potion_levels["Swiftness Potion"]["costs"][level + 1] if level < len(self.potion_levels["Swiftness Potion"]["costs"]) - 1 else "MAX"
+        return "N/A"
 
 
     # Ensure to initialize pygame and create an instance of ShopState
