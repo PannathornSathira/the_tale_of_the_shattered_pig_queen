@@ -239,7 +239,7 @@ class ShopState:
     def render(self, screen):
         screen.blit(self.bg_image, (0, 0))
         title_left = "Player Status"
-        title_right = "Consumable Items"
+        title_right = "Potions"
         
         
         menu_bg_width = screen.get_width() - 80  # Width to cover both left and right item sections
