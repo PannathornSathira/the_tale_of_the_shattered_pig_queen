@@ -330,7 +330,7 @@ class ShopState:
             screen.blit(price_text_surface, (x, y + icon.get_height() + 30))
         
         
-        coins_text = f"Coins: {int(self.saved_values["total_coins"])}"
+        coins_text = f"Coins: {int(self.saved_values['total_coins'])}"
         
         # # Render the potion counts
         coins_surface = self.font.render(coins_text, True, self.text_color)
