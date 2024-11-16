@@ -35,7 +35,7 @@ class ShopState:
         # Define upgrade costs and levels
         self.hp_levels = [50, 60, 70, 80, 90, 100]
         self.hp_costs = [0, 50, 150, 400, 800, 1500]
-        self.dmg_levels = [10, 13, 16, 19, 22, 25]
+        self.dmg_levels = [10, 12, 14, 16, 18, 20]
         self.dmg_costs = [0, 100, 250, 600, 1200, 2000]
         self.speed_levels = [1.0, 1.05, 1.10, 1.15, 1.20, 1.25]
         self.speed_costs = [0, 80, 200, 500, 1000, 1800]

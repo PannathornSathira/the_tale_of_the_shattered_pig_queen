@@ -39,7 +39,7 @@ BEAM_WIDTH = 1000
 BEAM_SPEED = 1000
 
 POTION_LEVELS = {
-    "Health Potion": {"power": [0, 0.3, 0.35, 0.4, 0.45, 0.5]},
+    "Health Potion": {"power": [0, 0.10, 0.15, 0.20, 0.25, 0.3]},
     "Damage Potion": {"power": [0, 1.05, 1.10, 1.15, 1.20, 1.25]},
     "Swiftness Potion": {"power": [0, 1.05, 1.10, 1.15, 1.20, 1.25]},
 }

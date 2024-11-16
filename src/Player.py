@@ -270,7 +270,7 @@ class Player:
             # Pistol fires a single bullet
             bullet = Bullet(bullet_x, bullet_y, bullet_direction, damage=self.bullet_damage)
             sound = gSounds["mc_gun"]
-            sound.set_volume(0.7)
+            sound.set_volume(0.5)
             sound.play()
             self.bullets.append(bullet)
         elif self.active_weapon == "shotgun":
@@ -280,7 +280,7 @@ class Player:
                 bullet = Bullet(bullet_x, bullet_y, bullet_direction, angle_offset=angle_offset, bullet_type = "shotgun", damage=self.bullet_damage * self.shotgun_damage_scale)
                 self.bullets.append(bullet)
             sound = gSounds["mc_shotgun"]
-            sound.set_volume(0.5)
+            sound.set_volume(0.4)
             sound.play()
                 
         
