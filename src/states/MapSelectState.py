@@ -14,7 +14,7 @@ class MapSelectState:
             pygame.Rect(630, 400, 200, 150),  # Area 3
             pygame.Rect(280, 480, 200, 150),  # Area 4
             pygame.Rect(970, 500, 200, 150),  # Area 5 (Final Boss)
-            pygame.Rect(80, 80, 200, 150),  # Shop (End Journey)
+            pygame.Rect(60, 80, 200, 150),  # Shop (End Journey)
         ]
         
         # Initialize the player character
@@ -171,16 +171,7 @@ class MapSelectState:
             return WraithBoss(self.boss_spawn_x, self.boss_spawn_y, health, damage, damage_speed_scaling=self.slow_damage_boss)
 
     def render(self, screen):
-        screen.blit(self.bg_image, (0, 0))
-
-        # Draw the character
-        char_img = self.character_animation.image
-        char_img = pygame.transform.scale(char_img, (self.character.width, self.character.height))
-        if self.character_direction == "left":
-            char_img = pygame.transform.flip(char_img, True, False)
-        screen.blit(char_img, (self.character.x, self.character.y))
-
-        
+        screen.blit(self.bg_image, (0, 0))   
         
         # Draw each map area with color based on its status
         for index, area in enumerate(self.map_areas):
@@ -195,27 +186,13 @@ class MapSelectState:
                 color = (0, 255, 0) if index == self.selected_area_index else (255, 0, 0)
 
             s = pygame.Surface((area.width, area.height))
-            s.set_alpha(170)
-            s.fill(color)
-            screen.blit(s, (area.x, area.y))
+            pygame.draw.circle(screen, color, (area.x + 90, area.y - 40), 20)
+            
+        # Draw the character
+        char_img = self.character_animation.image
+        char_img = pygame.transform.scale(char_img, (self.character.width, self.character.height))
+        if self.character_direction == "left":
+            char_img = pygame.transform.flip(char_img, True, False)
+        screen.blit(char_img, (self.character.x, self.character.y))
 
-            # Display area names
-            if index == 0:
-                area_name = "Sky"
-            elif index == 1:
-                area_name = "Forest"
-            elif index == 2:
-                area_name = "Sea"
-            elif index == 3:
-                area_name = "Desert"
-            elif index == 4:
-                area_name = "Castle"
-            else:
-                area_name = "Shop"
-            if index == 4 and not all(lvl in self.completed_levels for lvl in range(1, 5)):
-                area_name += " (Locked)"
-            text_surface = self.font.render(area_name, True, (0, 0, 0))
-            text_rect = text_surface.get_rect(center=area.center)
-            screen.blit(text_surface, text_rect)
-
-        render_text(f"Total Coins: {int(self.saved_values['total_coins'])}", 20, 20, self.font, screen)
+        render_text(f"Total Coins: {int(self.saved_values['total_coins'])}", 40, 30, self.font, screen)

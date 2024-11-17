@@ -10,7 +10,7 @@ class MainMenuState:
         self.screen = screen
         self.font = pygame.font.SysFont(None, 80)  # Set font size to 48
         self.start_game = False
-        self.bg_image = pygame.image.load("./graphics/main_menu_temp.png")
+        self.bg_image = pygame.image.load("./graphics/Backgrounds/main_menu.png")
         #self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH + 5, HEIGHT + 5))
         
     def Enter(self, params):

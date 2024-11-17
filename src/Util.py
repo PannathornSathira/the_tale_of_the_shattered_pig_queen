@@ -203,9 +203,9 @@ class SpriteSheet(object):
             image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
         )
 
-def render_text(text, x, y, font, screen):
+def render_text(text, x, y, font, screen, font_color=(0,0,0)):
     """Render text at a given position."""
-    text_surface = font.render(text, True, (0, 0, 0))  # Render text in black color
+    text_surface = font.render(text, True, font_color)  # Render text in black color
     screen.blit(text_surface, (x, y))
     
 def read_saveFile():

@@ -228,32 +228,36 @@ class PlayState:
         pass
 
     def render(self,screen):
+        if self.level.area == 2 or self.level.area == 5:
+            font_color = (255, 255, 255)
+        else:
+            font_color = (0, 0, 0)
         screen.blit(self.bg_image, (0, 0))
         
         self.level.render(screen)
         self.boss.render(screen)
         self.player.render(screen)
         if self.player.alive:
-            render_text("Player HP:", 20, 10, self.font, screen)
+            render_text("Player HP:", 20, 10, self.font, screen, font_color)
             player_health_percentage = self.player.health / self.max_health
             health_color = (255, 0, 0)
             player_health_bar_width = int(200 * player_health_percentage)
             pygame.draw.rect(screen, health_color, (150, 10, player_health_bar_width, 20))
             pygame.draw.rect(screen, (255, 255, 255), (150, 10, 200, 20), 2)
         if self.boss.alive:
-            render_text("Boss HP:", 20, 40, self.font, screen)
+            render_text("Boss HP:", 20, 40, self.font, screen, font_color)
             boss_health_percentage = self.boss_health / self.max_boss_health
             boss_health_bar_width = int(200 * boss_health_percentage) 
             pygame.draw.rect(screen, (0, 0, 255), (150, 40, boss_health_bar_width, 20)) 
             pygame.draw.rect(screen, (255, 255, 255), (150, 40, 200, 20), 2)
 
         # Render potions and timers
-        render_text(f"Coins: {int(self.total_coins)}", 20, 70, self.font, screen)
-        self.render_potion_status(screen, "health", 20, 100)
-        self.render_potion_status(screen, "damage", 145, 100)
-        self.render_potion_status(screen, "swiftness", 270, 100)
+        render_text(f"Coins: {int(self.total_coins)}", 20, 70, self.font, screen, font_color)
+        self.render_potion_status(screen, "health", 20, 100, font_color)
+        self.render_potion_status(screen, "damage", 145, 100, font_color)
+        self.render_potion_status(screen, "swiftness", 270, 100, font_color)
 
-    def render_potion_status(self, screen, potion, x, y):
+    def render_potion_status(self, screen, potion, x, y, font_color=(0,0,0)):
         level = self.saved_values[f"{potion}_potion_upgrade_level"]
         potion_image = getattr(self, f"{potion}_potion_image")
         effect = self.potion_effects[potion]
@@ -261,7 +265,7 @@ class PlayState:
             cooldown_time = "-"
         else:
             cooldown_time = int(effect["cooldown_timer"] / 1000) if effect["cooldown_timer"] > 0 else "Ready"
-        render_text(f": {cooldown_time}", x + 35, y + 10, self.font, screen)
+        render_text(f": {cooldown_time}", x + 35, y + 10, self.font, screen, font_color)
         screen.blit(potion_image, (x, y))
         
         

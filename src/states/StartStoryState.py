@@ -13,7 +13,7 @@ class StartStoryState:
         pygame.init()
         pygame.mixer.init()
         self.play_check = False
-        self.bg_image = pygame.image.load("./graphics/Enter_tutorial.jpg")
+        self.bg_image = pygame.image.load("./graphics/Backgrounds/Enter_tutorial.jpg")
         self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH, HEIGHT))
         # Set up the screen with specified width and height
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))

@@ -24,17 +24,17 @@ class Level:
                     platform.update(dt)
 
     def CreateMap(self):
-        # for y in range(self.map_height):
-        #     self.tiles.append([])
-        #     for x in range(self.map_width):
-        #         if y < 5:
-        #             self.tiles[y].append(SKY)
-        #         elif y == 5:
-        #             self.tiles[y].append(GRASS)
-        #         elif y == 6:
-        #             self.tiles[y].append(GROUND_BOUNDARY)
-        #         else:
-        #             self.tiles[y].append(GROUND)
+        for y in range(self.map_height):
+            self.tiles.append([])
+            for x in range(self.map_width):
+                if y < 5:
+                    self.tiles[y].append(SKY)
+                elif y == 5:
+                    self.tiles[y].append(GRASS)
+                elif y == 6:
+                    self.tiles[y].append(GROUND_BOUNDARY)
+                else:
+                    self.tiles[y].append(GROUND)
         self.GeneratePlatforms()
 
     def GeneratePlatforms(self):
