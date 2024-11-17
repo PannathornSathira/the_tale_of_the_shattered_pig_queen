@@ -231,7 +231,7 @@ class BlackWidowBoss(BaseBoss):
         if len(self.spiderlings) < self.spiderling_limit:
             spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
             spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-            spiderling = Spiderling(spawn_x, spawn_y, self, damage=self.damage//2, health=self.health//10)
+            spiderling = Spiderling(spawn_x, spawn_y, self, damage=self.damage//2, health=self.health//20)
             self.spiderlings.append(spiderling)
         gSounds['spiderling'].play()
         self.end_attack()
