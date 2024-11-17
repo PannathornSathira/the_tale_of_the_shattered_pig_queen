@@ -130,7 +130,7 @@ class SpriteManager:
                         # Load individual image files for animation frames
                         for image in sprite["images"]:
                             if "path" in image:
-                                loaded_image = pygame.image.load(image["path"]).convert_alpha()
+                                loaded_image = pygame.image.load(resource_path(image["path"])).convert_alpha()
                                 scale = image.get("scale", 1)  # Default scale to 1 if not specified
                                 loaded_image = pygame.transform.scale(
                                     loaded_image,
@@ -142,7 +142,7 @@ class SpriteManager:
                         idle_img = None
                         if "idle_image" in sprite:
                             idle_info = sprite["idle_image"]
-                            idle_img = pygame.image.load(idle_info["path"]).convert_alpha()
+                            idle_img = pygame.image.load(resource_path(idle_info["path"])).convert_alpha()
                             idle_img = pygame.transform.scale(
                                 idle_img,
                                 (idle_img.get_width() * idle_info["scale"], idle_img.get_height() * idle_info["scale"])
@@ -171,7 +171,7 @@ class SpriteManager:
 
                         # Load individual image
                         dic[sprite["name"]] = Sprite(
-                            pygame.image.load(sprite["path"]).convert_alpha(),
+                            pygame.image.load(resource_path(sprite["path"])).convert_alpha(),
                         )
                     resDict.update(dic)
                     continue
@@ -212,8 +212,9 @@ def render_text(text, x, y, font, screen, font_color=(0,0,0)):
 
 def resource_path(relative_path):
     """Get the absolute path to a resource. Works for dev and for PyInstaller."""
-    # base_path = getattr(sys, '_MEIPASS', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-    base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+    base_path = base_path = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+    # base_path = getattr(sys, '_MEIPASS')
+    # base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
     return os.path.join(base_path, relative_path)
     
 def read_saveFile():
