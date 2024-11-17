@@ -27,6 +27,7 @@ class TornadoFiendBoss(BaseBoss):
         
         # Tornado swarm attack prop
         self.fiendlings = []
+        self.fiendling_limit = 4
         
         # Tornado judgement attack prop
         self.beam_count = 5
@@ -117,10 +118,11 @@ class TornadoFiendBoss(BaseBoss):
         """
         Tornado Swarm: Tornado Fiend summons smaller clones that race across the screen, creating unpredictable obstacles.
         """
-        spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
-        spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-        fiendling = Fiendling(spawn_x, spawn_y, damage=self.damage//2, health=self.max_health // 10)
-        self.fiendlings.append(fiendling)
+        if len(self.fiendlings) < self.fiendling_limit:
+            spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
+            spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
+            fiendling = Fiendling(spawn_x, spawn_y, damage=self.damage//2, health=self.max_health // 10)
+            self.fiendlings.append(fiendling)
         self.end_attack()
         gSounds["tornado_sound"].play(maxtime=1000)
         

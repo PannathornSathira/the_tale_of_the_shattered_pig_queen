@@ -23,6 +23,7 @@ class StartStoryState:
         self.cap = cv2.VideoCapture("./video/My_Movie_11.mov")
         self.audio_path = "./video/My_Movie_1_audio.wav"
         pygame.mixer.music.load(self.audio_path)
+        pygame.mixer.music.set_volume(1.7)
 
         # Get video properties
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
@@ -114,6 +115,7 @@ class StartStoryState:
     def Exit(self):
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
+        pygame.mixer.music.set_volume(1/1.7)
        
     def cleanup(self):
         pygame.mixer.music.stop()

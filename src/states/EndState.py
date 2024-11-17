@@ -21,6 +21,7 @@ class EndState:
         # Set up video capture and audio as a Sound object
         self.cap = cv2.VideoCapture("./video/My_Movie_2.mov")
         self.audio = pygame.mixer.Sound("./video/endsound.wav")  # Use Sound instead of music
+        self.audio.set_volume(1.7)
 
         # Get video properties
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)

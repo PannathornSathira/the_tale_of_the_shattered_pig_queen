@@ -52,6 +52,7 @@ class BlackWidowBoss(BaseBoss):
 
         # Summoning properties
         self.spiderlings = []  # List to track summoned spiderlings
+        self.spiderling_limit = 4
 
     def contact_hit(self, player):
         if self.rect.colliderect(player.rect):  # Check for collision with player
@@ -76,6 +77,8 @@ class BlackWidowBoss(BaseBoss):
             # Inflict poison damage at each tick interval
             if self.poison_tick_timer >= self.poison_tick_rate:
                 player.health -= self.poison_damage
+                if player.health <= 0:
+                    player.health = 1
                 self.poison_tick_timer = 0  # Reset tick timer
                 gSounds['poison'].play()
 
@@ -225,10 +228,11 @@ class BlackWidowBoss(BaseBoss):
         """
         Summon spiderlings: Spiderlings appear randomly around the boss and try to attack the player.
         """
-        spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
-        spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
-        spiderling = Spiderling(spawn_x, spawn_y, self, damage=self.damage//2, health=self.health//10)
-        self.spiderlings.append(spiderling)
+        if len(self.spiderlings) < self.spiderling_limit:
+            spawn_x = self.x + self.width / 2 + random.randint(-100, 100)
+            spawn_y = self.y + self.height / 2 + random.randint(-100, 100)
+            spiderling = Spiderling(spawn_x, spawn_y, self, damage=self.damage//2, health=self.health//10)
+            self.spiderlings.append(spiderling)
         gSounds['spiderling'].play()
         self.end_attack()
 

@@ -84,7 +84,7 @@ class KingMummyBoss(BaseBoss):
                         self.velocity_y = 1.6 * self.jump_force
                         self.on_ground = False
                         self.jump_cooldown_timer = 0
-                    elif player.character_y + player.height < self.y + self.height:
+                    elif player.character_y + player.height + 5 < self.y + self.height:
                         self.velocity_y = self.jump_force
                         self.on_ground = False
                         self.jump_cooldown_timer = 0
