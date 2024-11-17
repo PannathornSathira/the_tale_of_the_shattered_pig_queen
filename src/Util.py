@@ -1,6 +1,8 @@
 import pygame
 import json
 from src.constants import *
+import os
+import sys
 
 def GenerateTiles(file_name, tile_width, tile_height, scale=3, colorkey=None):
     image = pygame.image.load(file_name)
@@ -91,27 +93,27 @@ class SpriteManager:
     def __init__(self):
         self.spriteCollection = self.loadSprites(
             [
-                "./sprite/King/KingFireGun.json",
-                "./sprite/King/KingFireShotgun.json",
-                "./sprite/King/KingSelectMap.json",
-                "./sprite/Bosses/Kraken.json",
-                "./sprite/Bosses/KrakenImage.json",
-                "./sprite/Bosses/GreatShark.json",
-                "./sprite/Bosses/GreatSharkImage.json",
-                "./sprite/Bosses/KingMummy.json",
-                "./sprite/Bosses/KingMummyImage.json",
-                "./sprite/Bosses/BlackWidow.json",
-                "./sprite/Bosses/BlackWidowImage.json",
-                "./sprite/Bosses/Medusa.json",
-                "./sprite/Bosses/MedusaImage.json",
-                "./sprite/Bosses/BlueDragon.json",
-                "./sprite/Bosses/BlueDragonImage.json",
-                "./sprite/Bosses/TornadoFiend.json",
-                "./sprite/Bosses/TornadoFiendImage.json",
-                "./sprite/Bosses/SandWorm.json",
-                "./sprite/Bosses/SandWormImage.json",
-                "./sprite/Bosses/Wraith.json",
-                "./sprite/Bosses/WraithImage.json",
+                resource_path("sprite/King/KingFireGun.json"),
+                resource_path("sprite/King/KingFireShotgun.json"),
+                resource_path("sprite/King/KingSelectMap.json"),
+                resource_path("sprite/Bosses/Kraken.json"),
+                resource_path("sprite/Bosses/KrakenImage.json"),
+                resource_path("sprite/Bosses/GreatShark.json"),
+                resource_path("sprite/Bosses/GreatSharkImage.json"),
+                resource_path("sprite/Bosses/KingMummy.json"),
+                resource_path("sprite/Bosses/KingMummyImage.json"),
+                resource_path("sprite/Bosses/BlackWidow.json"),
+                resource_path("sprite/Bosses/BlackWidowImage.json"),
+                resource_path("sprite/Bosses/Medusa.json"),
+                resource_path("sprite/Bosses/MedusaImage.json"),
+                resource_path("sprite/Bosses/BlueDragon.json"),
+                resource_path("sprite/Bosses/BlueDragonImage.json"),
+                resource_path("sprite/Bosses/TornadoFiend.json"),
+                resource_path("sprite/Bosses/TornadoFiendImage.json"),
+                resource_path("sprite/Bosses/SandWorm.json"),
+                resource_path("sprite/Bosses/SandWormImage.json"),
+                resource_path("sprite/Bosses/Wraith.json"),
+                resource_path("sprite/Bosses/WraithImage.json"),
             ]
         )
 
@@ -207,11 +209,17 @@ def render_text(text, x, y, font, screen, font_color=(0,0,0)):
     """Render text at a given position."""
     text_surface = font.render(text, True, font_color)  # Render text in black color
     screen.blit(text_surface, (x, y))
+
+def resource_path(relative_path):
+    """Get the absolute path to a resource. Works for dev and for PyInstaller."""
+    # base_path = getattr(sys, '_MEIPASS', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+    base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
+    return os.path.join(base_path, relative_path)
     
 def read_saveFile():
     """Read the save file and return the data as a dictionary."""
     try:
-        with open(SAVE_FILE_NAME, 'r') as file:
+        with open(resource_path(SAVE_FILE_NAME), 'r') as file:
             return json.load(file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         return {}
@@ -220,14 +228,14 @@ def save_values(updated_values):
     """Update only the provided keys in the save file without overwriting other data."""
     try:
         # Load existing data from save file
-        with open(SAVE_FILE_NAME, 'r') as file:
+        with open(resource_path(SAVE_FILE_NAME), 'r') as file:
             data = json.load(file)
         
         # Update only the keys provided in updated_values
         data.update(updated_values)
         
         # Save the updated data back to the file
-        with open(SAVE_FILE_NAME, 'w') as file:
+        with open(resource_path(SAVE_FILE_NAME), 'w') as file:
             json.dump(data, file, indent=4)
     
     except (IOError, json.JSONDecodeError) as e:

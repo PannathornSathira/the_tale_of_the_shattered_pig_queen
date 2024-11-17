@@ -7,7 +7,7 @@ class MapSelectState:
     def __init__(self, screen, font):
         self.screen = screen
         self.font = font
-        self.bg_image = pygame.image.load("./graphics/Backgrounds/main_map.PNG")
+        self.bg_image = pygame.image.load(resource_path("graphics/Backgrounds/main_map.PNG"))
         self.map_areas = [
             pygame.Rect(400, 70, 200, 150),  # Area 1
             pygame.Rect(850, 130, 200, 150),  # Area 2

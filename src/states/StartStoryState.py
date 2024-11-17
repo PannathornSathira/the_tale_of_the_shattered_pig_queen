@@ -13,15 +13,15 @@ class StartStoryState:
         pygame.init()
         pygame.mixer.init()
         self.play_check = False
-        self.bg_image = pygame.image.load("./graphics/Backgrounds/Enter_tutorial.jpg")
+        self.bg_image = pygame.image.load(resource_path("graphics/Backgrounds/Enter_tutorial.jpg"))
         self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH, HEIGHT))
         # Set up the screen with specified width and height
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Start Story")
 
         # Set up video capture and audio
-        self.cap = cv2.VideoCapture("./video/My_Movie_11.mov")
-        self.audio_path = "./video/My_Movie_1_audio.wav"
+        self.cap = cv2.VideoCapture(resource_path("video/My_Movie_11.mov"))
+        self.audio_path = resource_path("video/My_Movie_1_audio.mp3")
         pygame.mixer.music.load(self.audio_path)
         pygame.mixer.music.set_volume(1.7)
 

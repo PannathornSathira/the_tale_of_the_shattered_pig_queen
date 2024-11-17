@@ -28,7 +28,7 @@ class ShopState:
         self.damage_potions = 0
         self.health_potions = 0
         self.swiftness_potions = 0
-        self.bg_image = pygame.image.load("./graphics/Backgrounds/Shop.png")
+        self.bg_image = pygame.image.load(resource_path("graphics/Backgrounds/Shop.png"))
         self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH + 5, HEIGHT + 5))
         self.text_color = (255, 255, 255)
         self.item_images = {}

@@ -12,15 +12,15 @@ class EndState:
         pygame.init()
         pygame.mixer.init()
         self.play_check = False
-        self.bg_image = pygame.image.load("./graphics/Backgrounds/ending_image.png")
+        self.bg_image = pygame.image.load(resource_path("graphics/Backgrounds/ending_image.png"))
         self.bg_image = pygame.transform.scale(self.bg_image, (WIDTH, HEIGHT))
         
         # Set up the screen with specified width and height
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
         # Set up video capture and audio as a Sound object
-        self.cap = cv2.VideoCapture("./video/My_Movie_2.mov")
-        self.audio = pygame.mixer.Sound("./video/endsound.wav")  # Use Sound instead of music
+        self.cap = cv2.VideoCapture(resource_path("video/My_Movie_2.mov"))
+        self.audio = pygame.mixer.Sound(resource_path("video/endsound.mp3"))  # Use Sound instead of music
         self.audio.set_volume(2)
 
         # Get video properties
